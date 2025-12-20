@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+
+<VBox prefHeight="1200.0" prefWidth="1092.0" stylesheets="@goodStyle.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox styleClass="section-pane-small">
+         <children>
+            <HBox alignment="CENTER_LEFT" prefHeight="56.0" prefWidth="980.0">
+               <children>
+                  <Label maxHeight="1.7976931348623157E308" styleClass="label-data-entry" text="Inizio:" />
+                  <Label layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" styleClass="label-data-entry" text="17-03-2002" />
+                  <Label layoutX="80.0" layoutY="10.0" maxHeight="1.7976931348623157E308" styleClass="label-data-entry" text="   |   " />
+                  <Label layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" styleClass="label-data-entry" text="Scadenza:" />
+                  <Label layoutX="80.0" layoutY="10.0" maxHeight="1.7976931348623157E308" styleClass="label-data-entry" text="17-03-2002" />
+                  <Label layoutX="175.0" layoutY="10.0" maxHeight="1.7976931348623157E308" styleClass="label-data-entry" text="   |   " />
+                  <Label layoutX="80.0" layoutY="10.0" maxHeight="1.7976931348623157E308" styleClass="label-data-entry" text="Fine:" />
+                  <Label layoutX="331.0" layoutY="10.0" maxHeight="1.7976931348623157E308" styleClass="label-data-entry" text="--" />
+               </children>
+            </HBox>
+         </children>
+         <VBox.margin>
+            <Insets bottom="30.0" />
+         </VBox.margin>
+      </VBox>
+      <GridPane prefHeight="358.0" prefWidth="1052.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints minHeight="10.0" percentHeight="50.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" percentHeight="50.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <VBox prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="1">
+               <children>
+                  <Label styleClass="label--section-header" text="Descrizione">
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin>
+                  </Label>
+                  <TextArea prefHeight="190.0" prefWidth="526.0" />
+               </children>
+               <GridPane.margin>
+                  <Insets right="10.0" />
+               </GridPane.margin>
+            </VBox>
+            <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <children>
+                  <Label styleClass="label--section-header" text="Coltivatori">
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin>
+                  </Label>
+                  <ListView prefHeight="200.0" prefWidth="200.0" />
+               </children>
+               <GridPane.margin>
+                  <Insets left="10.0" />
+               </GridPane.margin>
+            </VBox>
+            <VBox prefHeight="200.0" prefWidth="100.0">
+               <children>
+                  <VBox alignment="CENTER_LEFT" prefHeight="115.0" prefWidth="294.0">
+                     <children>
+                        <Label styleClass="label--section-header" text="Lotto">
+                           <VBox.margin>
+                              <Insets bottom="10.0" />
+                           </VBox.margin>
+                        </Label>
+                        <Label text="Indirizzo Lotto">
+                           <padding>
+                              <Insets bottom="10.0" />
+                           </padding>
+                        </Label>
+                        <TextField editable="false">
+                           <VBox.margin>
+                              <Insets bottom="10.0" />
+                           </VBox.margin>
+                        </TextField>
+                        <VBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="198.0">
+                           <children>
+                              <Label text="Codice Lotto">
+                                 <VBox.margin>
+                                    <Insets bottom="10.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <TextField />
+                           </children>
+                        </VBox>
+                     </children>
+                     <VBox.margin>
+                        <Insets right="10.0" />
+                     </VBox.margin>
+                  </VBox>
+               </children>
+            </VBox>
+            <VBox prefHeight="100.0" prefWidth="416.0" GridPane.columnIndex="1">
+               <children>
+                  <Label styleClass="label--section-header" text="Colture">
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin>
+                  </Label>
+                  <ListView prefHeight="119.0" prefWidth="516.0" />
+               </children>
+               <GridPane.margin>
+                  <Insets left="10.0" />
+               </GridPane.margin>
+            </VBox>
+         </children>
+         <VBox.margin>
+            <Insets bottom="40.0" />
+         </VBox.margin>
+      </GridPane>
+      <VBox alignment="CENTER" prefHeight="637.0" prefWidth="1052.0">
+         <children>
+            <GridPane maxWidth="-Infinity" prefHeight="110.0" prefWidth="800.0">
+               <VBox.margin>
+                  <Insets bottom="10.0" />
+               </VBox.margin>
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" />
+                  <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" prefWidth="100.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+               <children>
+                  <Label styleClass="label--section-header" text="Attività Pianificate">
+                     <GridPane.margin>
+                        <Insets left="10.0" />
+                     </GridPane.margin>
+                  </Label>
+                  <Button mnemonicParsing="false" styleClass="button--progress-action" text="Aggiungi" GridPane.columnIndex="1">
+                     <GridPane.margin>
+                        <Insets right="20.0" />
+                     </GridPane.margin>
+                  </Button>
+               </children>
+            </GridPane>
+            <ListView maxWidth="-Infinity" prefHeight="602.0" prefWidth="800.0" />
+         </children>
+         <padding>
+            <Insets left="100.0" right="100.0" />
+         </padding>
+      </VBox>
+   </children>
+   <padding>
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+   </padding>
+</VBox>

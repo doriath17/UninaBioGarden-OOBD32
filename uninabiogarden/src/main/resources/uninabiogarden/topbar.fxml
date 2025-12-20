@@ -1,0 +1,40 @@
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.geometry.Insets?>
+
+<HBox alignment="CENTER_LEFT" 
+      spacing="15" 
+      styleClass="dashboard-top-bar"
+      xmlns:fx="http://javafx.com/fxml/1" 
+      xmlns="http://javafx.com/javafx/21">
+      
+    <padding>
+        <Insets top="15" right="30" bottom="15" left="30"/>
+    </padding>
+
+    <Label text="Gestione Progetti" styleClass="view-title" />
+
+    <Region minWidth="40" /> 
+    
+    <TextField fx:id="searchTextField" promptText="Cerca Progetto per Nome..." styleClass="search-field" prefWidth="250" />
+    
+    <HBox spacing="5" alignment="CENTER_LEFT">
+        <Label text="Lotto:" styleClass="filter-label" />
+        <ComboBox fx:id="filterLottoComboBox" styleClass="filter-control" prefWidth="150" editable="true" /> 
+    </HBox>
+    
+    <HBox spacing="5" alignment="CENTER_LEFT">
+        <Label text="Stato:" styleClass="filter-label" />
+        <ChoiceBox fx:id="filterStatoChoiceBox" styleClass="filter-control" prefWidth="130" />
+    </HBox>
+
+    <Region HBox.hgrow="always" />
+    
+    <Button text="Nuovo Progetto" styleClass="cta-button primary-green" onAction="#handleNewProject" />
+    
+</HBox>

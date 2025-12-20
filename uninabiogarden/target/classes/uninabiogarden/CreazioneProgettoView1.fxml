@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="646.0" prefWidth="1132.0" stylesheets="@goodStyle.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <bottom>
+      <HBox alignment="CENTER_RIGHT" prefHeight="46.0" prefWidth="1092.0" styleClass="section-pane--trailer" BorderPane.alignment="CENTER">
+         <children>
+            <Button mnemonicParsing="false" prefHeight="39.0" prefWidth="173.0" styleClass="button--progress-action" stylesheets="@goodStyle.css" text="Vai Avanti" />
+         </children>
+         <padding>
+            <Insets bottom="10.0" left="40.0" right="40.0" top="20.0" />
+         </padding>
+      </HBox>
+   </bottom>
+   <center>
+      <GridPane BorderPane.alignment="CENTER">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+               <children>
+                  <VBox prefHeight="512.0" prefWidth="526.0" styleClass="section-pane">
+                     <VBox.margin>
+                        <Insets right="20.0" />
+                     </VBox.margin>
+                     <children>
+                        <Label styleClass="label--section-header" text="Descrizione Progetto" />
+                        <Label text="Nome Progetto" />
+                        <TextField promptText="Nome Progetto" />
+                        <Label layoutX="30.0" layoutY="30.0" text="Descrizione" />
+                        <TextArea prefHeight="141.0" prefWidth="486.0" promptText="Descrizione Progetto (facoltativo)">
+                           <VBox.margin>
+                              <Insets bottom="10.0" />
+                           </VBox.margin>
+                        </TextArea>
+                        <GridPane prefHeight="71.0" prefWidth="486.0">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                                 <children>
+                                    <Label text="Inizio Progetto">
+                                       <VBox.margin>
+                                          <Insets bottom="5.0" />
+                                       </VBox.margin>
+                                    </Label>
+                                    <DatePicker />
+                                 </children>
+                              </VBox>
+                              <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
+                                 <children>
+                                    <Label text="Scadenza Progetto">
+                                       <VBox.margin>
+                                          <Insets bottom="5.0" />
+                                       </VBox.margin>
+                                    </Label>
+                                    <DatePicker />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </GridPane>
+                     </children>
+                  </VBox>
+               </children>
+            </VBox>
+            <VBox alignment="CENTER" GridPane.columnIndex="1">
+               <children>
+                  <VBox maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="512.0" prefWidth="546.0" styleClass="section-pane">
+                     <children>
+                        <Label styleClass="label--section-header" text="Selezione Lotto" />
+                        <ListView prefHeight="170.0" prefWidth="506.0" />
+                        <Label styleClass="label--section-header" text="Selezione Coltura" />
+                        <ListView prefHeight="236.0" prefWidth="506.0" />
+                     </children>
+                  </VBox>
+               </children>
+            </VBox>
+         </children>
+      </GridPane>
+   </center>
+   <padding>
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+   </padding>
+   <top>
+      <Label styleClass="label--container-header" text="Creazione Nuovo Progetto" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets bottom="20.0" />
+         </BorderPane.margin>
+      </Label>
+   </top>
+</BorderPane>

@@ -1,0 +1,128 @@
+.root {
+  -grafite-scuro: #2c3e50;
+  -grafite-chiaro: #34495e;
+
+  -bianco: #ecf0f1;
+  -grigio-testo-secondario: #bdc3c7;
+  -arancio-warning: #e67e22;
+  -shadow-grey: rgb(83, 83, 83);
+
+  -green-success: #8bc34a;
+  -green-success-hover: #7eb143;
+  -green-success-pressed: #689f38;
+
+  -red-out: #d32f2f;
+  -red-out-hover: rgb(163, 30, 30);
+  -red-out-pressed: #b71c1c;
+}
+
+.main-pane {
+  -fx-pref-height: 100px;
+  -fx-pref-width: 700px;
+  -fx-background-color: -grafite-scuro;
+  -fx-background-radius: 10px;
+  -fx-padding: 5px 10px 5px 10px;
+}
+
+.label-data-entry {
+  -fx-text-fill: -bianco;
+  -fx-font-size: 14px;
+  -fx-padding: 5px 10px 5px 10px;
+}
+.label-date {
+  -fx-text-fill: -bianco;
+  -fx-font-size: 14px;
+  -fx-pref-width: 50px;
+  -fx-padding: 5px 10px 5px 10px;
+}
+
+.section-pane {
+  -fx-background-color: -bianco;
+  -fx-background-radius: 10px;
+  -fx-padding: 20px;
+  -fx-spacing: 15px;
+  -fx-effect: dropshadow(three-pass-box, -shadow-grey, 10, 0, 0, 5);
+}
+
+.button {
+  -fx-text-fill: -bianco;
+  -fx-border-width: 1px;
+  -fx-padding: 4px 8px;
+  -fx-border-radius: 4px;
+  -fx-background-radius: 4px;
+  -fx-cursor: hand;
+}
+.button:hover {
+  -fx-scale-y: 1.05;
+}
+
+.button--progress-action {
+  -fx-background-color: -green-success;
+}
+.button--progress-action:hover {
+  -fx-background-color: -green-success-hover;
+}
+.button--progress-action:pressed {
+  -fx-background-color: -green-success-pressed;
+}
+
+.button--out-action {
+  -fx-background-color: -red-out;
+}
+.button--out-action:hover {
+  -fx-background-color: -red-out-hover;
+}
+.button--out-action:pressed {
+  -fx-background-color: -red-out-pressed;
+}
+
+.status-label--pianificata {
+  -fx-font-size: 14px;
+  -fx-padding: 5px 10px 5px 10px;
+  -fx-alignment: center;
+  -fx-background-radius: 10px;
+  -fx-background-color: -grigio-testo-secondario;
+  -fx-text-fill: -grafite-scuro;
+}
+
+.status-label--pianificata {
+  -fx-font-size: 14px;
+  -fx-padding: 5px 10px 5px 10px;
+  -fx-alignment: center;
+  -fx-background-radius: 10px;
+  -fx-background-color: -arancio-warning;
+  -fx-text-fill: -bianco;
+}
+
+.status-label--pianificata {
+  -fx-font-size: 14px;
+  -fx-padding: 5px 10px 5px 10px;
+  -fx-alignment: center;
+  -fx-background-radius: 10px;
+  -fx-background-color: -green-success;
+  -fx-text-fill: -grafite-scuro;
+}
+
+/* Stato: Completata (Verde) */
+.status-indicator-container-completata {
+  -fx-background-color: -verde-primario;
+}
+.status-indicator-container-completata .status-label {
+  -fx-text-fill: -grafite-scuro; /* Testo scuro su sfondo verde chiaro */
+}
+
+/* Stato: In Corso (Arancio/Warning) */
+.status-indicator-container-in-corso {
+  -fx-background-color: -arancio-warning;
+}
+.status-indicator-container-in-corso .status-label {
+  -fx-text-fill: -bianco;
+}
+
+/* Stato: Pianificata */
+.status-indicator-container-pianificata {
+  -fx-background-color: -grigio-testo-secondario;
+}
+.status-indicator-container-pianificata .status-label {
+  -fx-text-fill: -grafite-scuro;
+}

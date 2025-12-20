@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="646.0" prefWidth="1132.0" stylesheets="@goodStyle.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <padding>
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+   </padding>
+   <top>
+      <Label styleClass="label--container-header" text="Modifica Attività" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets bottom="20.0" />
+         </BorderPane.margin>
+      </Label>
+   </top>
+   <bottom>
+      <GridPane styleClass="section-pane--trailer" BorderPane.alignment="CENTER">
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+         <children>
+            <Button mnemonicParsing="false" styleClass="button--goback-action" text="Torna Indietro" />
+            <HBox alignment="CENTER_RIGHT" GridPane.columnIndex="1">
+               <children>
+                  <Button mnemonicParsing="false" styleClass="button--out-action" text="Annulla Modifica">
+                     <HBox.margin>
+                        <Insets right="50.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button mnemonicParsing="false" styleClass="button--progress-action" text="Salva Modifica" />
+               </children>
+            </HBox>
+         </children>
+      </GridPane>
+   </bottom>
+   <center>
+      <GridPane BorderPane.alignment="CENTER">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <VBox prefHeight="200.0" prefWidth="100.0" styleClass="section-pane">
+               <children>
+                  <Label layoutX="10.0" layoutY="10.0" maxWidth="1.7976931348623157E308" styleClass="label--section-header" text="Coltivaori Assegnati">
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin>
+                  </Label>
+                  <Label styleClass="label-data-entry" text="Coltivatori Assegnati al Progetto" />
+                  <ListView prefHeight="200.0" prefWidth="200.0" />
+                  <HBox alignment="CENTER" prefHeight="108.0" prefWidth="506.0">
+                     <children>
+                        <Button mnemonicParsing="false" styleClass="button-icon">
+                           <graphic>
+                              <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@images/double_down_arrows.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                           <tooltip>
+                              <Tooltip text="Seleziona" />
+                           </tooltip>
+                        </Button>
+                        <Button layoutX="297.0" layoutY="10.0" mnemonicParsing="false" styleClass="button-icon">
+                           <graphic>
+                              <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@images/double_up_arrows.png" />
+                                 </image>
+                                 
+                              </ImageView>
+                           </graphic>
+                           <tooltip>
+                              <Tooltip text="Deseleziona" />
+                           </tooltip>
+                           <HBox.margin>
+                              <Insets left="100.0" />
+                           </HBox.margin>
+                        </Button>
+                     </children>
+                  </HBox>
+                  <Label styleClass="label-data-entry" text="Coltivaori Assegnati all'Attvità" />
+                  <ListView layoutX="10.0" layoutY="32.0" prefHeight="199.0" prefWidth="506.0" />
+               </children>
+            </VBox>
+            <VBox prefHeight="200.0" prefWidth="100.0" styleClass="section-pane" GridPane.columnIndex="1">
+               <children>
+                  <Label styleClass="label--section-header" text="Dettagli Attività" />
+                  <Label styleClass="label-data-entry" text="Nome" />
+                  <TextField>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                  </TextField>
+                  <Label layoutX="10.0" layoutY="35.0" styleClass="label-data-entry" text="Descrizione" />
+                  <TextArea prefHeight="144.0" prefWidth="486.0">
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                  </TextArea>
+                  <GridPane prefHeight="121.0" prefWidth="486.0">
+                     <columnConstraints>
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints maxHeight="56.0" minHeight="0.0" percentHeight="30.0" prefHeight="8.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="60.0" minHeight="0.0" percentHeight="70.0" prefHeight="48.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="60.0" minHeight="10.0" percentHeight="70.0" prefHeight="48.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <Label styleClass="label-data-entry" text="Data Inizio" />
+                        <Label styleClass="label-data-entry" text="Data Scadenza" GridPane.columnIndex="1" />
+                        <DatePicker styleClass="styled-date-picker" GridPane.rowIndex="1">
+                           <GridPane.margin>
+                              <Insets right="5.0" />
+                           </GridPane.margin>
+                        </DatePicker>
+                        <DatePicker prefHeight="27.0" prefWidth="164.0" styleClass="styled-date-picker" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                           <GridPane.margin>
+                              <Insets left="5.0" />
+                           </GridPane.margin>
+                        </DatePicker>
+                        <ComboBox prefWidth="150.0" promptText="Tipologia" GridPane.rowIndex="2" />
+                        <ComboBox layoutX="57.0" layoutY="88.0" prefWidth="150.0" promptText="Stato" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                     </children>
+                  </GridPane>
+               </children>
+               <GridPane.margin>
+                  <Insets left="20.0" />
+               </GridPane.margin>
+            </VBox>
+         </children>
+      </GridPane>
+   </center>
+</BorderPane>

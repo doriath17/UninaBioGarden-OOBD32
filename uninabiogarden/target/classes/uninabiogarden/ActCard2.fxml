@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="245.0" prefWidth="930.0" styleClass="main-pane" stylesheets="@actCardStyle.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <GridPane prefHeight="327.0" prefWidth="890.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" percentHeight="15.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" percentHeight="15.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <GridPane prefHeight="47.0" prefWidth="1135.0">
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+               <children>
+                  <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="52.0" prefWidth="314.0" styleClass="label-data-entry" text="Nome" />
+                  <Label maxHeight="1.7976931348623157E308" prefHeight="47.0" prefWidth="156.0" styleClass="label-data-entry" text="Tipologia" GridPane.columnIndex="1" />
+                  <Label maxHeight="1.7976931348623157E308" prefHeight="52.0" prefWidth="218.0" styleClass="label-data-entry" text="Stato" GridPane.columnIndex="2" />
+                  <HBox alignment="CENTER_RIGHT" prefHeight="52.0" prefWidth="340.0" GridPane.columnIndex="3">
+                     <children>
+                        <Button maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" prefHeight="40.0" prefWidth="30.0" styleClass="button--progress-action">
+                           <graphic>
+                              <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@images/edit-cover-1481-svgrepo-com.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin>
+                        </Button>
+                        <Button mnemonicParsing="false" styleClass="button--out-action">
+                           <graphic>
+                              <ImageView fitHeight="36.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@images/delete-1487-svgrepo-com.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                           <HBox.margin>
+                              <Insets left="50.0" />
+                           </HBox.margin>
+                        </Button>
+                     </children>
+                  </HBox>
+               </children>
+            </GridPane>
+            <GridPane layoutX="10.0" layoutY="10.0" prefHeight="49.0" prefWidth="723.0" GridPane.rowIndex="1">
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="25.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="25.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="25.0" prefWidth="100.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+               <children>
+                  <HBox alignment="CENTER" prefHeight="49.0" prefWidth="261.0">
+                     <children>
+                        <Label prefHeight="49.0" prefWidth="65.0" styleClass="label-data-entry" text="Inizio:" />
+                        <Label layoutX="10.0" layoutY="10.0" prefHeight="30.0" prefWidth="120.0" styleClass="label-data-entry" text="Data" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" layoutX="10.0" layoutY="10.0" prefHeight="49.0" prefWidth="261.0" GridPane.columnIndex="1">
+                     <children>
+                        <Label prefHeight="49.0" prefWidth="92.0" styleClass="label-data-entry" text="Scadenza:" />
+                        <Label layoutX="10.0" layoutY="10.0" prefHeight="30.0" prefWidth="122.0" styleClass="label-data-entry" text="Data" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" layoutX="10.0" layoutY="10.0" prefHeight="49.0" prefWidth="261.0" GridPane.columnIndex="2">
+                     <children>
+                        <Label prefHeight="49.0" prefWidth="65.0" styleClass="label-data-entry" text="Fine:" />
+                        <Label layoutX="10.0" layoutY="10.0" prefHeight="30.0" prefWidth="114.0" styleClass="label-data-entry" text="Data" />
+                     </children>
+                  </HBox>
+               </children>
+            </GridPane>
+            <GridPane GridPane.rowIndex="2">
+              <columnConstraints>
+                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="238.0" prefWidth="470.0" text="Descrizione" wrapText="true">
+                     <styleClass>
+                        <String fx:value="label-data-entry" />
+                        <String fx:value="label-data-entry--descrizione" />
+                     </styleClass>
+                  </Label>
+                  <VBox GridPane.columnIndex="1">
+                     <children>
+                        <Label styleClass="label-data-entry" text="Coltivatori Assegnati" />
+                        <ListView prefHeight="200.0" prefWidth="200.0" />
+                     </children>
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
+                  </VBox>
+               </children>
+            </GridPane>
+         </children>
+      </GridPane>
+   </children>
+   <padding>
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+   </padding>
+</VBox>
