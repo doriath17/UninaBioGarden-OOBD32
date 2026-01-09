@@ -1,0 +1,33 @@
+ENTITIES
+
+UTENTE
+
+COLTIVATORE
+
+PROPRIETARIO
+
+ATTIVITA
+
+PROGETTO STAGIONALE
+
+LOTTO
+
+COLTURA
+
+
+RELATIONSHIPS
+
+(proprietario) possiede (lotto)
+
+(proprietario) pianifica (progetto)
+
+(coltivatore) svolge (attivita)
+
+(progetto) occupa (lotto)
+- un lotto puo essere occupato solo da un progetto alla volta: due progetti non possono occupare il lotto simultaneamente
+
+(progetto) prevede (attivita)
+
+(progetto) coltiva (coltura)
+
+(attivita) associata_a (coltura)
