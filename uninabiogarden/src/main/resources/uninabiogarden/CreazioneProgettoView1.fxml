@@ -14,11 +14,11 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="646.0" prefWidth="1132.0" stylesheets="@goodStyle.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="646.0" prefWidth="1132.0" stylesheets="@goodStyle.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uninabiogarden.ControllerCreazioneProgetti">
    <bottom>
       <HBox alignment="CENTER_RIGHT" prefHeight="46.0" prefWidth="1092.0" styleClass="section-pane--trailer" BorderPane.alignment="CENTER">
          <children>
-            <Button mnemonicParsing="false" prefHeight="39.0" prefWidth="173.0" styleClass="button--progress-action" stylesheets="@goodStyle.css" text="Vai Avanti" />
+            <Button mnemonicParsing="false" onAction="#vaiAvanti1" prefHeight="39.0" prefWidth="173.0" styleClass="button--progress-action" stylesheets="@goodStyle.css" text="Vai Avanti" />
          </children>
          <padding>
             <Insets bottom="10.0" left="40.0" right="40.0" top="20.0" />
