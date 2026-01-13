@@ -1,0 +1,11 @@
+
+CREATE OR REPLACE TABLE utente (
+  id_utente INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  username VARCHAR(50) NOT NULL UNIQUE,
+  password_hash VARCHAR(255) NOT NULL,
+  email VARCHAR(100) NOT NULL UNIQUE,
+  nome VARCHAR(50) NOT NULL,
+  cognome VARCHAR(50) NOT NULL,
+  data_di_nascita DATE,
+  
+);
