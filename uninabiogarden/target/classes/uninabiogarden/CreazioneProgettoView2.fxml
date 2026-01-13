@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="646.0" prefWidth="1132.0" stylesheets="@goodStyle.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uninabiogarden.ControllerCreazioneProgetti">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="646.0" prefWidth="1132.0" stylesheets="@goodStyle.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <padding>
       <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
    </padding>
@@ -107,8 +107,8 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Button mnemonicParsing="false" onAction="#vaiIndietro2" prefHeight="39.0" prefWidth="173.0" styleClass="button--goback-action" stylesheets="@goodStyle.css" text="Vai Indietro" />
-            <Button mnemonicParsing="false" onAction="#vaiAvanti2" prefHeight="39.0" prefWidth="173.0" styleClass="button--progress-action" stylesheets="@goodStyle.css" text="Vai Avanti" GridPane.columnIndex="1" />
+            <Button mnemonicParsing="false" prefHeight="39.0" prefWidth="173.0" styleClass="button--goback-action" stylesheets="@goodStyle.css" text="Vai Indietro" />
+            <Button mnemonicParsing="false" prefHeight="39.0" prefWidth="173.0" styleClass="button--progress-action" stylesheets="@goodStyle.css" text="Vai Avanti" GridPane.columnIndex="1" />
          </children>
       </GridPane>
    </bottom>
