@@ -17,13 +17,18 @@
 | IN_CORSO        | ANNULLATA          |                                                        |
 | COMPLETATA      | **-**              |                                                        |
 | ANNULLATA       | **-**              |                                                        |
-- **Vincolo Quantità Effettiva a Raccolta `ANNULLATA`**: se una **Raccolta** è `ANNULLATA` allora la quantità effettiva deve essere 0.
 
 ### Coerenza Temporale delle Date
 - `data_pianificazione`: non può essere modificata dopo la creazione dell'attività.
 - `data_scadenza >= data_pianificazione`
 - `data_inizio`: `NULL` finché l'attività non viene spostata nello stato `IN_CORSO`, dopodiché diventa immutabile. Deve valere che: `data_inizio >= data_pianificazione`.
-- `data_fine`: `NULL` finché l'attività non viene spostata nello stato `COMPLETATA`, dopodiché diventa immutabile. Deve valere che: `data_fine >= data_inizio`
+- `data_fine`: `NULL` finché l'attività non viene spostata nello stato `COMPLETATA`, dopodiché diventa immutabile. Deve valere che: 
+	- `data_fine >= data_pianificazione`
+	- `data_fine >= data_inizio` se `data_inizio` non è `NULL`.
+	
+### Altri Vincoli
+- tra le attività legate ad una coltivazione, il `titolo` deve essere unico.
+- non è possibile modificare a quale coltivazione un'attività è associata
 
 ## Vincoli Coltivazione
 ### Stato Iniziale e Finale

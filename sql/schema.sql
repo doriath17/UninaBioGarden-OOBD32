@@ -72,46 +72,11 @@ CREATE TABLE lotto (
   UNIQUE (id_orto, codice_lotto)
 );
 
-CREATE OR REPLACE FUNCTION check_lotto_insert()
-RETURNS TRIGGER AS $$ 
-BEGIN
-  IF NOT is_proprietario(NEW.id_proprietario) THEN
-    RAISE EXCEPTION 'L''utente con ID = % non è un proprietario', NEW.id_proprietario;
-  END IF;
-
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE OR REPLACE FUNCTION check_lotto_update()
-RETURNS TRIGGER AS $$
-BEGIN
-  -- assure read only columns are not modified
-  IF NEW.id_proprietario <> OLD.id_proprietario THEN 
-    RAISE EXCEPTION 'Il proprietario di un lotto non può essere modificato';
-  ELSIF NEW.id_orto <> OLD.id_orto THEN 
-    RAISE EXCEPTION 'L''orto in cui si trova un lotto non può essere modificato';
-  ELSIF NEW.data_registrazione <> OLD.data_registrazione THEN 
-    RAISE EXCEPTION 'La data di registazione di un lotto non può essere modificata';
-  END IF;
-
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
--- Applicazione dei trigger
-CREATE TRIGGER trg_lotto_insert BEFORE INSERT lotto
-  FOR EACH ROW EXECUTE FUNCTION check_lotto_insert();
-
-CREATE TRIGGER trg_lotto_update BEFORE UPDATE ON lotto
-  FOR EACH ROW EXECUTE FUNCTION check_lotto_update();
-
 
 -- ==============================================================================================
---
 -- Tabella Progetto
---
 -- ==============================================================================================
+
 
 CREATE TABLE progetto (
   id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -130,11 +95,11 @@ CREATE TABLE progetto (
   FOREIGN KEY (id_lotto) REFERENCES lotto (id) DELETE ON CASCADE
 );
 
+
 -- ==============================================================================================
---
--- Tabella Progetto
---
+-- Tabella coltura
 -- ==============================================================================================
+
 
 CREATE TYPE tipo_coltura AS ENUM ('erba_aromatica', 'ortaggio', 'albero');
 CREATE TYPE tipo_riproduzione_ortaggio AS ENUM ('semina', 'trapianto');
@@ -163,10 +128,9 @@ CREATE TABLE coltura (
 
 
 -- ==============================================================================================
---
--- Tabella Progetto
---
+-- Tabella coltivazione
 -- ==============================================================================================
+
 
 CREATE TYPE t_stato_coltivazione AS ENUM ('pianificata', 'attiva', 'conclusa', 'fallita', 'annullata');
 CREATE TYPE stato_salute_coltivazione AS ENUM ('ottimo', 'stabile', 'sofferente', 'critico', 'compromesso');
@@ -192,13 +156,27 @@ CREATE TABLE coltivazione (
   FOREIGN KEY (id_progetto) REFERENCES progetto (id) ON DELETE CASCADE
 );
 
+
 -- ==============================================================================================
---
 -- Gerarchia Attivita
---
 -- ==============================================================================================
 
+
 CREATE TYPE stato_attivita AS ENUM ('pianificata', 'in_corso', 'completata', 'annullata');
+
+CREATE TABLE transizione_attivita (
+  stato_corrente stato_attivita NOT NULL,
+  stato_successivo stato_attivita NOT NULL,
+  PRIMARY KEY (stato_corrente, stato_successivo)
+);
+
+INSERT INTO transizione_attivita (stato_corrente, stato_successivo)
+VALUES
+  ('pianificata', 'in_corso'),
+  ('pianificata', 'annullata'),
+  ('in_corso', 'completata'),
+  ('in_corso', 'annullata')
+;
 
 -- TODO: fare la view con in_scadenza 
 
@@ -206,16 +184,18 @@ CREATE TABLE attivita (
   id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   titolo VARCHAR(100) NOT NULL,
 
-  stato stato_attivita NOT NULL, 
+  stato stato_attivita NOT NULL DEFAULT 'pianificata', 
   note_tecniche TEXT NOT NULL,
   data_pianificazione TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  data_scadenza TIMESTAMP NOT NULL,
-  data_inizio TIMESTAMP,
-  data_fine TIMESTAMP,
+  data_scadenza TIMESTAMP CHECK (data_scadenza IS NULL OR data_scadenza >= data_pianificazione),
+  data_inizio TIMESTAMP CHECK (data_inizio IS NULL OR data_inizio >= data_pianificazione),
+  data_fine TIMESTAMP 
+  CHECK (data_fine IS NULL OR
+    (data_fine >= data_pianificazione AND (data_inizio IS NULL OR data_fine >= data_inizio))),
 
   id_coltivazione INT NOT NULL,
 
-  UNIQUE (id, titolo),
+  UNIQUE (id_coltivazione, titolo),
   FOREIGN KEY (id_coltivazione) REFERENCES coltivazione (id) ON DELETE CASCADE
 );
 
@@ -271,11 +251,11 @@ CREATE TABLE raccolta (
   FOREIGN KEY (id) REFERENCES attivita (id) ON DELETE CASCADE 
 );
 
+
 -- ==============================================================================================
---
 -- Tabella Notifica
---
 -- ==============================================================================================
+
 
 CREATE TYPE urgenza_notifica AS ENUM ('bassa', 'media', 'alta', 'critica');
 CREATE TYPE tipo_notifica AS ENUM ('notifica_progetto', 'notifica_attivita_imminente');
