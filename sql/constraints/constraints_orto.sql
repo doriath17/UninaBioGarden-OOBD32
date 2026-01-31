@@ -1,5 +1,7 @@
 -- VINCOLI ORTO
 
+DROP TRIGGER IF EXISTS insert_orto ON orto;
+DROP FUNCTION IF EXISTS check_proprietario_orto() CASCADE;
 
 -- ============================================================
 -- INSERT -- orto gestito solo da proprietari
@@ -8,14 +10,14 @@
 CREATE OR REPLACE FUNCTION check_proprietario_orto()
 RETURNS TRIGGER AS $$
 DECLARE 
-  v_tipo_utente utente.tipo%TYPE;
+  v_utente utente%ROWTYPE;
 BEGIN
-  SELECT u.tipo INTO v_tipo_utente
+  SELECT * INTO v_utente
   FROM utente AS u 
   WHERE u.id = NEW.id_proprietario;
 
-  IF v_tipo_utente <> 'proprietario' THEN 
-    RAISE EXCEPTION 'L''utente % non è un proprietario e non può gestire un orto';
+  IF v_utente.tipo <> 'proprietario' THEN 
+    RAISE EXCEPTION 'L''utente % non è un proprietario e non può gestire un orto', utente.username;
   END IF;
 
   RETURN NEW;

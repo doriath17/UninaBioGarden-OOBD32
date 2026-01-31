@@ -1,6 +1,14 @@
-
 -- VINCOLI ATTIVITA
 
+DROP TRIGGER IF EXISTS transizione_attivita_immutability ON transizione_attivita;
+DROP TRIGGER IF EXISTS insert_attivita ON attivita;
+DROP TRIGGER IF EXISTS update_immutables_attivita ON attivita;
+DROP TRIGGER IF EXISTS update_stato_attivita ON attivita;
+
+DROP FUNCTION IF EXISTS block_modification_transizione_attivita() CASCADE;
+DROP FUNCTION IF EXISTS check_insert_attivita() CASCADE;
+DROP FUNCTION IF EXISTS check_immutables_attivita() CASCADE;
+DROP FUNCTION IF EXISTS check_stato_attivita() CASCADE;
 
 -- ============================================================
 -- immutabilità delle transizioni
@@ -109,7 +117,7 @@ BEGIN
     IF NOT EXISTS (
       SELECT 1 
       FROM transizione_attivita
-      WHERE stato_corrente = OLD.stato AND stato_successivo = NEW.stato;
+      WHERE stato_corrente = OLD.stato AND stato_successivo = NEW.stato
     ) THEN 
       RAISE EXCEPTION 'Transizione di stato non permessa';
     END IF;

@@ -1,6 +1,10 @@
+-- VINCOLI LOTTO
 
--- VINCOLI ATTIVITA
+DROP TRIGGER IF EXISTS insert_lotto ON lotto;
+DROP TRIGGER IF EXISTS update_immutables_lotto ON lotto;
 
+DROP FUNCTION IF EXISTS check_proprietario_lotto() CASCADE;
+DROP FUNCTION IF EXISTS check_immutables_lotto() CASCADE;
 
 -- ============================================================
 -- INSERT -- orto posseduto solo da proprietari
@@ -18,7 +22,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER insert_lotto BEFORE INSERT lotto
+CREATE TRIGGER insert_lotto BEFORE INSERT ON lotto
   FOR EACH ROW EXECUTE FUNCTION check_proprietario_lotto();
 
 
