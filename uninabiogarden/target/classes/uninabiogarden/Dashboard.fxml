@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="720" prefWidth="1280" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ControllerDashboard">
+    
+    <!-- Top Bar -->
+    <top>
+        <HBox alignment="CENTER_LEFT" prefHeight="74.0" prefWidth="1280.0" styleClass="top-bar">
+            <padding>
+                <Insets bottom="20" left="30" right="30" top="20" />
+            </padding>
+            <Label styleClass="app-title" text="BioGarden Unina">
+            <font>
+               <Font size="20.0" />
+            </font></Label>
+            
+            <!-- Window Controls Placeholder (right side) -->
+            <HBox alignment="CENTER_RIGHT" spacing="10" HBox.hgrow="ALWAYS">
+                <Button onAction="#profiloAction" prefHeight="30" prefWidth="40" styleClass="window-button, close-button">
+               <graphic>
+                  <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@images/user.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
+            </HBox>
+        </HBox>
+    </top>
+    
+    <!-- Left Sidebar -->
+    <left>
+        <VBox alignment="CENTER" prefWidth="200" spacing="5.0" styleClass="sidebar">
+            <padding>
+                <Insets bottom="20" left="10" right="10" top="20" />
+            </padding>
+         <ImageView fitHeight="150.0" fitWidth="159.0" pickOnBounds="true" preserveRatio="true">
+            <VBox.margin>
+               <Insets bottom="20.0" />
+            </VBox.margin>
+            <image>
+               <Image url="@images/logo.png" />
+            </image>
+         </ImageView>
+            
+            <Button onAction="#progettiAction" prefHeight="50" prefWidth="180" styleClass="menu-button" text="Progetti" textAlignment="CENTER">
+                <VBox.margin>
+                    <Insets bottom="5" />
+                </VBox.margin>
+            </Button>
+            
+            <Button onAction="#attivitaAction" prefHeight="50" prefWidth="180" styleClass="menu-button" text="Attivita'">
+                <VBox.margin>
+                    <Insets bottom="5" />
+                </VBox.margin>
+            </Button>
+            
+            <Button onAction="#notificheAction" prefHeight="50" prefWidth="180" styleClass="menu-button" text="Notifiche">
+                <VBox.margin>
+                    <Insets bottom="5" />
+                </VBox.margin>
+            </Button>
+            
+            <Button onAction="#lottiAction" prefHeight="50" prefWidth="180" styleClass="menu-button" text="Lotti">
+                <VBox.margin>
+                    <Insets bottom="5" />
+                </VBox.margin>
+            </Button>
+            
+            <Button onAction="#reportAction" prefHeight="50" prefWidth="180" styleClass="menu-button" text="Report">
+                <VBox.margin>
+                    <Insets bottom="5" />
+                </VBox.margin>
+            </Button>
+        </VBox>
+    </left>
+    
+    <!-- Center Content Area -->
+    <center>
+        <VBox alignment="CENTER" prefHeight="599.0" prefWidth="1080.0" styleClass="content-area">
+         <children>
+            <VBox alignment="CENTER" prefHeight="566.0" prefWidth="1080.0">
+               <children>
+                  <HBox>
+                     <children>
+                        <VBox>
+                           <children>
+                              <Label fx:id="messaggiobenvenuto" text="Benvenuto [Nome utente]!">
+                                 <font>
+                                    <Font name="System Italic" size="14.0" />
+                                 </font>
+                              </Label>
+                              <Label text="Dashboard">
+                                 <font>
+                                    <Font name="System Bold" size="35.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  <HBox prefHeight="490.0" prefWidth="1070.0" spacing="10.0">
+                     <children>
+                        <VBox alignment="CENTER_LEFT" prefHeight="485.0" prefWidth="535.0" spacing="5.0">
+                           <children>
+                              <Label text="Report">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                              </Label>
+                              <LineChart fx:id="reportChart" prefHeight="214.0" prefWidth="535.0">
+                                <xAxis>
+                                  <CategoryAxis side="BOTTOM" />
+                                </xAxis>
+                                <yAxis>
+                                  <NumberAxis side="LEFT" />
+                                </yAxis>
+                              </LineChart>
+                              <Label layoutX="10.0" layoutY="233.0">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                              </Label>
+                              <Label layoutX="10.0" layoutY="10.0" text="Notifiche">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                              </Label>
+                              <TableView fx:id="notificheTable" prefHeight="252.0" prefWidth="535.0">
+                                <columns>
+                                  <TableColumn prefWidth="100.0" text="Progetto" />
+                                  <TableColumn prefWidth="87.0" text="Attività" />
+                                    <TableColumn prefWidth="64.0" text="Tipo" />
+                                    <TableColumn prefWidth="94.0" text="Urgenza" />
+                                    <TableColumn prefWidth="188.0" text="Contenuto" />
+                                </columns>
+                              </TableView>
+                           </children>
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                        </VBox>
+                        <VBox alignment="CENTER_LEFT">
+                           <children>
+                              <Label text="Progetti">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                              </Label>
+                              <TableView fx:id="ProgettiTable" prefHeight="486.0" prefWidth="526.0">
+                                 <columns>
+                                    <TableColumn prefWidth="100.0" text="Nome" />
+                                    <TableColumn prefWidth="87.0" text="Stato" />
+                                    <TableColumn prefWidth="120.0" text="Coltivazione" />
+                                    <TableColumn prefWidth="74.0" text="Lotto" />
+                                    <TableColumn prefWidth="152.0" text="Descrizione" />
+                                 </columns>
+                              </TableView>
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+               </children>
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+            </VBox>
+         </children>
+        </VBox>
+    </center>
+    
+</BorderPane>
