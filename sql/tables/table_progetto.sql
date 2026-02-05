@@ -4,6 +4,10 @@
 
 DROP TABLE IF EXISTS progetto CASCADE;
 
+DROP TYPE IF EXISTS stato_progetto CASCADE;
+
+CREATE TYPE stato_progetto AS ENUM ('pianificato', 'attivo', 'fallito', 'concluso');
+
 CREATE TABLE progetto (
   id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
 
@@ -13,6 +17,7 @@ CREATE TABLE progetto (
 
   nome VARCHAR(100) NOT NULL UNIQUE,
   descrizione TEXT,
+  stato stato_progetto NOT NULL,
 
   id_proprietario INT NOT NULL,
   id_lotto INT NOT NULL,

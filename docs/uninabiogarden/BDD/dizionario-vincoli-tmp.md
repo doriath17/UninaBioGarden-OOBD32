@@ -8,31 +8,32 @@
 
 ### Regole di Transizione
 
-| Stato Originale | Stato Destinazione | Condizione                                             |
-| :-------------- | :----------------- | :----------------------------------------------------- |
-| **-**           | PIANIFICATA        |                                                        |
-| PIANIFICATA     | IN_CORSO           | La coltivazione a cui è associata ha `stato == ATTIVA` |
-| PIANIFICATA     | ANNULLATA          |                                                        |
-| IN_CORSO        | COMPLETATA         |                                                        |
-| IN_CORSO        | ANNULLATA          |                                                        |
-| COMPLETATA      | **-**              |                                                        |
-| ANNULLATA       | **-**              |                                                        |
+| Stato Originale | Stato Destinazione | Condizione                                                                                                                                                                          |
+| :-------------- | :----------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **-**           | PIANIFICATA        |                                                                                                                                                                                     |
+| PIANIFICATA     | IN_CORSO           | La coltivazione a cui è associata ha `stato == ATTIVA`. Nel caso in cui `tipo == RACCOLTA`, deve esserci un'attività di semina sulla stessa coltivazione che ha `stato = CONCLUSA`. |
+| PIANIFICATA     | ANNULLATA          |                                                                                                                                                                                     |
+| IN_CORSO        | COMPLETATA         |                                                                                                                                                                                     |
+| IN_CORSO        | ANNULLATA          |                                                                                                                                                                                     |
+| COMPLETATA      | **-**              |                                                                                                                                                                                     |
+| ANNULLATA       | **-**              |                                                                                                                                                                                     |
+
 
 ### Coerenza Temporale delle Date
 - `data_pianificazione`: non può essere modificata dopo la creazione dell'attività.
 - `data_scadenza >= data_pianificazione`
 - `data_inizio`: `NULL` finché l'attività non viene spostata nello stato `IN_CORSO`, dopodiché diventa immutabile. Deve valere che: `data_inizio >= data_pianificazione`.
-- `data_fine`: `NULL` finché l'attività non viene spostata nello stato `COMPLETATA`, dopodiché diventa immutabile. Deve valere che: 
+- `data_fine`: `NULL` finché l'attività non viene spostata nello stato `COMPLETATA` o `ANNULLATA`, dopodiché diventa immutabile. Deve valere che: 
 	- `data_fine >= data_pianificazione`
 	- `data_fine >= data_inizio` se `data_inizio` non è `NULL`.
-	
+
 ### Altri Vincoli
 - tra le attività legate ad una coltivazione, il `titolo` deve essere unico.
 - non è possibile modificare a quale coltivazione un'attività è associata
 
 ## Vincoli Coltivazione
 ### Stato Iniziale e Finale
-- **Stato Iniziale**: una coltivazione appena creata deve avere `stato_salute = OTTIMO` e `stato_coltivazione = PIANIFICATA`.
+- **Stato Iniziale**: una coltivazione appena creata deve avere `stato_salute = OTTIMO` e `stato = PIANIFICATA`.
 - **Stato Finale**:  se `stato = CONCLUSA OR FALLITA OR ANNULLATA`, allora:
 	- **Congelamento Attributi**: ogni attributo della coltivazione non può essere più modificato. 
 	- **Annullamento Attività Rimanenti**: lo `stato` di tutte le attività associate tali che `attivita.stato == COMPLETATA OR ANNULLATA` deve essere impostato ad `ANNULLATA`.
@@ -41,7 +42,7 @@
 **Nota**
 - Quando una coltivazione entra in uno dei suoi stati finali **tutte** le sue attività sono ***congelate***: lo stato di tutte le attività associate alla coltivazione, che non sono in uno stato terminale, diventa `ANNULLATO` e, per definizione dello stato finale di una attività, queste diventano immutabili. Inoltre alla coltivazione stessa non sarà più possibile associare nuove attività. 
 
-### Regole di Transizione: `stato_coltivazione` 
+### Regole di Transizione: `stato` 
 
 | Stato Originale | Stato Destinazione | Condizione                                                              |
 | --------------- | ------------------ | ----------------------------------------------------------------------- |
@@ -55,14 +56,6 @@
 | CONCLUSA        | **-**              |                                                                         |
 | FALLITA         | **-**              |                                                                         |
 
-### Coerenza Temporale
-- `data_creazione` deve essere inserita soltanto durante la creazione della coltivazione e il suo valore non sarà ulteriormente modificabile.
-- `data_inizio` 
-	- deve essere `NULL` se `stato == PIANIFICATA`
-	- deve essere inserita soltanto durante la transizione di stato `PIANIFICATA --> ATTIVA` e non può essere successivamente modificata.
-- Tutte le attività associate ad una coltivazione devono avere una `data_inizio` tale che: `attivita.data_inizio >= coltivazione.data_inizio`.
-- Data una coltivazione Y e un attività X che è associata a Y: `Data Inizio Attività X​ <= Data Fine Attività X <= Data Fine Raccolta Y​`
-
 ### Regole di Transizione: `stato_salute` 
 
 | Stato Originale                      | Stato Destinazione                                | Condizione                                                                                         |
@@ -74,11 +67,23 @@
 **Nota**
  Lo stato `COMPROMESSO` è uno stato pozzo per la salute: una volta raggiunto, la transizione verso `FALLITA` è immediata e irreversibile. Si nota inoltre che una coltivazione può *fallire* solo se lo stato della coltivazione è `ATTIVA` e il suo stato di salute diventa `COMPROMESSO`. Una coltivazione può essere *annullata* se non è ancora *attiva*.
 
+### Coerenza Temporale
+- `data_creazione` deve essere inserita soltanto durante la creazione della coltivazione e il suo valore non sarà ulteriormente modificabile. Deve valere che: `data_creazione >= progetto.data_creazione`, dove `progetto` è il progetto associato alla coltivazione.
+- `data_inizio` 
+	- deve essere `NULL` se `stato == PIANIFICATA`
+	- deve essere inserita soltanto durante la transizione di stato `PIANIFICATA --> ATTIVA` e non può essere successivamente modificata.
+- Tutte le attività associate ad una coltivazione devono avere una `data_inizio` tale che: `attivita.data_inizio >= coltivazione.data_inizio`.
+- Data una coltivazione Y e un attività X che è associata a Y: `Data Inizio Attività X​ <= Data Fine Attività X <= Data Fine Raccolta Y​`
+- `data_fine` della coltivazione può essere inserita soltanto durante la transizione ad uno stato terminale e deve valere che:
+	- `data_fine >= data_creazione`
+	- `data_fine >= data_inizio` se la `data_inizio` non è `NULL`
+	- `data_fine >= raccolta.data_fine` se `stato = CONCLUSA`
+
 ### Vincoli sulle Attività Associate
 
-**Vincolo di Unicità Semina/Raccolta:** Data una coltivazione, non può essere inserita un'attività di semina (raccolta) se già esiste un'attività di semina (raccolta) in uno stato diverso da `ANNULLATA`.
+**Vincolo di Unicità Semina/Raccolta:** Data una coltivazione, non può essere pianificata un'attività di semina (raccolta) se già esiste un'attività di semina (raccolta) in uno stato diverso da `ANNULLATA`.
 
-**Vincolo di Sequenza Semina/Raccolta**: Si può iniziare l'attività di **Raccolta** solo se l'attività di **Semina** esiste e ha `stato = COMPLETATA`.
+**Vincolo di Sequenza Semina/Raccolta**: Si può **iniziare** l'attività di **Raccolta** solo se l'attività di **Semina** esiste e ha `stato = COMPLETATA` (Si fa notare che è possibile pianificare un attività di raccolta anche mentre la semina non è conclusa).
 
 ## Vincoli del Progetto
 ### Stato Iniziale e Finale
@@ -91,15 +96,15 @@
 
 ### Regole di Transizione
 
-| Stato Originale | Stato Destinazione | Condizione                                                                                             |
-| --------------- | ------------------ | ------------------------------------------------------------------------------------------------------ |
-| **-**           | PIANIFICATO        |                                                                                                        |
-| PIANIFICATO     | ATTIVO             |                                                                                                        |
-| PIANIFICATO     | FALLITO            | solo se tutte le coltivazioni associate hanno `stato_coltivazione = ANNULLATA`.                        |
-| ATTIVO          | CONCLUSO           | solo se tutte le coltivazioni associate hanno `stato_coltivazione = CONCLUSA OR FALLITA OR ANNULLATA`. |
-| ATTIVO          | FALLITO            | solo se tutte le coltivazioni associate hanno `stato_coltivazione = CONCLUSA OR FALLITA OR ANNULLATA`. |
-| CONCLUSO        | **-**              |                                                                                                        |
-| FALLITO         | **-**              |                                                                                                        |
+| Stato Originale | Stato Destinazione | Condizione                                                                                |
+| --------------- | ------------------ | ----------------------------------------------------------------------------------------- |
+| **-**           | PIANIFICATO        |                                                                                           |
+| PIANIFICATO     | ATTIVO             |                                                                                           |
+| PIANIFICATO     | FALLITO            | solo se tutte le coltivazioni associate hanno `stato = ANNULLATA`.                        |
+| ATTIVO          | CONCLUSO           | solo se tutte le coltivazioni associate hanno `stato = CONCLUSA OR FALLITA OR ANNULLATA`. |
+| ATTIVO          | FALLITO            | solo se tutte le coltivazioni associate hanno `stato = CONCLUSA OR FALLITA OR ANNULLATA`. |
+| CONCLUSO        | **-**              |                                                                                           |
+| FALLITO         | **-**              |                                                                                           |
 
 **Nota**
 - Il progetto può fallire se il proprietario decide di annullarlo. Questo può avvenire se, per esempio, tutte le coltivazioni falliscono o sono annullate. Questo sistema però non dovrebbe essere automatizzato ma è il proprietario a sancire se il progetto è definitivamente fallito: si fa notare che ad un progetto in preparazione o attivo è possibile associare nuove coltivazioni.

@@ -15,7 +15,8 @@ DROP FUNCTION IF EXISTS check_stato_attivita() CASCADE;
 -- ============================================================
 
 
-CREATE OR REPLACE FUNCTION block_modification_transizione_attivita()
+CREATE OR REPLACE FUNCTION 
+block_modification_transizione_attivita()
 RETURNS TRIGGER AS $$
 BEGIN
     RAISE EXCEPTION 'Le regole di transizione di un attività sono immutabili';
@@ -41,6 +42,7 @@ BEGIN
     RAISE EXCEPTION 'Un attività appena creata deve avere stato ''pianificata''';
   END IF;
 
+  -- attributi che dovrebbero essere NULL all'inserimento
   IF NEW.data_inizio IS NOT NULL THEN 
     RAISE EXCEPTION 'Un attività appena creata deve avere ''data_inizio = NULL''';
   END IF;
@@ -119,7 +121,7 @@ BEGIN
       FROM transizione_attivita
       WHERE stato_corrente = OLD.stato AND stato_successivo = NEW.stato
     ) THEN 
-      RAISE EXCEPTION 'Transizione di stato non permessa';
+      RAISE EXCEPTION 'Transizione di stato (%, %) non permessa', OLD.stato, NEW.stato;
     END IF;
 
     -- transizione a in_corso
@@ -129,7 +131,7 @@ BEGIN
       WHERE id = NEW.id_coltivazione;
 
       IF v_stato_coltivazione <> 'attiva' THEN 
-        RAISE EXCEPTION 'Transizione di stato non permessa: la coltivazione non è in stato ''attiva''';
+        RAISE EXCEPTION 'Transizione di stato (%, %) non permessa: la coltivazione non è in stato ''attiva''', OLD.stato, NEW.stato;
       END IF;
       NEW.data_inizio := CURRENT_TIMESTAMP;
 
@@ -148,3 +150,7 @@ CREATE TRIGGER update_stato_attivita
 BEFORE UPDATE ON attivita
 FOR EACH ROW
 EXECUTE FUNCTION check_stato_attivita();
+
+-- ============================================================
+-- DELETE
+-- ============================================================

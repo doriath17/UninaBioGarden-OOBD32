@@ -1,18 +1,44 @@
--- ==============================================================================================
--- Tabella coltivazione (includes related enum types)
--- ==============================================================================================
 
 DROP TABLE IF EXISTS coltivazione CASCADE;
-DROP TYPE IF EXISTS t_stato_coltivazione CASCADE;
+DROP TYPE IF EXISTS stato_coltivazione CASCADE;
 DROP TYPE IF EXISTS stato_salute_coltivazione CASCADE;
 
-CREATE TYPE t_stato_coltivazione AS ENUM ('pianificata', 'attiva', 'conclusa', 'fallita', 'annullata');
+-- ==============================================================================================
+-- Tabella transizione dello stato della coltivazione
+-- ==============================================================================================
+
+CREATE TYPE stato_coltivazione AS ENUM ('pianificata', 'attiva', 'conclusa', 'fallita', 'annullata');
+
+CREATE TABLE transizione_stato_coltivazione (
+  stato_corrente stato_coltivazione NOT NULL,
+  stato_successivo stato_coltivazione NOT NULL,
+  PRIMARY KEY (stato_corrente, stato_successivo)
+);
+
+
+INSERT INTO transizione_stato_coltivazione (stato_corrente, stato_successivo) 
+VALUES
+('pianificata', 'attiva'),
+('pianificata', 'annullata'),
+('attiva', 'conclusa'),
+('attiva', 'fallita'),
+('attiva', 'annullata');
+
+-- ==============================================================================================
+-- Tabella coltivazione
+-- ==============================================================================================
+
+
+-- non vi è la necessita di una tabella per definire le transizioni possibili:
+-- ad eccezione dello stato 'compromesso', si può passare liberamente da uno stato 
+-- all'altro. 
 CREATE TYPE stato_salute_coltivazione AS ENUM ('ottimo', 'stabile', 'sofferente', 'critico', 'compromesso');
+
 
 CREATE TABLE coltivazione (
   id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
 
-  stato_coltivazione t_stato_coltivazione NOT NULL,
+  stato stato_coltivazione NOT NULL,
   stato_salute stato_salute_coltivazione NOT NULL,
   
   data_creazione TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
