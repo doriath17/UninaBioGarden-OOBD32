@@ -92,4 +92,10 @@ public class UIController {
     loadViewIntoContent(FxmlView.DASHBOARD_VIEW, homeController.getSelectedContent());
   }
 
+  public void openProgettiView() {
+    openHomeView();
+    ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
+    loadViewIntoContent(FxmlView.PROGETTI_VIEW, homeController.getSelectedContent());
+  }
+
 }

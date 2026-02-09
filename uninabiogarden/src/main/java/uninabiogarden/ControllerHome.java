@@ -24,8 +24,13 @@ public class ControllerHome {
   }
 
   @FXML
+  private void dashboardAction(ActionEvent event) {
+    UIController.getInstance().openDashboardView();
+  }
+
+  @FXML
   private void progettiAction(ActionEvent event) {
-    // TODO: implement projects navigation
+    UIController.getInstance().openProgettiView();
   }
 
   @FXML
