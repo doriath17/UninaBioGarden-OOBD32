@@ -1,9 +1,11 @@
 /home/ale/tmp/UninaBioGarden-OOBD32/uninabiogarden/src/main/java/uninabiogarden/UIController.java
+/home/ale/tmp/UninaBioGarden-OOBD32/uninabiogarden/src/main/java/uninabiogarden/ControllerHome.java
 /home/ale/tmp/UninaBioGarden-OOBD32/uninabiogarden/src/main/java/uninabiogarden/ControllerSignUp.java
 /home/ale/tmp/UninaBioGarden-OOBD32/uninabiogarden/src/main/java/uninabiogarden/ControllerLogIn.java
 /home/ale/tmp/UninaBioGarden-OOBD32/uninabiogarden/src/main/java/uninabiogarden/App.java
 /home/ale/tmp/UninaBioGarden-OOBD32/uninabiogarden/src/main/java/uninabiogarden/dao/Database.java
 /home/ale/tmp/UninaBioGarden-OOBD32/uninabiogarden/src/main/java/uninabiogarden/FxmlView.java
+/home/ale/tmp/UninaBioGarden-OOBD32/uninabiogarden/src/main/java/uninabiogarden/ControllerDashboard.java
 /home/ale/tmp/UninaBioGarden-OOBD32/uninabiogarden/src/main/java/uninabiogarden/ControllerCreazioneProgetti.java
 /home/ale/tmp/UninaBioGarden-OOBD32/uninabiogarden/src/main/java/uninabiogarden/exceptions/ConnectionFailedException.java
 /home/ale/tmp/UninaBioGarden-OOBD32/uninabiogarden/src/main/java/uninabiogarden/ControllerProprietarioHomeView.java

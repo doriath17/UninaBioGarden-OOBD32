@@ -1,0 +1,25 @@
+{
+  // VS Code Java launch configurations for UninaBioGarden
+  // NOTE: Ensure OpenJFX is installed (e.g., `sudo apt install openjfx`) or
+  // update `javafxLibPath` below to point to your JavaFX SDK `lib` directory.
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Launch UninaBioGarden (classes)",
+      "request": "launch",
+      "mainClass": "uninabiogarden.App",
+      "projectName": "uninabiogarden",
+      "classPaths": ["${workspaceFolder}/uninabiogarden/target/classes"],
+      "vmArgs": "--module-path /usr/share/openjfx/lib --add-modules javafx.controls,javafx.fxml"
+    },
+    {
+      "type": "java",
+      "name": "Run UninaBioGarden (Maven)",
+      "request": "launch",
+      "mainClass": "uninabiogarden.App",
+      "projectName": "uninabiogarden",
+      "preLaunchTask": "maven: javafx:run"
+    }
+  ]
+}

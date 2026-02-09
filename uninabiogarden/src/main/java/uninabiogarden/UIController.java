@@ -1,6 +1,7 @@
 package uninabiogarden;
 
 import java.io.IOException;
+import java.lang.ModuleLayer.Controller;
 import java.util.EnumMap;
 
 import javafx.fxml.FXML;
@@ -35,9 +36,10 @@ public class UIController {
   @FXML
   VBox mainPane;
 
-  EnumMap<FxmlView, Parent> loadedViews = new EnumMap<>(FxmlView.class);
+  EnumMap<FxmlView, Pane> loadedViews = new EnumMap<>(FxmlView.class);
+  EnumMap<FxmlView, Object> controllers = new EnumMap<>(FxmlView.class);
 
-  public void init(Stage primaryStage, Parent root) {
+  public void init(Stage primaryStage, Pane root) {
     this.primaryStage = primaryStage;
     UIController.instance = this;
 
@@ -50,11 +52,12 @@ public class UIController {
     primaryStage.show();
   }
 
-  Parent getView(FxmlView view) {
+  Pane getView(FxmlView view) {
     if (!loadedViews.containsKey(view)) {
       try {
         FXMLLoader loader = new FXMLLoader(App.class.getResource(view.getFxmlPath()));
         loadedViews.put(view, loader.load());
+        controllers.put(view, loader.getController());
       } catch (IOException e) {
         e.printStackTrace();
       }
@@ -63,9 +66,9 @@ public class UIController {
   }
 
   void loadViewIntoContent(FxmlView view, Pane contentPane) {
-    Parent viewRoot = getView(view);
-    if (viewRoot != null) {
-      contentPane.getChildren().setAll(viewRoot);
+    Pane viewRootPane = getView(view);
+    if (viewRootPane != null) {
+      contentPane.getChildren().setAll(viewRootPane);
     } else {
       System.err.println("View not found: " + view);
     }
@@ -77,6 +80,16 @@ public class UIController {
 
   public void openSignUpView() {
     loadViewIntoContent(FxmlView.SIGNUP_VIEW, mainPane);
+  }
+
+  public void openHomeView() {
+    loadViewIntoContent(FxmlView.HOME_VIEW, mainPane);
+  }
+
+  public void openDashboardView() {
+    openHomeView();
+    ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
+    loadViewIntoContent(FxmlView.DASHBOARD_VIEW, homeController.getSelectedContent());
   }
 
 }

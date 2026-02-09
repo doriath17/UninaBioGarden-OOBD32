@@ -1,5 +1,8 @@
+uninabiogarden/exceptions/ConnectionFailedException.class
 uninabiogarden/ControllerSignUp.class
 uninabiogarden/ControllerProprietarioHomeView.class
+uninabiogarden/dao/Database.class
+uninabiogarden/ControllerHome.class
 uninabiogarden/FxmlView.class
 uninabiogarden/UIController.class
 uninabiogarden/ControllerLogIn.class

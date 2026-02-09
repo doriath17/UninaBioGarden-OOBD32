@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -34,7 +35,7 @@ public class App extends Application {
     // tempo è anche il controller principale che gestisce la navigazione tra le
     // view, quindi deve essere accessibile da App.
     FXMLLoader loader = new FXMLLoader(App.class.getResource(FxmlView.MAIN_VIEW.getFxmlPath()));
-    Parent root = loader.load();
+    Pane root = loader.load();
     this.uiController = loader.getController();
     System.out.println("UIController instance in App: " + uiController);
     uiController.init(stage, root);

@@ -6,141 +6,55 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="720" prefWidth="1280" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ControllerProgetti">
-   <top>
-      <HBox alignment="CENTER_LEFT" prefHeight="74.0" prefWidth="1280.0" styleClass="top-bar">
-         <padding>
-            <Insets bottom="20" left="30" right="30" top="20" />
-         </padding>
+<VBox fx:id="mainContent" alignment="CENTER" prefHeight="566.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox>
          <children>
-            <Label styleClass="app-title" text="BioGarden Unina">
-               <font>
-                  <Font size="20.0" />
-               </font>
-            </Label>
-            <HBox alignment="CENTER_RIGHT" spacing="10" HBox.hgrow="ALWAYS">
+            <VBox prefHeight="81.0" prefWidth="1040.0">
                <children>
-                  <Button onAction="#profiloAction" prefHeight="30" prefWidth="40" styleClass="window-button, close-button">
-                     <graphic>
-                        <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@images/user.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Button>
-               </children>
-            </HBox>
-         </children>
-      </HBox>
-   </top>
-   <left>
-      <VBox alignment="CENTER" prefWidth="200" spacing="5.0" styleClass="sidebar">
-         <padding>
-            <Insets bottom="20" left="10" right="10" top="20" />
-         </padding>
-         <children>
-            <ImageView fitHeight="150.0" fitWidth="159.0" pickOnBounds="true" preserveRatio="true">
-               <VBox.margin>
-                  <Insets bottom="20.0" />
-               </VBox.margin>
-               <image>
-                  <Image url="@images/logo.png" />
-               </image>
-            </ImageView>
-            <Button onAction="#progettiAction" prefHeight="50" prefWidth="180" styleClass="menu-button" text="Progetti" textAlignment="CENTER">
-               <VBox.margin>
-                  <Insets bottom="5" />
-               </VBox.margin>
-            </Button>
-            <Button onAction="#attivitaAction" prefHeight="50" prefWidth="180" styleClass="menu-button" text="Attivita'">
-               <VBox.margin>
-                  <Insets bottom="5" />
-               </VBox.margin>
-            </Button>
-            <Button onAction="#notificheAction" prefHeight="50" prefWidth="180" styleClass="menu-button" text="Notifiche">
-               <VBox.margin>
-                  <Insets bottom="5" />
-               </VBox.margin>
-            </Button>
-            <Button onAction="#lottiAction" prefHeight="50" prefWidth="180" styleClass="menu-button" text="Lotti">
-               <VBox.margin>
-                  <Insets bottom="5" />
-               </VBox.margin>
-            </Button>
-            <Button onAction="#ReportAction" prefHeight="50" prefWidth="180" styleClass="menu-button" text="Report">
-               <VBox.margin>
-                  <Insets bottom="5" />
-               </VBox.margin>
-            </Button>
-         </children>
-      </VBox>
-   </left>
-   <center>
-      <VBox alignment="CENTER" prefHeight="599.0" prefWidth="1080.0" spacing="5.0" styleClass="content-area">
-         <children>
-            <VBox alignment="CENTER" prefHeight="566.0" prefWidth="1080.0">
-               <children>
-                  <HBox>
+                  <Label text="Progetti">
+                     <font>
+                        <Font name="System Bold" size="35.0" />
+                     </font>
+                  </Label>
+                  <HBox alignment="CENTER_RIGHT">
                      <children>
-                        <VBox prefHeight="81.0" prefWidth="1040.0">
-                           <children>
-                              <Label text="Progetti">
-                                 <font>
-                                    <Font name="System Bold" size="35.0" />
-                                 </font>
-                              </Label>
-                              <HBox alignment="CENTER_RIGHT">
-                                 <children>
-                                    <Label text="Filtra per: ">
-                                       <font>
-                                          <Font name="System Italic" size="17.0" />
-                                       </font>
-                                    </Label>
-                                    <ChoiceBox fx:id="filtroBox" prefWidth="150.0" />
-                                 </children>
-                              </HBox>
-                           </children>
-                        </VBox>
-                     </children>
-                  </HBox>
-                  <TableView fx:id="attivitaTable" prefHeight="461.0" prefWidth="1070.0">
-                    <columns>
-                      <TableColumn prefWidth="75.0" text="Nome" />
-                      <TableColumn prefWidth="75.0" text="Stato" />
-                        <TableColumn prefWidth="75.0" text="Descrizione" />
-                        <TableColumn prefWidth="135.0" text="Coltivazione" />
-                        <TableColumn prefWidth="75.0" text="Data inizio" />
-                        <TableColumn prefWidth="75.0" text="Data fine" />
-                        <TableColumn prefWidth="135.0" text="Data creazione" />
-                        <TableColumn prefWidth="112.0" text="Data scadenza" />
-                    </columns>
-                  </TableView>
-                  <HBox alignment="CENTER" prefHeight="51.0" prefWidth="1070.0" spacing="850.0">
-                     <children>
-                        <Button mnemonicParsing="false" onAction="#indietroAction" text="Indietro" />
-                        <Button layoutX="519.0" layoutY="22.0" mnemonicParsing="false" onAction="#creaProgettoAction" text="Crea nuovo progetto" />
+                        <Label text="Filtra per: ">
+                           <font>
+                              <Font name="System Italic" size="17.0" />
+                           </font>
+                        </Label>
+                        <ChoiceBox fx:id="filtroBox" prefWidth="150.0" />
                      </children>
                   </HBox>
                </children>
-               <padding>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-               </padding>
             </VBox>
          </children>
-         <padding>
-            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-         </padding>
-         <BorderPane.margin>
-            <Insets right="20.0" />
-         </BorderPane.margin>
-      </VBox>
-   </center>
-</BorderPane>
+      </HBox>
+      <TableView fx:id="attivitaTable" prefHeight="461.0" prefWidth="1070.0">
+         <columns>
+            <TableColumn prefWidth="75.0" text="Nome" />
+            <TableColumn prefWidth="75.0" text="Stato" />
+            <TableColumn prefWidth="75.0" text="Descrizione" />
+            <TableColumn prefWidth="135.0" text="Coltivazione" />
+            <TableColumn prefWidth="75.0" text="Data inizio" />
+            <TableColumn prefWidth="75.0" text="Data fine" />
+            <TableColumn prefWidth="135.0" text="Data creazione" />
+            <TableColumn prefWidth="112.0" text="Data scadenza" />
+         </columns>
+      </TableView>
+      <HBox alignment="CENTER" prefHeight="51.0" prefWidth="1070.0" spacing="850.0">
+         <children>
+            <Button mnemonicParsing="false" onAction="#indietroAction" text="Indietro" />
+            <Button layoutX="519.0" layoutY="22.0" mnemonicParsing="false" onAction="#creaProgettoAction" text="Crea nuovo progetto" />
+         </children>
+      </HBox>
+   </children>
+   <padding>
+      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+   </padding>
+</VBox>
