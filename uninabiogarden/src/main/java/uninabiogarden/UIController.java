@@ -25,7 +25,7 @@ public class UIController {
   // UIController tramite il metodo getInstance() e comunicare con essa.
   static UIController instance;
 
-  UIController getInstance() {
+  public static UIController getInstance() {
     return instance;
   }
 
@@ -39,6 +39,7 @@ public class UIController {
 
   public void init(Stage primaryStage, Parent root) {
     this.primaryStage = primaryStage;
+    UIController.instance = this;
 
     // crea la scena iniziale (main view + login view)
     loadedViews.put(FxmlView.MAIN_VIEW, root);
@@ -73,4 +74,9 @@ public class UIController {
   public void openLoginView() {
     loadViewIntoContent(FxmlView.LOGIN_VIEW, mainPane);
   }
+
+  public void openSignUpView() {
+    loadViewIntoContent(FxmlView.SIGNUP_VIEW, mainPane);
+  }
+
 }

@@ -1,8 +1,8 @@
 package uninabiogarden;
 
-public class ControllerSignUp {
+import javafx.fxml.FXML;
 
-  UIController maincontroller;
+public class ControllerSignUp {
 
   public ControllerSignUp() {
 
@@ -12,8 +12,12 @@ public class ControllerSignUp {
 
   }
 
-  public void indietro() {
+  // TODO: aggiungere un metodo per la clear del form
 
+  @FXML
+  public void indietroAction() {
+    // TODO: chiamare la clear del form prima di tornare indietro
+    UIController.getInstance().openLoginView();
   }
 
 }

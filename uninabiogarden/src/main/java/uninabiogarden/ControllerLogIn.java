@@ -18,10 +18,12 @@ public class ControllerLogIn {
 
   }
 
+  @FXML
   public void newUserAction() {
-
+    UIController.getInstance().openSignUpView();
   }
 
+  @FXML
   public void logInAction() {
 
   }

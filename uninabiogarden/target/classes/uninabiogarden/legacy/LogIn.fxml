@@ -62,7 +62,6 @@
                               <Label text="Se non hai già un account!" />
                            </children>
                         </HBox>
-                        <Button mnemonicParsing="false" onAction="#logInAction" text="Login" />
                      </children>
                   </VBox>
                   <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">

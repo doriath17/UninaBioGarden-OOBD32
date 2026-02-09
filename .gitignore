@@ -3,5 +3,7 @@
 # Local Obsidian vault folder
 .obsidian/
 
+target/
+
 # generated pdfs
 *.pdf
