@@ -1,5 +1,6 @@
 
 DROP TABLE IF EXISTS coltivazione CASCADE;
+DROP TABLE IF EXISTS transizione_stato_coltivazione CASCADE;
 DROP TYPE IF EXISTS stato_coltivazione CASCADE;
 DROP TYPE IF EXISTS stato_salute_coltivazione CASCADE;
 

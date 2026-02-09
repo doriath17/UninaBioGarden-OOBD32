@@ -36,7 +36,7 @@ FOR EACH ROW EXECUTE FUNCTION block_modification_transizione_attivita();
 CREATE OR REPLACE FUNCTION check_insert_attivita()
 RETURNS TRIGGER AS $$
 DECLARE 
-  v_stato_coltivazione coltivazione.stato_coltivazione%TYPE;
+  v_stato_coltivazione stato_coltivazione;
 BEGIN
   IF NEW.stato <> 'pianificata' THEN 
     RAISE EXCEPTION 'Un attività appena creata deve avere stato ''pianificata''';
@@ -111,7 +111,7 @@ EXECUTE FUNCTION check_immutables_attivita();
 CREATE FUNCTION check_stato_attivita()
 RETURNS TRIGGER AS $$
 DECLARE 
-  v_stato_coltivazione coltivazione.stato_coltivazione%TYPE;
+  v_stato_coltivazione stato_coltivazione;
 BEGIN
   IF NEW.stato <> OLD.stato THEN
 
