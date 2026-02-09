@@ -18,4 +18,9 @@ dizionario-vincoli:
     -V geometry:margin=2cm \
     -V colorlinks=true \
     -V lang=it-IT
- 
+
+build:
+	cd uninabiogarden && mvn clean package
+
+run:
+	cd uninabiogarden && mvn javafx:run

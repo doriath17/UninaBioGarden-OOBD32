@@ -1,24 +1,28 @@
 package uninabiogarden;
 
 import javafx.fxml.FXML;
+import javafx.scene.Parent;
 import javafx.scene.control.TextField;
 
 public class ControllerLogIn {
 
-    MainController maincontroller;
+  @FXML
+  Parent contentPane;
 
-    @FXML public TextField usernameField;
-    @FXML public TextField passwordField;
+  @FXML
+  public TextField usernameField;
+  @FXML
+  public TextField passwordField;
 
-    public ControllerLogIn() {
-        maincontroller = MainController.getInstance();
-    }
+  public ControllerLogIn() {
 
-    public void newUserAction() {
-        maincontroller.cambiaFinestra("SignUpView");
-    }
+  }
 
-    public void logInAction(){
-        maincontroller.logIn();
-    }
+  public void newUserAction() {
+
+  }
+
+  public void logInAction() {
+
+  }
 }

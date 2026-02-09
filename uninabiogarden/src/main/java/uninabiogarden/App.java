@@ -13,45 +13,32 @@ import java.io.IOException;
  */
 public class App extends Application {
 
-    private static Scene scene;
-    MainController maincontroller;
+  private static Scene scene;
+  UIController uiController;
 
-    @Override
-    public void init() throws Exception {
-        super.init();
-        System.out.println("App init");
+  @Override
+  public void init() throws Exception {
+    super.init();
+    System.out.println("App init");
+  }
 
-        maincontroller = MainController.getInstance();
-        // maincontroller.creaSubControllers();
+  @Override
+  public void start(Stage stage) throws IOException {
+    System.out.println("App start");
 
-    }
-
-    @Override
-    public void start(Stage stage) throws IOException {
-
-        // to load the main controller to sub controllers
-        //TOO: turn this into a method
-
-        FXMLLoader loader = loadFXML("LoginView");
-        scene = new Scene(loader.getRoot(), 640, 480);
-        stage.setScene(scene);
-        stage.show();
-    }
-
-    static void setRoot(String fxml) throws IOException {
-        scene.setRoot(loadFXML(fxml).getRoot());
-    }
-
-    // private static Parent loadFXML(String fxml) throws IOException {
-    //     FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("/uninabiogarden/" + fxml + ".fxml"));
-    //     return fxmlLoader.load();
-    // }
-
-    private static FXMLLoader loadFXML(String fxml) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("/uninabiogarden/" + fxml + ".fxml"));
-        fxmlLoader.load();
-        return fxmlLoader;
-    }
+    // UIController è l'unico controller che viene creato direttamente da App, gli
+    // altri controller vengono creati da FXMLLoader quando caricano le rispettive
+    // view (vedi loadViewIntoContent in UIController)
+    // Si è fatto in questo modo perché UIController è un controller di una view
+    // FXML (MainView) e quindi deve essere creato da FXMLLoader, ma allo stesso
+    // tempo è anche il controller principale che gestisce la navigazione tra le
+    // view, quindi deve essere accessibile da App.
+    FXMLLoader loader = new FXMLLoader(App.class.getResource(FxmlView.MAIN_VIEW.getFxmlPath()));
+    Parent root = loader.load();
+    this.uiController = loader.getController();
+    System.out.println("UIController instance in App: " + uiController);
+    uiController.init(stage, root);
+  }
 
   public static void main(String[] args) {
     launch();
