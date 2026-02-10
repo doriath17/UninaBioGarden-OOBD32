@@ -111,4 +111,9 @@ public class UIController {
     loadViewIntoContent(FxmlView.CREA_ORTO_VIEW, homeController.getSelectedContent());
   }
 
+  public void openLottiView() {
+    ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
+    loadViewIntoContent(FxmlView.LOTTI_VIEW, homeController.getSelectedContent());
+  }
+
 }

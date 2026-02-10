@@ -50,7 +50,7 @@ public class ControllerHome {
 
   @FXML
   private void lottiAction(ActionEvent event) {
-    // TODO: implement lots navigation
+    UIController.getInstance().openLottiView();
   }
 
   @FXML
