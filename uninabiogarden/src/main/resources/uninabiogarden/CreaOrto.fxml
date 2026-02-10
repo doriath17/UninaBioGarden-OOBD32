@@ -33,7 +33,6 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
                   <Label alignment="CENTER_RIGHT" prefHeight="64.0" prefWidth="242.0" text="Nome Orto:">
@@ -91,6 +90,11 @@
                   <Insets top="20.0" />
                </VBox.margin>
             </GridPane>
+            <Label fx:id="errorLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" text="Error Label">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
          </children>
       </VBox>
       <GridPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="100.0" prefWidth="1070.0">

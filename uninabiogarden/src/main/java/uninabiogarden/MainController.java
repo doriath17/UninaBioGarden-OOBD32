@@ -1,8 +1,12 @@
 package uninabiogarden;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import uninabiogarden.dao.DatabaseController;
+import uninabiogarden.dto.OrtoDto;
 import uninabiogarden.dto.UtenteDto;
 import uninabiogarden.entities.Coltivatore;
 import uninabiogarden.entities.Orto;
@@ -27,7 +31,12 @@ public class MainController {
   private DatabaseController databaseController = DatabaseController.getInstance();
 
   private Utente utenteLoggato;
-  private List<Orto> orti;
+
+  private ObservableList<Orto> ortiObservableList = FXCollections.observableArrayList();
+
+  public ObservableList<Orto> getOrtiObservableList() {
+    return ortiObservableList;
+  }
 
   public Utente getUtenteLoggato() {
     return utenteLoggato;
@@ -117,4 +126,32 @@ public class MainController {
 
   }
 
+  private void isValidOrto(OrtoDto ortoDto) {
+    if (ortoDto.nomeOrto == null || ortoDto.nomeOrto.isEmpty()) {
+      throw new IllegalArgumentException("Nome orto mancante");
+    }
+    if (ortoDto.citta == null || ortoDto.citta.isEmpty()) {
+      throw new IllegalArgumentException("Città mancante");
+    }
+    if (ortoDto.cap == null || ortoDto.cap.isEmpty()) {
+      throw new IllegalArgumentException("CAP mancante");
+    }
+    if (!ortoDto.cap.matches("^[0-9]{5}$")) {
+      throw new IllegalArgumentException("CAP non valido o mancante");
+    }
+    if (ortoDto.via == null || ortoDto.via.isEmpty()) {
+      throw new IllegalArgumentException("Via mancante");
+    }
+  }
+
+  public void creaOrto(OrtoDto ortoDto) {
+    isValidOrto(ortoDto);
+
+    Orto orto = new Orto(ortoDto);
+    orto.setProprietario((Proprietario) utenteLoggato);
+    Long id = databaseController.getOrtoDao().saveOrto(orto);
+    System.out.println("Orto creato con ID: " + id);
+    orto.setId(id);
+    ortiObservableList.add(orto);
+  }
 }

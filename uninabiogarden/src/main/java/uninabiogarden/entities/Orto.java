@@ -1,5 +1,7 @@
 package uninabiogarden.entities;
 
+import uninabiogarden.dto.OrtoDto;
+
 public class Orto {
 
   private Long id;
@@ -18,6 +20,17 @@ public class Orto {
     this.civico = civico;
     this.via = via;
     this.proprietario = proprietario;
+  }
+
+  public Orto(OrtoDto ortoDto) {
+    this.nomeOrto = ortoDto.nomeOrto;
+    this.citta = ortoDto.citta;
+    this.cap = ortoDto.cap;
+    this.civico = ortoDto.civico;
+    this.via = ortoDto.via;
+    if (ortoDto.proprietario != null) {
+      this.proprietario = new Proprietario(ortoDto.proprietario);
+    }
   }
 
   public String getFullAddress() {
