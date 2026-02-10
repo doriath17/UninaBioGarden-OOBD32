@@ -11,6 +11,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <GridPane fx:id="contentPane" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="576.0" prefWidth="715.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uninabiogarden.ControllerLogIn">
    <columnConstraints>
@@ -32,6 +33,11 @@
                   </Label>
                </children>
             </HBox>
+            <Label fx:id="errorLabel" alignment="CENTER" prefHeight="18.0" prefWidth="368.0" text="Label" VBox.vgrow="ALWAYS">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
             <GridPane prefHeight="137.0" prefWidth="358.0">
                <columnConstraints>
                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="171.0" minWidth="10.0" prefWidth="90.0" />
@@ -48,6 +54,7 @@
                   <TextField fx:id="passwordField" layoutX="152.0" layoutY="32.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                </children>
             </GridPane>
+            <Button mnemonicParsing="false" onAction="#logInAction" text="Login" />
             <HBox alignment="CENTER" prefHeight="64.0" prefWidth="215.0" spacing="5.0">
                <padding>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -57,7 +64,6 @@
                   <Label text="Se non hai già un account!" />
                </children>
             </HBox>
-            <Button mnemonicParsing="false" onAction="#logInAction" text="Login" />
          </children>
       </VBox>
       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
