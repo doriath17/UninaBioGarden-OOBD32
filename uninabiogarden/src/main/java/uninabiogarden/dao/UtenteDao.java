@@ -1,6 +1,8 @@
 package uninabiogarden.dao;
 
+import uninabiogarden.dto.UtenteDto;
 import uninabiogarden.entities.Coltivatore;
+import uninabiogarden.entities.Proprietario;
 import uninabiogarden.entities.Utente;
 
 public class UtenteDao {
@@ -42,6 +44,41 @@ public class UtenteDao {
     }
 
     return id;
+  }
+
+  public Utente getUtenteByUsername(String username) {
+    var sql = "SELECT * FROM utente WHERE username = '" + username + "'";
+
+    Utente foundUtente = null;
+
+    try (var conn = database.getConnection(); var stmt = conn.createStatement()) {
+
+      var result = stmt.executeQuery(sql);
+      if (result.next()) { // utente trovato
+        UtenteDto dto = new UtenteDto();
+        dto.username = result.getString("username");
+        dto.password = result.getString("password");
+        dto.email = result.getString("email");
+        dto.nome = result.getString("nome");
+        dto.cognome = result.getString("cognome");
+        dto.bDay = result.getDate("b_day").toLocalDate();
+        dto.codiceFiscale = result.getString("codice_fiscale");
+        dto.gender = result.getString("gender");
+        dto.bio = result.getString("bio");
+        dto.isColtivatore = "coltivatore".equals(result.getString("tipo"));
+
+        if (dto.isColtivatore) {
+          foundUtente = new Coltivatore(dto);
+        } else {
+          foundUtente = new Proprietario(dto);
+        }
+      }
+    } catch (Exception e) {
+      System.err.println("Errore durante la ricerca utente: " + e.getMessage());
+      throw new RuntimeException(e);
+    }
+
+    return foundUtente; // null se non trovato
   }
 
 }

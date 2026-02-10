@@ -93,4 +93,19 @@ public class MainController {
     utenteLoggato = utente;
   }
 
+  public void loginUtente(String username, String password) {
+    if (username == null || username.isEmpty()) {
+      throw new IllegalArgumentException("Username mancante");
+    }
+    if (password == null || password.isEmpty()) {
+      throw new IllegalArgumentException("Password mancante");
+    }
+
+    utenteLoggato = databaseController.getUtenteDao().getUtenteByUsername(username);
+    if (utenteLoggato == null) {
+      throw new IllegalArgumentException("Utente non trovato");
+    }
+    System.out.println("Login effettuato: " + utenteLoggato.getUsername());
+  }
+
 }
