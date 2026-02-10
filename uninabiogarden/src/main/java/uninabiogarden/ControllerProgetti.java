@@ -24,7 +24,7 @@ public class ControllerProgetti {
 
   @FXML
   private void indietroAction(ActionEvent event) {
-    UIController.getInstance().openHomeView();
+    UIController.getInstance().openProprietarioHomeView();
   }
 
   @FXML

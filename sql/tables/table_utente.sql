@@ -17,9 +17,9 @@ CREATE TABLE utente (
   email VARCHAR(100) NOT NULL UNIQUE,
   nome VARCHAR(50) NOT NULL,
   cognome VARCHAR(50) NOT NULL,
-  b_day DATE,
-  codice_fiscale VARCHAR(16) UNIQUE,
-  gender VARCHAR(10) NOT NULL,
+  b_day DATE NOT NULL,
+  codice_fiscale VARCHAR(16) UNIQUE NOT NULL,
+  gender VARCHAR(10),
   bio TEXT,
   tipo tipo_utente NOT NULL
 );

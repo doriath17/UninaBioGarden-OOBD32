@@ -24,3 +24,6 @@ build:
 
 run:
 	cd uninabiogarden && mvn javafx:run
+
+psql-run:
+	psql -U ubg_user -d uninabiogarden
