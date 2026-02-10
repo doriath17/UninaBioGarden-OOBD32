@@ -17,9 +17,14 @@ public class DatabaseController {
   private Database database = Database.getInstance();
 
   private UtenteDao utenteDao = new UtenteDao();
+  private OrtoDao ortoDao = new OrtoDao();
 
   public UtenteDao getUtenteDao() {
     return utenteDao;
+  }
+
+  public OrtoDao getOrtoDao() {
+    return ortoDao;
   }
 
 }

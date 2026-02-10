@@ -72,6 +72,7 @@ public class UtenteDao {
         } else {
           foundUtente = new Proprietario(dto);
         }
+        foundUtente.setId(result.getLong("id"));
       }
     } catch (Exception e) {
       System.err.println("Errore durante la ricerca utente: " + e.getMessage());

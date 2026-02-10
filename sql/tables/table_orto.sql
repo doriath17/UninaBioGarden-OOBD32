@@ -9,7 +9,7 @@ CREATE TABLE orto (
   data_registrazione TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   nome_orto VARCHAR(50) NOT NULL UNIQUE CHECK (length(nome_orto) >= 2),
   citta VARCHAR(50) NOT NULL,
-  cap CHAR(5) NOT NULL CHECK (cap ~ '^[0-9]{5}$'),
+  cap CHAR(5) NOT NULL,
   via VARCHAR(100) NOT NULL,
   civico VARCHAR(10),
   id_proprietario INT NOT NULL,

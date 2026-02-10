@@ -54,6 +54,11 @@ public class ControllerHome {
   }
 
   @FXML
+  private void ortiAction(ActionEvent event) {
+    UIController.getInstance().openOrtiView();
+  }
+
+  @FXML
   private void ReportAction(ActionEvent event) {
     // TODO: implement report navigation
   }

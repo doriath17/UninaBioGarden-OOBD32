@@ -1,8 +1,14 @@
 package uninabiogarden;
 
+import java.util.List;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import uninabiogarden.dao.DatabaseController;
+import uninabiogarden.dto.OrtoDto;
 import uninabiogarden.dto.UtenteDto;
 import uninabiogarden.entities.Coltivatore;
+import uninabiogarden.entities.Orto;
 import uninabiogarden.entities.Proprietario;
 import uninabiogarden.entities.Utente;
 
@@ -22,7 +28,14 @@ public class MainController {
   }
 
   private DatabaseController databaseController = DatabaseController.getInstance();
+
   private Utente utenteLoggato;
+
+  private ObservableList<Orto> ortiObservableList = FXCollections.observableArrayList();
+
+  public ObservableList<Orto> getOrtiObservableList() {
+    return ortiObservableList;
+  }
 
   public Utente getUtenteLoggato() {
     return utenteLoggato;
@@ -105,7 +118,47 @@ public class MainController {
     if (utenteLoggato == null) {
       throw new IllegalArgumentException("Utente non trovato");
     }
+
+    // caricamento dati supplementari in base al ruolo
+    if (utenteLoggato instanceof Proprietario) {
+      loadOrti();
+      System.out.println("Caricati orti per proprietario: " + utenteLoggato.getUsername());
+    }
+
     System.out.println("Login effettuato: " + utenteLoggato.getUsername());
   }
 
+  private void isValidOrto(OrtoDto ortoDto) {
+    if (ortoDto.nomeOrto == null || ortoDto.nomeOrto.isEmpty()) {
+      throw new IllegalArgumentException("Nome orto mancante");
+    }
+    if (ortoDto.citta == null || ortoDto.citta.isEmpty()) {
+      throw new IllegalArgumentException("Città mancante");
+    }
+    if (ortoDto.cap == null || ortoDto.cap.isEmpty()) {
+      throw new IllegalArgumentException("CAP mancante");
+    }
+    if (!ortoDto.cap.matches("^[0-9]{5}$")) {
+      throw new IllegalArgumentException("CAP non valido o mancante");
+    }
+    if (ortoDto.via == null || ortoDto.via.isEmpty()) {
+      throw new IllegalArgumentException("Via mancante");
+    }
+  }
+
+  public void creaOrto(OrtoDto ortoDto) {
+    isValidOrto(ortoDto);
+
+    Orto orto = new Orto(ortoDto);
+    orto.setProprietario((Proprietario) utenteLoggato);
+    Long id = databaseController.getOrtoDao().saveOrto(orto);
+    System.out.println("Orto creato con ID: " + id);
+    orto.setId(id);
+    ortiObservableList.add(orto);
+  }
+
+  private void loadOrti() {
+    List<Orto> orti = databaseController.getOrtoDao().findAll();
+    ortiObservableList.setAll(orti);
+  }
 }

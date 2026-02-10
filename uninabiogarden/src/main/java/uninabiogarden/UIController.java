@@ -101,4 +101,14 @@ public class UIController {
     loadViewIntoContent(FxmlView.PROGETTI_VIEW, homeController.getSelectedContent());
   }
 
+  public void openOrtiView() {
+    ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
+    loadViewIntoContent(FxmlView.ORTI_VIEW, homeController.getSelectedContent());
+  }
+
+  public void openCreaOrtoView() {
+    ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
+    loadViewIntoContent(FxmlView.CREA_ORTO_VIEW, homeController.getSelectedContent());
+  }
+
 }
