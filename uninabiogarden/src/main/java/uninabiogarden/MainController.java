@@ -1,8 +1,11 @@
 package uninabiogarden;
 
+import java.util.List;
+
 import uninabiogarden.dao.DatabaseController;
 import uninabiogarden.dto.UtenteDto;
 import uninabiogarden.entities.Coltivatore;
+import uninabiogarden.entities.Orto;
 import uninabiogarden.entities.Proprietario;
 import uninabiogarden.entities.Utente;
 
@@ -22,7 +25,9 @@ public class MainController {
   }
 
   private DatabaseController databaseController = DatabaseController.getInstance();
+
   private Utente utenteLoggato;
+  private List<Orto> orti;
 
   public Utente getUtenteLoggato() {
     return utenteLoggato;
@@ -106,6 +111,10 @@ public class MainController {
       throw new IllegalArgumentException("Utente non trovato");
     }
     System.out.println("Login effettuato: " + utenteLoggato.getUsername());
+  }
+
+  private void loadOrti() {
+
   }
 
 }

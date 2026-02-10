@@ -53,6 +53,12 @@
                </image>
             </ImageView>
             <Button layoutX="20.0" layoutY="266.0" onAction="#dashboardAction" prefHeight="50" prefWidth="180" styleClass="menu-button" text="Dashboard" textAlignment="CENTER" />
+            <Button layoutX="20.0" layoutY="534.0" onAction="#ortiAction" prefHeight="50" prefWidth="180" styleClass="menu-button" text="Orti" />
+            <Button onAction="#lottiAction" prefHeight="50" prefWidth="180" styleClass="menu-button" text="Lotti">
+               <VBox.margin>
+                  <Insets bottom="5" />
+               </VBox.margin>
+            </Button>
             <Button onAction="#progettiAction" prefHeight="50" prefWidth="180" styleClass="menu-button" text="Progetti" textAlignment="CENTER">
                <VBox.margin>
                   <Insets bottom="5" />
@@ -64,11 +70,6 @@
                </VBox.margin>
             </Button>
             <Button onAction="#notificheAction" prefHeight="50" prefWidth="180" styleClass="menu-button" text="Notifiche">
-               <VBox.margin>
-                  <Insets bottom="5" />
-               </VBox.margin>
-            </Button>
-            <Button onAction="#lottiAction" prefHeight="50" prefWidth="180" styleClass="menu-button" text="Lotti">
                <VBox.margin>
                   <Insets bottom="5" />
                </VBox.margin>
