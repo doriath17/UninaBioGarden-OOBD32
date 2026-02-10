@@ -1,6 +1,10 @@
 package uninabiogarden.dao;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import uninabiogarden.entities.Orto;
+import uninabiogarden.entities.Proprietario;
 
 public class OrtoDao {
 
@@ -36,6 +40,45 @@ public class OrtoDao {
     }
 
     return id;
+  }
+
+  public List<Orto> findAll() {
+    var sql = "SELECT * FROM orto JOIN utente ON orto.id_proprietario = utente.id";
+
+    List<Orto> orti = new ArrayList<>();
+
+    try (var conn = database.getConnection(); var stmt = conn.createStatement()) {
+
+      var result = stmt.executeQuery(sql);
+      while (result.next()) { // orto trovato
+        Proprietario proprietario = new Proprietario();
+        proprietario.setId(result.getLong("id_proprietario"));
+        proprietario.setUsername(result.getString("username"));
+        proprietario.setEmail(result.getString("email"));
+        proprietario.setCodiceFiscale(result.getString("codice_fiscale"));
+        proprietario.setNome(result.getString("nome"));
+        proprietario.setCognome(result.getString("cognome"));
+        proprietario.setbDay(result.getDate("b_day").toLocalDate());
+        proprietario.setGender(result.getString("gender"));
+        proprietario.setBio(result.getString("bio"));
+
+        Orto orto = new Orto(
+            result.getString("nome_orto"),
+            result.getString("citta"),
+            result.getString("cap"),
+            result.getString("civico"),
+            result.getString("via"),
+            proprietario);
+        orto.setId(result.getLong("id"));
+        orti.add(orto);
+      }
+
+    } catch (Exception e) {
+      System.err.println("Errore durante il recupero degli orti: " + e.getMessage());
+      throw new RuntimeException(e);
+    }
+
+    return orti;
   }
 
 }

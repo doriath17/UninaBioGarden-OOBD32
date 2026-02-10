@@ -6,6 +6,10 @@ import uninabiogarden.dto.UtenteDto;
 
 public class Proprietario extends Utente {
 
+  public Proprietario() {
+    super();
+  }
+
   public Proprietario(String username, String password, String email, String codiceFiscale, String nome,
       String cognome, LocalDate bDay, String gender, String bio) {
     super(username, password, email, codiceFiscale, nome, cognome, bDay, gender, bio);

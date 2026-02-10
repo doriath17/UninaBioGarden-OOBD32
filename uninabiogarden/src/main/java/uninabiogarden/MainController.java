@@ -1,6 +1,5 @@
 package uninabiogarden;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javafx.collections.FXCollections;
@@ -119,11 +118,14 @@ public class MainController {
     if (utenteLoggato == null) {
       throw new IllegalArgumentException("Utente non trovato");
     }
+
+    // caricamento dati supplementari in base al ruolo
+    if (utenteLoggato instanceof Proprietario) {
+      loadOrti();
+      System.out.println("Caricati orti per proprietario: " + utenteLoggato.getUsername());
+    }
+
     System.out.println("Login effettuato: " + utenteLoggato.getUsername());
-  }
-
-  private void loadOrti() {
-
   }
 
   private void isValidOrto(OrtoDto ortoDto) {
@@ -153,5 +155,10 @@ public class MainController {
     System.out.println("Orto creato con ID: " + id);
     orto.setId(id);
     ortiObservableList.add(orto);
+  }
+
+  private void loadOrti() {
+    List<Orto> orti = databaseController.getOrtoDao().findAll();
+    ortiObservableList.setAll(orti);
   }
 }

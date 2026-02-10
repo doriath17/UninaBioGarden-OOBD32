@@ -18,6 +18,9 @@ public abstract class Utente {
   private String gender;
   private String bio;
 
+  public Utente() {
+  }
+
   public Utente(String username, String password, String email, String codiceFiscale, String nome, String cognome,
       LocalDate bDay, String gender, String bio) {
     this.username = username;
