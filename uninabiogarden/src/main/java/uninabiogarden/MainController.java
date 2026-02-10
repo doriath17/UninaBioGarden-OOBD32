@@ -24,6 +24,10 @@ public class MainController {
   private DatabaseController databaseController = DatabaseController.getInstance();
   private Utente utenteLoggato;
 
+  public Utente getUtenteLoggato() {
+    return utenteLoggato;
+  }
+
   private String isValidUtenteDto(UtenteDto utenteDto) {
     if (utenteDto.username == null || utenteDto.username.isEmpty()) {
       return "Username mancante";

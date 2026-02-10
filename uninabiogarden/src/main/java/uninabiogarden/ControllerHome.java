@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import uninabiogarden.entities.Coltivatore;
 
 public class ControllerHome {
 
@@ -25,7 +26,11 @@ public class ControllerHome {
 
   @FXML
   private void dashboardAction(ActionEvent event) {
-    UIController.getInstance().openDashboardView();
+    if (MainController.getInstance().getUtenteLoggato() instanceof Coltivatore) {
+      UIController.getInstance().openColtivatoreHomeView();
+    } else {
+      UIController.getInstance().openProprietarioHomeView();
+    }
   }
 
   @FXML

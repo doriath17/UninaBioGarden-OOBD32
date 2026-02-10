@@ -25,6 +25,6 @@ public class ControllerLogIn {
 
   @FXML
   public void logInAction() {
-    UIController.getInstance().openDashboardView();
+    UIController.getInstance().openHomeView();
   }
 }

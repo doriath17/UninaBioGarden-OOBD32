@@ -3,6 +3,7 @@ package uninabiogarden;
 import java.util.Date;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -44,12 +45,26 @@ public class ControllerSignUp {
   private TextArea bioField;
 
   @FXML
+  private ChoiceBox<String> tipoUtenteField;
+
+  @FXML
   private Label errorLabel;
 
   @FXML
   public void initialize() {
     loadTestData();
     errorLabel.setText("");
+    tipoUtenteField.getItems().addAll("Coltivatore", "Proprietario");
+    tipoUtenteField.setValue("Proprietario");
+
+    // character limits for text fields
+    Utils.addCharacterLimit(usernameField, 50);
+    Utils.addCharacterLimit(passwordField, 50);
+    Utils.addCharacterLimit(emailField, 100);
+    Utils.addCharacterLimit(codiceFiscaleField, 16);
+    Utils.addCharacterLimit(nomeField, 50);
+    Utils.addCharacterLimit(cognomeField, 50);
+    Utils.addCharacterLimit(genderField, 10);
   }
 
   private UtenteDto getData() {
@@ -63,7 +78,10 @@ public class ControllerSignUp {
     dto.bDay = bdayField.getValue();
     dto.gender = genderField.getText();
     dto.bio = bioField.getText();
-    dto.isColtivatore = false; // TODO: add a checkbox to choose between coltivatore and proprietario
+    if (tipoUtenteField.getValue().equals("Coltivatore"))
+      dto.isColtivatore = true;
+    else
+      dto.isColtivatore = false;
     return dto;
   }
 
@@ -85,8 +103,11 @@ public class ControllerSignUp {
     try {
       MainController.getInstance().registraUtente(dto);
       clearForm();
-      // TODO: aggiungere la home per il coltivatore
-      UIController.getInstance().openProprietarioHomeView();
+      if (dto.isColtivatore) {
+        UIController.getInstance().openColtivatoreHomeView();
+      } else {
+        UIController.getInstance().openProprietarioHomeView();
+      }
     } catch (IllegalArgumentException e) {
       System.out.println("Dati utente non validi: " + e.getMessage());
       errorLabel.setText("Dati utente non validi: " + e.getMessage());

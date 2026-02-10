@@ -82,18 +82,21 @@ public class UIController {
     loadViewIntoContent(FxmlView.SIGNUP_VIEW, mainPane);
   }
 
-  public void openProprietarioHomeView() {
+  public void openHomeView() {
     loadViewIntoContent(FxmlView.HOME_VIEW, mainPane);
   }
 
-  public void openDashboardView() {
-    openProprietarioHomeView();
+  public void openColtivatoreHomeView() {
+    loadViewIntoContent(FxmlView.HOME_VIEW, mainPane);
+  }
+
+  public void openProprietarioHomeView() {
+    openHomeView();
     ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
     loadViewIntoContent(FxmlView.DASHBOARD_VIEW, homeController.getSelectedContent());
   }
 
   public void openProgettiView() {
-    openProprietarioHomeView();
     ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
     loadViewIntoContent(FxmlView.PROGETTI_VIEW, homeController.getSelectedContent());
   }
