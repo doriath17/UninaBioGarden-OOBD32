@@ -5,6 +5,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
+import uninabiogarden.entities.Lotto;
 
 public class ControllerLotti {
 
@@ -15,22 +16,22 @@ public class ControllerLotti {
   private TextField searchField;
 
   @FXML
-  private TableView<?> ortiTable;
+  private TableView<Lotto> lottiTable;
 
   @FXML
-  private TableColumn<?, String> codiceLottoColumn;
+  private TableColumn<Lotto, String> codiceLottoColumn;
 
   @FXML
-  private TableColumn<?, String> estensioneColumn;
+  private TableColumn<Lotto, String> estensioneColumn;
 
   @FXML
-  private TableColumn<?, String> tipologiaTerrenoColumn;
+  private TableColumn<Lotto, String> tipologiaTerrenoColumn;
 
   @FXML
-  private TableColumn<?, String> nomeOrtoColumn;
+  private TableColumn<Lotto, String> nomeOrtoColumn;
 
   @FXML
-  private TableColumn<?, String> indirizzoColumn;
+  private TableColumn<Lotto, String> indirizzoColumn;
 
   @FXML
   public void initialize() {
@@ -49,7 +50,7 @@ public class ControllerLotti {
 
   @FXML
   public void creaLottoAction() {
-    // TODO: open create-lotto view
+    UIController.getInstance().openCreaLottoView();
   }
 
 }

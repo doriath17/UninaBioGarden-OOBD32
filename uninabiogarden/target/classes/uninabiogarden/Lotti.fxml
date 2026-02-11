@@ -39,7 +39,7 @@
             <Button mnemonicParsing="false" onAction="#search" text="Cerca" GridPane.columnIndex="1" />
          </children>
       </GridPane>
-      <TableView fx:id="ortiTable" prefHeight="461.0" prefWidth="1070.0">
+      <TableView fx:id="lottiTable" prefHeight="461.0" prefWidth="1070.0">
          <columns>
             <TableColumn fx:id="codiceLottoColumn" prefWidth="121.0" text="Codice Lotto" />
             <TableColumn fx:id="estensioneColumn" prefWidth="116.0" text="Estensione (m²)" />
