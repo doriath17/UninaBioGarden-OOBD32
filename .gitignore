@@ -4,6 +4,7 @@
 .obsidian/
 
 target/
+uninabiogarden/target/
 
 # generated pdfs
 *.pdf
