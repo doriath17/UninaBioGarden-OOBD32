@@ -6,6 +6,8 @@ DROP TABLE IF EXISTS progetto CASCADE;
 
 DROP TYPE IF EXISTS stato_progetto CASCADE;
 
+DROP TABLE IF EXISTS lavora_per CASCADE;
+
 CREATE TYPE stato_progetto AS ENUM ('PIANIFICATO', 'ATTIVO', 'FALLITO', 'CONCLUSO');
 
 CREATE TABLE progetto (
@@ -24,4 +26,14 @@ CREATE TABLE progetto (
 
   FOREIGN KEY (id_proprietario) REFERENCES utente (id) ON DELETE CASCADE,
   FOREIGN KEY (id_lotto) REFERENCES lotto (id) ON DELETE CASCADE
+);
+
+
+-- TODO: aggiungere i vincoli per la tabella lavora_per anche in accordo con gli stati del progetto
+CREATE TABLE lavora_per (
+  id_progetto INT NOT NULL,
+  id_coltivatore INT NOT NULL,
+  PRIMARY KEY (id_progetto, id_coltivatore),
+  FOREIGN KEY (id_progetto) REFERENCES progetto (id) ON DELETE CASCADE,
+  FOREIGN KEY (id_coltivatore) REFERENCES utente (id) ON DELETE CASCADE
 );

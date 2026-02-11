@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox fx:id="mainContent" prefHeight="566.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uninabiogarden.ControllerProgetti">
+   <children>
+      <Label text="Crea Nuovo Progetto -- Step 1">
+         <font>
+            <Font name="System Bold" size="35.0" />
+         </font>
+         <VBox.margin>
+            <Insets bottom="10.0" />
+         </VBox.margin>
+      </Label>
+      <VBox alignment="CENTER" prefHeight="475.0" prefWidth="1070.0">
+         <children>
+            <GridPane prefHeight="417.0" prefWidth="1070.0">
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="529.0" minWidth="10.0" prefWidth="499.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="571.0" minWidth="10.0" prefWidth="571.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+               <children>
+                  <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
+                     <children>
+                        <Label maxWidth="1.7976931348623157E308" text="Seleziona Lotto">
+                           <VBox.margin>
+                              <Insets bottom="10.0" />
+                           </VBox.margin>
+                           <padding>
+                              <Insets top="5.0" />
+                           </padding>
+                           <font>
+                              <Font name="System Bold" size="15.0" />
+                           </font>
+                        </Label>
+                        <TableView fx:id="availableOrtiTable" prefHeight="343.0" prefWidth="535.0">
+                           <columns>
+                              <TableColumn fx:id="nomeOrtoColumn" prefWidth="119.0" text="Codice Lotto" />
+                              <TableColumn fx:id="indirizzoOrtoColumn" minWidth="0.0" prefWidth="181.0" text="Nome Orto" />
+                              <TableColumn prefWidth="234.0" text="Indirizzo" />
+                           </columns>
+                        </TableView>
+                     </children>
+                  </VBox>
+                  <VBox prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <Label maxWidth="1.7976931348623157E308" prefHeight="48.0" prefWidth="535.0" text="Nome Progetto">
+                           <font>
+                              <Font name="System Bold" size="15.0" />
+                           </font>
+                        </Label>
+                        <TextField fx:id="nomeProgettoField" />
+                        <Label layoutX="30.0" layoutY="10.0" maxWidth="1.7976931348623157E308" prefHeight="48.0" prefWidth="535.0" text="Descrizione">
+                           <font>
+                              <Font name="System Bold" size="15.0" />
+                           </font>
+                        </Label>
+                        <TextArea fx:id="descrizioneField" prefHeight="123.0" prefWidth="495.0">
+                           <VBox.margin>
+                              <Insets bottom="10.0" />
+                           </VBox.margin>
+                        </TextArea>
+                        <GridPane prefHeight="183.0" prefWidth="495.0">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="239.0" minWidth="10.0" prefWidth="116.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="379.0" minWidth="10.0" prefWidth="379.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Label contentDisplay="CENTER" maxWidth="1.7976931348623157E308" prefHeight="48.0" prefWidth="535.0" text="Codice Lotto:">
+                                 <font>
+                                    <Font name="System Bold" size="15.0" />
+                                 </font>
+                              </Label>
+                              <Label maxWidth="1.7976931348623157E308" prefHeight="48.0" prefWidth="535.0" text="Nome Orto:" GridPane.rowIndex="1">
+                                 <font>
+                                    <Font name="System Bold" size="15.0" />
+                                 </font>
+                              </Label>
+                              <Label maxWidth="1.7976931348623157E308" prefHeight="48.0" prefWidth="535.0" text="Indirizzo:" GridPane.rowIndex="2">
+                                 <font>
+                                    <Font name="System Bold" size="15.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="codiceSelectedLotto" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1">
+                                 <padding>
+                                    <Insets left="20.0" />
+                                 </padding>
+                              </Label>
+                              <Label fx:id="nomeOrtoSelectedLotto" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                 <padding>
+                                    <Insets left="20.0" />
+                                 </padding>
+                              </Label>
+                              <Label fx:id="indirizzoSelectedLotto" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                 <padding>
+                                    <Insets left="20.0" />
+                                 </padding>
+                              </Label>
+                           </children>
+                        </GridPane>
+                     </children>
+                     <padding>
+                        <Insets left="20.0" right="20.0" />
+                     </padding>
+                  </VBox>
+               </children>
+               <VBox.margin>
+                  <Insets bottom="10.0" />
+               </VBox.margin>
+            </GridPane>
+            <Label fx:id="errorLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" text="Error Label">
+               <font>
+                  <Font size="16.0" />
+               </font>
+               <VBox.margin>
+                  <Insets top="10.0" />
+               </VBox.margin>
+            </Label>
+         </children>
+      </VBox>
+      <GridPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="100.0" prefWidth="1070.0">
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+         <children>
+            <Button mnemonicParsing="false" onAction="#indietroAction" text="Indietro">
+               <GridPane.margin>
+                  <Insets />
+               </GridPane.margin>
+            </Button>
+            <Button mnemonicParsing="false" onAction="#nextStepAction" text="Prossimo Step" GridPane.columnIndex="1" />
+         </children>
+      </GridPane>
+   </children>
+   <padding>
+      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+   </padding>
+</VBox>

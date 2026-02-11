@@ -6,5 +6,8 @@
 target/
 uninabiogarden/target/
 
+
+tmp/
+
 # generated pdfs
 *.pdf

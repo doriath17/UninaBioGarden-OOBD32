@@ -2,8 +2,9 @@ package uninabiogarden;
 
 import javafx.fxml.FXML;
 import javafx.scene.layout.VBox;
-import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.TextField;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TableColumn;
 import javafx.event.ActionEvent;
 
 public class ControllerProgetti {
@@ -12,14 +13,37 @@ public class ControllerProgetti {
   private VBox mainContent;
 
   @FXML
-  private ChoiceBox<String> filtroBox;
+  private TextField searchField;
 
   @FXML
-  private TableView<?> attivitaTable;
+  private TableView<?> progettiTable;
+
+  @FXML
+  private TableColumn<?, ?> nomeColumn;
+
+  @FXML
+  private TableColumn<?, ?> statoColumn;
+
+  @FXML
+  private TableColumn<?, ?> dataCreazioneColumn;
+
+  @FXML
+  private TableColumn<?, ?> dataInizioColumn;
+
+  @FXML
+  private TableColumn<?, ?> dataFineColumn;
+
+  @FXML
+  private TableColumn<?, ?> actionsColumn;
 
   @FXML
   private void initialize() {
     // initialization if needed
+  }
+
+  @FXML
+  private void search(ActionEvent event) {
+    // TODO: implement search logic
   }
 
   @FXML
