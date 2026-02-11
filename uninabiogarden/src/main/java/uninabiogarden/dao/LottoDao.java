@@ -74,7 +74,7 @@ public class LottoDao {
     }
   }
 
-  public List<Lotto> findAvailableLotti(Long id) {
+  public List<Lotto> findLottiDisponibili(Long id) {
     var sql = """
           SELECT *
           FROM vista_lotti_disponibili

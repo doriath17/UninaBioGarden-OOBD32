@@ -49,9 +49,9 @@
                         </Label>
                         <TableView fx:id="availableOrtiTable" prefHeight="343.0" prefWidth="535.0">
                            <columns>
-                              <TableColumn fx:id="nomeOrtoColumn" prefWidth="119.0" text="Codice Lotto" />
-                              <TableColumn fx:id="indirizzoOrtoColumn" minWidth="0.0" prefWidth="181.0" text="Nome Orto" />
-                              <TableColumn prefWidth="234.0" text="Indirizzo" />
+                              <TableColumn fx:id="codiceLottoColumn" prefWidth="119.0" text="Codice Lotto" />
+                              <TableColumn fx:id="nomeOrtoColumn" minWidth="0.0" prefWidth="181.0" text="Nome Orto" />
+                              <TableColumn fx:id="indirizzoOrtoColumn" prefWidth="270.0" text="Indirizzo" />
                            </columns>
                         </TableView>
                      </children>

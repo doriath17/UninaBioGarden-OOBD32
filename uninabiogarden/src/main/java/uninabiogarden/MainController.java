@@ -7,10 +7,12 @@ import javafx.collections.ObservableList;
 import uninabiogarden.dao.DatabaseController;
 import uninabiogarden.dto.LottoDto;
 import uninabiogarden.dto.OrtoDto;
+import uninabiogarden.dto.ProgettoDto;
 import uninabiogarden.dto.UtenteDto;
 import uninabiogarden.entities.Coltivatore;
 import uninabiogarden.entities.Lotto;
 import uninabiogarden.entities.Orto;
+import uninabiogarden.entities.Progetto;
 import uninabiogarden.entities.Proprietario;
 import uninabiogarden.entities.Utente;
 
@@ -273,10 +275,55 @@ public class MainController {
     System.out.println("Caricamento lotti effettuato con successo");
   }
 
-  public List<Lotto> getAvailableLotti() {
-    List<Lotto> lotti = databaseController.getLottoDao().findAvailableLotti(utenteLoggato.getId());
+  public List<Lotto> getLottiDisponibili() {
+    List<Lotto> lotti = databaseController.getLottoDao().findLottiDisponibili(utenteLoggato.getId());
     System.out.println("Lotti disponibili: " + lotti.size());
+
+    for (var lotto : lotti) {
+      var orto = ortiObservableList
+          .stream()
+          .filter(o -> o.getId().equals(lotto.getOrto().getId()))
+          .findFirst()
+          .orElseThrow(() -> new RuntimeException("Orto non trovato per lotto: " + lotto.getId()));
+      lotto.setOrto(orto);
+    }
+
     return lotti;
+  }
+
+  // ==============================================================================================
+  // Sezione: Validazione e creazione Progetto
+  // ==============================================================================================
+
+  private String isValidProgetto(ProgettoDto progettoDto) {
+    if (progettoDto.nome == null || progettoDto.nome.isEmpty()) {
+      return "Nome progetto mancante";
+    }
+    if (progettoDto.descrizione == null || progettoDto.descrizione.isEmpty()) {
+      return "Descrizione progetto mancante";
+    }
+    if (progettoDto.lottoId == null) {
+      return "Lotto per il progetto non selezionato";
+    }
+    return null;
+  }
+
+  public void creaProgetto(ProgettoDto progettoDto) {
+    // // validazione dati progetto
+    // var validationError = isValidProgetto(progettoDto);
+    // if (validationError != null) {
+    // throw new IllegalArgumentException(validationError);
+    // }
+
+    // // conversione nell'entità Progetto
+    // Progetto progetto = new Progetto(progettoDto);
+
+    // progetto = databaseController.getProgettoDao().saveProgetto(progetto);
+    // System.out.println("Progetto creato con ID: " + progetto.getId());
+
+    // // associa il progetto al proprietario loggato
+    // ((Proprietario) utenteLoggato).addProgetto(progetto);
+
   }
 
 }

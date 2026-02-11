@@ -1,6 +1,7 @@
 package uninabiogarden.entities;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import uninabiogarden.dto.UtenteDto;
@@ -8,6 +9,7 @@ import uninabiogarden.dto.UtenteDto;
 public class Proprietario extends Utente {
 
   private List<Lotto> lotti;
+  private List<Progetto> progetti;
 
   public Proprietario() {
     super();
@@ -29,6 +31,21 @@ public class Proprietario extends Utente {
 
   public void setLotti(List<Lotto> lotti) {
     this.lotti = lotti;
+  }
+
+  public List<Progetto> getProgetti() {
+    return progetti;
+  }
+
+  public void setProgetti(List<Progetto> progetti) {
+    this.progetti = progetti;
+  }
+
+  public void addProgetto(Progetto progetto) {
+    if (this.progetti == null) {
+      this.progetti = new ArrayList<>();
+    }
+    this.progetti.add(progetto);
   }
 
 }
