@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="mainContent" prefHeight="566.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uninabiogarden.ControllerProgetti">
+<VBox fx:id="mainContent" prefHeight="566.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uninabiogarden.ControllerCreaProgettoStep1">
    <children>
       <Label text="Crea Nuovo Progetto -- Step 1">
          <font>
@@ -76,8 +76,8 @@
                         </TextArea>
                         <GridPane prefHeight="183.0" prefWidth="495.0">
                           <columnConstraints>
-                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="239.0" minWidth="10.0" prefWidth="116.0" />
-                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="379.0" minWidth="10.0" prefWidth="379.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="239.0" minWidth="10.0" prefWidth="108.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="379.0" minWidth="10.0" prefWidth="351.0" />
                           </columnConstraints>
                           <rowConstraints>
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />

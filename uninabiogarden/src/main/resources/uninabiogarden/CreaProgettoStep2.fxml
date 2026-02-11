@@ -42,8 +42,9 @@
                         </Label>
                         <TableView prefHeight="200.0" prefWidth="535.0" VBox.vgrow="ALWAYS">
                           <columns>
-                            <TableColumn prefWidth="247.0" text="Nome" />
-                            <TableColumn prefWidth="287.0" text="Username" />
+                            <TableColumn fx:id="availableNomeColumn" prefWidth="216.0" text="Nome" />
+                              <TableColumn fx:id="availableUsernameColumn" prefWidth="230.0" text="Username" />
+                              <TableColumn fx:id="availableSelectionColumn" prefWidth="68.0" />
                           </columns>
                            <VBox.margin>
                               <Insets bottom="10.0" />
@@ -51,7 +52,7 @@
                         </TableView>
                         <HBox alignment="CENTER" prefHeight="16.0" prefWidth="515.0">
                            <children>
-                              <Button mnemonicParsing="false" text="Seleziona" />
+                              <Button mnemonicParsing="false" onAction="#selezionaDisponibili" text="Seleziona" />
                            </children>
                         </HBox>
                      </children>
@@ -68,8 +69,9 @@
                         </Label>
                         <TableView prefHeight="200.0" prefWidth="535.0" VBox.vgrow="ALWAYS">
                            <columns>
-                              <TableColumn prefWidth="247.0" text="Nome" />
-                              <TableColumn prefWidth="287.0" text="Username" />
+                              <TableColumn fx:id="selectedNomeColumn" prefWidth="216.0" text="Nome" />
+                              <TableColumn fx:id="selectedUsernameColumn" prefWidth="230.0" text="Username" />
+                              <TableColumn fx:id="selectedSelectionColumn" prefWidth="68.0" />
                            </columns>
                            <VBox.margin>
                               <Insets bottom="10.0" />
@@ -77,7 +79,7 @@
                         </TableView>
                         <HBox alignment="CENTER" prefHeight="16.0" prefWidth="515.0">
                            <children>
-                              <Button mnemonicParsing="false" text="Deseleziona" />
+                              <Button mnemonicParsing="false" onAction="#deselezionaSelezionati" text="Deseleziona" />
                            </children>
                         </HBox>
                      </children>

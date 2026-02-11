@@ -124,4 +124,9 @@ public class UIController {
     loadViewIntoContent(FxmlView.CREA_LOTTO_VIEW, homeController.getSelectedContent());
   }
 
+  public void openCreaProgettoStep1View() {
+    ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
+    loadViewIntoContent(FxmlView.CREA_PROGETTO_STEP_1, homeController.getSelectedContent());
+  }
+
 }
