@@ -74,4 +74,39 @@ public class LottoDao {
     }
   }
 
+  public List<Lotto> findAvailableLotti(Long id) {
+    var sql = """
+          SELECT *
+          FROM vista_lotti_disponibili
+          WHERE id_proprietario = {{id}}
+        """;
+    sql = sql.replace("{{id}}", String.valueOf(id));
+
+    List<Lotto> lotti = new ArrayList<>();
+
+    try (var conn = database.getConnection(); var stmt = conn.createStatement()) {
+
+      var result = stmt.executeQuery(sql);
+      while (result.next()) { // lotto trovato
+        Lotto lotto = new Lotto();
+        lotto.setId(result.getLong("id"));
+        lotto.setCodiceLotto(result.getString("codice_lotto"));
+        lotto.setEstensioneMq(result.getDouble("estensione_mq"));
+        lotto.setTipologiaTerreno(Lotto.TipologiaTerreno.valueOf(result.getString("tipologia_terreno")));
+
+        // proxy per l'orto che dovrebbe gia essere caricato in memoria
+        Orto ortoProxy = new Orto();
+        ortoProxy.setId(result.getLong("id_orto"));
+        lotto.setOrto(ortoProxy);
+
+        lotti.add(lotto);
+      }
+      return lotti;
+
+    } catch (Exception e) {
+      System.err.println("Errore durante il recupero dei lotti disponibili: " + e.getMessage());
+      throw new RuntimeException(e);
+    }
+  }
+
 }

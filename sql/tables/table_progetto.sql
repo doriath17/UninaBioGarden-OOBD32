@@ -37,3 +37,21 @@ CREATE TABLE lavora_per (
   FOREIGN KEY (id_progetto) REFERENCES progetto (id) ON DELETE CASCADE,
   FOREIGN KEY (id_coltivatore) REFERENCES utente (id) ON DELETE CASCADE
 );
+
+CREATE OR REPLACE VIEW vista_progetti_in_corso AS
+  SELECT * 
+  FROM progetto 
+  WHERE stato = 'PIANIFICATO' OR stato = 'ATTIVO';
+
+CREATE OR REPLACE VIEW vista_lotti_occupati AS 
+  SELECT DISTINCT l.* 
+  FROM vista_progetti_in_corso AS p
+  JOIN lotto AS l ON l.id = p.id_lotto;
+
+CREATE OR REPLACE VIEW vista_lotti_disponibili AS
+  SELECT * 
+  FROM lotto 
+  EXCEPT 
+  SELECT * 
+  FROM vista_lotti_occupati;
+

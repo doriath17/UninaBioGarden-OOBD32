@@ -127,6 +127,11 @@ public class UIController {
   public void openCreaProgettoStep1View() {
     ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
     loadViewIntoContent(FxmlView.CREA_PROGETTO_STEP_1, homeController.getSelectedContent());
+
+    ControllerCreaProgettoStep1 step1Controller = (ControllerCreaProgettoStep1) controllers
+        .get(FxmlView.CREA_PROGETTO_STEP_1);
+    step1Controller.init(); // per avere la lista aggiornata dei lotti disponibili ogni volta che si apre la
+                            // view
   }
 
 }

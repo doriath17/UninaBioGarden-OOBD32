@@ -273,4 +273,10 @@ public class MainController {
     System.out.println("Caricamento lotti effettuato con successo");
   }
 
+  public List<Lotto> getAvailableLotti() {
+    List<Lotto> lotti = databaseController.getLottoDao().findAvailableLotti(utenteLoggato.getId());
+    System.out.println("Lotti disponibili: " + lotti.size());
+    return lotti;
+  }
+
 }

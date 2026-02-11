@@ -4,10 +4,11 @@ import java.util.function.UnaryOperator;
 
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
+import javafx.scene.control.TextInputControl;
 
 public class Utils {
 
-  public static void addCharacterLimit(TextField textField, int limit) {
+  public static void addCharacterLimit(TextInputControl textField, int limit) {
     UnaryOperator<TextFormatter.Change> filter = change -> {
       // Se l'utente sta inserendo testo (non cancellando)
       if (change.isAdded()) {

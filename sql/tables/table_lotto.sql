@@ -19,3 +19,5 @@ CREATE TABLE lotto (
   FOREIGN KEY (id_proprietario) REFERENCES utente (id) ON DELETE CASCADE,
   UNIQUE (id_orto, codice_lotto)
 );
+
+
