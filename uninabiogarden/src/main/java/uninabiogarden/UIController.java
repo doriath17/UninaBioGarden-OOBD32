@@ -9,6 +9,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import uninabiogarden.dto.ProgettoDto;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 
@@ -132,6 +133,15 @@ public class UIController {
         .get(FxmlView.CREA_PROGETTO_STEP_1);
     step1Controller.init(); // per avere la lista aggiornata dei lotti disponibili ogni volta che si apre la
                             // view
+  }
+
+  public void openCreaProgettoStep2View(ProgettoDto dto) {
+    ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
+    loadViewIntoContent(FxmlView.CREA_PROGETTO_STEP_2, homeController.getSelectedContent());
+
+    ControllerCreaProgettoStep2 step2Controller = (ControllerCreaProgettoStep2) controllers
+        .get(FxmlView.CREA_PROGETTO_STEP_2);
+    step2Controller.init(dto); // passa il DTO al controller del passo 2
   }
 
 }

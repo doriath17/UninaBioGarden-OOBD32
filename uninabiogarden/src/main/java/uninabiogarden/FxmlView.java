@@ -12,8 +12,8 @@ public enum FxmlView {
   LOTTI_VIEW("/uninabiogarden/Lotti.fxml"),
   CREA_LOTTO_VIEW("/uninabiogarden/CreaLotto.fxml"),
 
-  CREA_PROGETTO_STEP_1("/uninabiogarden/CreaProgettoStep1.fxml");
-  // CREA_PROGETTO_STEP_2("/uninabiogarden/CreaProgettoStep2.fxml");
+  CREA_PROGETTO_STEP_1("/uninabiogarden/CreaProgettoStep1.fxml"),
+  CREA_PROGETTO_STEP_2("/uninabiogarden/CreaProgettoStep2.fxml");
 
   private final String fxmlPath;
 

@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="mainContent" prefHeight="566.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uninabiogarden.ControllerProgetti">
+<VBox fx:id="mainContent" prefHeight="566.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uninabiogarden.ControllerCreaProgettoStep2">
    <children>
       <Label text="Crea Nuovo Progetto -- Step 2">
          <font>
@@ -40,7 +40,7 @@
                               <Font name="System Bold" size="15.0" />
                            </font>
                         </Label>
-                        <TableView prefHeight="200.0" prefWidth="535.0" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="availableColtivatoriTable" prefHeight="200.0" prefWidth="535.0" VBox.vgrow="ALWAYS">
                           <columns>
                             <TableColumn fx:id="availableNomeColumn" prefWidth="216.0" text="Nome" />
                               <TableColumn fx:id="availableUsernameColumn" prefWidth="230.0" text="Username" />
@@ -67,7 +67,7 @@
                               <Font name="System Bold" size="15.0" />
                            </font>
                         </Label>
-                        <TableView prefHeight="200.0" prefWidth="535.0" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="selectedColtivatoriTable" prefHeight="200.0" prefWidth="535.0" VBox.vgrow="ALWAYS">
                            <columns>
                               <TableColumn fx:id="selectedNomeColumn" prefWidth="216.0" text="Nome" />
                               <TableColumn fx:id="selectedUsernameColumn" prefWidth="230.0" text="Username" />

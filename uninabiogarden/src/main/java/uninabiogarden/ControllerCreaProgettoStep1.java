@@ -132,10 +132,25 @@ public class ControllerCreaProgettoStep1 {
     return dto;
   }
 
+  private String isValidData(ProgettoDto progettoDto) {
+    if (progettoDto.nome == null || progettoDto.nome.isEmpty()) {
+      return "Nome progetto mancante";
+    }
+    if (progettoDto.lottoId == null) {
+      return "Lotto per il progetto non selezionato";
+    }
+    return null;
+  }
+
   @FXML
   private void nextStepAction() {
     ProgettoDto dto = getData();
-    // TODO: implement next step action
+    String validationError = isValidData(dto);
+    if (validationError != null) {
+      errorLabel.setText(validationError);
+      return;
+    }
+    UIController.getInstance().openCreaProgettoStep2View(dto);
   }
 
 }

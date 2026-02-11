@@ -295,19 +295,6 @@ public class MainController {
   // Sezione: Validazione e creazione Progetto
   // ==============================================================================================
 
-  private String isValidProgetto(ProgettoDto progettoDto) {
-    if (progettoDto.nome == null || progettoDto.nome.isEmpty()) {
-      return "Nome progetto mancante";
-    }
-    if (progettoDto.descrizione == null || progettoDto.descrizione.isEmpty()) {
-      return "Descrizione progetto mancante";
-    }
-    if (progettoDto.lottoId == null) {
-      return "Lotto per il progetto non selezionato";
-    }
-    return null;
-  }
-
   public void creaProgetto(ProgettoDto progettoDto) {
     // // validazione dati progetto
     // var validationError = isValidProgetto(progettoDto);
