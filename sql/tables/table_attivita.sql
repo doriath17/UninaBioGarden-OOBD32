@@ -5,7 +5,7 @@
 DROP TABLE IF EXISTS transizione_attivita CASCADE;
 DROP TYPE IF EXISTS stato_attivita CASCADE;
 
-CREATE TYPE stato_attivita AS ENUM ('pianificata', 'in_corso', 'completata', 'annullata');
+CREATE TYPE stato_attivita AS ENUM ('PIANIFICATA', 'IN_CORSO', 'COMPLETATA', 'ANNULLATA');
 
 CREATE TABLE transizione_attivita (
   stato_corrente stato_attivita NOT NULL,
@@ -15,10 +15,10 @@ CREATE TABLE transizione_attivita (
 
 INSERT INTO transizione_attivita (stato_corrente, stato_successivo)
 VALUES
-  ('pianificata', 'in_corso'),
-  ('pianificata', 'annullata'),
-  ('in_corso', 'completata'),
-  ('in_corso', 'annullata')
+  ('PIANIFICATA', 'IN_CORSO'),
+  ('PIANIFICATA', 'ANNULLATA'),
+  ('IN_CORSO', 'COMPLETATA'),
+  ('IN_CORSO', 'ANNULLATA')
 ;
 
 -- ==============================================================================================
@@ -31,7 +31,7 @@ CREATE TABLE attivita (
   id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   titolo VARCHAR(100) NOT NULL,
 
-  stato stato_attivita NOT NULL DEFAULT 'pianificata', 
+  stato stato_attivita NOT NULL DEFAULT 'PIANIFICATA', 
   note_tecniche TEXT NOT NULL,
   data_pianificazione TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   data_scadenza TIMESTAMP CHECK (data_scadenza IS NULL OR data_scadenza >= data_pianificazione),
@@ -53,7 +53,7 @@ CREATE TABLE attivita (
 DROP TABLE IF EXISTS concimazione CASCADE;
 DROP TYPE IF EXISTS t_tipo_concime CASCADE;
 
-CREATE TYPE t_tipo_concime AS ENUM ('organico', 'minerale', 'compost');
+CREATE TYPE t_tipo_concime AS ENUM ('ORGANICO', 'MINERALE', 'COMPOST');
 
 CREATE TABLE concimazione (
   id INT NOT NULL PRIMARY KEY,
@@ -72,7 +72,7 @@ CREATE TABLE concimazione (
 DROP TABLE IF EXISTS irrigazione CASCADE;
 DROP TYPE IF EXISTS t_metodo_irrigazione CASCADE;
 
-CREATE TYPE t_metodo_irrigazione AS ENUM ('pioggia', 'goccia', 'manuale', 'scorrimento', 'nebulizzazione');
+CREATE TYPE t_metodo_irrigazione AS ENUM ('PIOGGIA', 'GOCCIA', 'MANUALE', 'SCORRIMENTO', 'NEBULIZZAZIONE');
 
 CREATE TABLE irrigazione (
   id INT NOT NULL PRIMARY KEY,

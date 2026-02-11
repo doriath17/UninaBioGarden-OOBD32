@@ -4,25 +4,34 @@ import uninabiogarden.dto.LottoDto;
 
 public class Lotto {
 
+  public enum TipologiaTerreno {
+    ARGILLOSO, SABBIOSO, PIETROSO, MEDIO_IMPASTO
+  }
+
   private Long id;
   private String codiceLotto;
+  private TipologiaTerreno tipologiaTerreno;
   private Double estensioneMq;
 
+  // tutti i lotti sono dell'utente loggato
   private Proprietario proprietario;
   private Orto orto;
 
   public Lotto() {
   }
 
-  public Lotto(String codiceLotto, Double estensioneMq, Proprietario proprietario, Orto orto) {
+  public Lotto(String codiceLotto, Double estensioneMq, TipologiaTerreno tipologiaTerreno, Proprietario proprietario,
+      Orto orto) {
     this.codiceLotto = codiceLotto;
     this.estensioneMq = estensioneMq;
+    this.tipologiaTerreno = tipologiaTerreno;
     this.proprietario = proprietario;
     this.orto = orto;
   }
 
   public Lotto(LottoDto dto) {
     this.codiceLotto = dto.codiceLotto;
+    this.tipologiaTerreno = dto.tipologiaTerreno;
     this.estensioneMq = dto.estensioneMq;
   }
 
@@ -74,4 +83,11 @@ public class Lotto {
     this.orto = orto;
   }
 
+  public TipologiaTerreno getTipologiaTerreno() {
+    return tipologiaTerreno;
+  }
+
+  public void setTipologiaTerreno(TipologiaTerreno tipologiaTerreno) {
+    this.tipologiaTerreno = tipologiaTerreno;
+  }
 }

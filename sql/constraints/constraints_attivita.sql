@@ -38,8 +38,8 @@ RETURNS TRIGGER AS $$
 DECLARE 
   v_stato_coltivazione stato_coltivazione;
 BEGIN
-  IF NEW.stato <> 'pianificata' THEN 
-    RAISE EXCEPTION 'Un attività appena creata deve avere stato ''pianificata''';
+  IF NEW.stato <> 'PIANIFICATA' THEN 
+    RAISE EXCEPTION 'Un attività appena creata deve avere stato ''PIANIFICATA''';
   END IF;
 
   -- attributi che dovrebbero essere NULL all'inserimento
@@ -56,7 +56,7 @@ BEGIN
   FROM coltivazione
   WHERE id = NEW.id_coltivazione;
 
-  IF v_stato_coltivazione IN ('fallita', 'conclusa', 'annullata') THEN
+  IF v_stato_coltivazione IN ('FALLITA', 'CONCLUSA', 'ANNULLATA') THEN
     RAISE EXCEPTION 'Impossibile associaRE l''attività ad una coltivazione terminata';
   END IF;
 
@@ -79,7 +79,7 @@ CREATE FUNCTION check_immutables_attivita()
 RETURNS TRIGGER AS $$ 
 BEGIN 
   -- freeze dopo lo stato terminale
-  IF OLD.stato IN ('annullata', 'completata') THEN 
+  IF OLD.stato IN ('ANNULLATA', 'COMPLETATA') THEN 
     RAISE EXCEPTION 'Non è possibile modificare un''attività terminata';
   END IF;
 
@@ -125,18 +125,18 @@ BEGIN
     END IF;
 
     -- transizione a in_corso
-    IF OLD.stato = 'pianificata' AND NEW.stato = 'in_corso' THEN
+    IF OLD.stato = 'PIANIFICATA' AND NEW.stato = 'IN_CORSO' THEN
       SELECT stato INTO v_stato_coltivazione 
       FROM coltivazione
       WHERE id = NEW.id_coltivazione;
 
-      IF v_stato_coltivazione <> 'attiva' THEN 
-        RAISE EXCEPTION 'Transizione di stato (%, %) non permessa: la coltivazione non è in stato ''attiva''', OLD.stato, NEW.stato;
+      IF v_stato_coltivazione <> 'ATTIVA' THEN 
+        RAISE EXCEPTION 'Transizione di stato (%, %) non permessa: la coltivazione non è in stato ''ATTIVA''', OLD.stato, NEW.stato;
       END IF;
       NEW.data_inizio := CURRENT_TIMESTAMP;
 
     -- terminazione attività
-    ELSIF NEW.stato IN ('completata', 'annullata') THEN 
+    ELSIF NEW.stato IN ('COMPLETATA', 'ANNULLATA') THEN 
       NEW.data_fine := CURRENT_TIMESTAMP;
     END IF;
 

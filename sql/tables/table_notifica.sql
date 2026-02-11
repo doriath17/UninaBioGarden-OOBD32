@@ -6,8 +6,8 @@ DROP TABLE IF EXISTS notifica CASCADE;
 DROP TYPE IF EXISTS urgenza_notifica CASCADE;
 DROP TYPE IF EXISTS tipo_notifica CASCADE;
 
-CREATE TYPE urgenza_notifica AS ENUM ('bassa', 'media', 'alta', 'critica');
-CREATE TYPE tipo_notifica AS ENUM ('notifica_progetto', 'notifica_attivita_imminente');
+CREATE TYPE urgenza_notifica AS ENUM ('BASSA', 'MEDIA', 'ALTA', 'CRITICA');
+CREATE TYPE tipo_notifica AS ENUM ('NOTIFICA_PROGETTO', 'NOTIFICA_ATTIVITA_IMMINENTE');
 
 CREATE TABLE notifica (
   id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,

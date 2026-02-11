@@ -114,6 +114,9 @@ public class UIController {
   public void openLottiView() {
     ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
     loadViewIntoContent(FxmlView.LOTTI_VIEW, homeController.getSelectedContent());
+
+    ControllerLotti lottiController = (ControllerLotti) controllers.get(FxmlView.LOTTI_VIEW);
+    lottiController.init(); // per avere la lista aggiornata dei lotti ogni volta che si apre la view
   }
 
   public void openCreaLottoView() {

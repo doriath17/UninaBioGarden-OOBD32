@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -24,44 +25,6 @@
       </Label>
       <VBox alignment="CENTER" prefHeight="475.0" prefWidth="1070.0">
          <children>
-            <GridPane prefHeight="145.0" prefWidth="1070.0">
-               <columnConstraints>
-                  <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="529.0" minWidth="10.0" prefWidth="144.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="997.0" minWidth="10.0" prefWidth="926.0" />
-               </columnConstraints>
-               <rowConstraints>
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-               </rowConstraints>
-               <children>
-                  <Label alignment="CENTER_RIGHT" prefHeight="64.0" prefWidth="242.0" text="Codice Lotto:">
-                     <font>
-                        <Font name="System Bold" size="16.0" />
-                     </font>
-                  </Label>
-                  <TextField fx:id="codiceLottoInputField" GridPane.columnIndex="1">
-                     <GridPane.margin>
-                        <Insets left="20.0" right="50.0" />
-                     </GridPane.margin>
-                  </TextField>
-                  <Label alignment="CENTER_RIGHT" prefHeight="64.0" prefWidth="242.0" text="Estensione" GridPane.rowIndex="1">
-                     <font>
-                        <Font name="System Bold" size="16.0" />
-                     </font>
-                  </Label>
-                  <TextField fx:id="estensioneLottoInputField" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                     <GridPane.margin>
-                        <Insets left="20.0" right="50.0" />
-                     </GridPane.margin>
-                  </TextField>
-               </children>
-               <VBox.margin>
-                  <Insets top="20.0" />
-               </VBox.margin>
-               <padding>
-                  <Insets bottom="10.0" />
-               </padding>
-            </GridPane>
             <GridPane prefHeight="356.0" prefWidth="1070.0">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -71,14 +34,14 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <VBox prefHeight="200.0" prefWidth="100.0">
+                  <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
                      <children>
-                        <Label maxWidth="1.7976931348623157E308" text="Orti Disponibili">
+                        <Label maxWidth="1.7976931348623157E308" text="Seleziona Orto">
                            <VBox.margin>
-                              <Insets />
+                              <Insets bottom="20.0" />
                            </VBox.margin>
                            <padding>
-                              <Insets bottom="5.0" left="20.0" top="5.0" />
+                              <Insets left="20.0" top="5.0" />
                            </padding>
                            <font>
                               <Font name="System Bold" size="15.0" />
@@ -92,61 +55,101 @@
                         </TableView>
                      </children>
                   </VBox>
-                  <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
+                  <VBox prefHeight="200.0" prefWidth="100.0">
                      <children>
-                        <Label maxWidth="1.7976931348623157E308" text="Orto Selezionato">
-                           <padding>
-                              <Insets bottom="5.0" top="5.0" />
-                           </padding>
-                           <font>
-                              <Font name="System Bold" size="15.0" />
-                           </font>
-                        </Label>
-                        <GridPane maxHeight="-Infinity" maxWidth="1.7976931348623157E308" prefHeight="114.0" prefWidth="535.0">
-                          <columnConstraints>
-                            <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="254.0" minWidth="10.0" prefWidth="107.0" />
-                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="428.0" minWidth="10.0" prefWidth="428.0" />
-                          </columnConstraints>
-                          <rowConstraints>
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                          </rowConstraints>
+                        <GridPane prefHeight="317.0" prefWidth="535.0">
+                           <columnConstraints>
+                              <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="529.0" minWidth="10.0" prefWidth="159.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="997.0" minWidth="10.0" prefWidth="376.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
                            <children>
-                              <Label prefHeight="46.0" prefWidth="314.0" text="Nome Orto:">
+                              <Label alignment="CENTER_RIGHT" prefHeight="64.0" prefWidth="242.0" text="Codice Lotto:" GridPane.rowIndex="1">
                                  <font>
                                     <Font name="System Bold" size="16.0" />
                                  </font>
                               </Label>
-                              <Label prefHeight="46.0" prefWidth="314.0" text="Indirizzo" GridPane.rowIndex="1">
+                              <TextField fx:id="codiceLottoInputField" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                 <GridPane.margin>
+                                    <Insets left="20.0" right="20.0" />
+                                 </GridPane.margin>
+                              </TextField>
+                              <Label alignment="CENTER_RIGHT" prefHeight="64.0" prefWidth="242.0" text="Estensione" GridPane.rowIndex="2">
                                  <font>
                                     <Font name="System Bold" size="16.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="nomeOrtoSelectedLabel" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1">
+                              <TextField fx:id="estensioneLottoInputField" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                 <GridPane.margin>
+                                    <Insets left="20.0" right="20.0" />
+                                 </GridPane.margin>
+                              </TextField>
+                              <Label alignment="CENTER_RIGHT" layoutX="10.0" layoutY="51.0" prefHeight="64.0" prefWidth="242.0" text="Tipologia Terreno:" GridPane.rowIndex="3">
+                                 <font>
+                                    <Font name="System Bold" size="16.0" />
+                                 </font>
+                              </Label>
+                              <ChoiceBox fx:id="tipologiaTerrenoChoiceBox" prefHeight="26.0" prefWidth="192.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                 <GridPane.margin>
+                                    <Insets left="20.0" />
+                                 </GridPane.margin>
+                              </ChoiceBox>
+                              <Label alignment="CENTER_RIGHT" layoutX="10.0" layoutY="71.0" prefHeight="64.0" prefWidth="242.0" text="Nome Orto:" GridPane.rowIndex="5">
+                                 <font>
+                                    <Font name="System Bold" size="16.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="nomeOrtoSelectedLabel" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="5">
                                  <padding>
                                     <Insets left="20.0" />
                                  </padding>
                               </Label>
-                              <Label fx:id="indirizzoOrtoSelectedLabel" layoutX="117.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                              <Label alignment="CENTER_RIGHT" layoutX="10.0" layoutY="82.0" prefHeight="64.0" prefWidth="242.0" text="Indirizzo:" GridPane.rowIndex="6">
+                                 <font>
+                                    <Font name="System Bold" size="16.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="indirizzoOrtoSelectedLabel" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="6">
                                  <padding>
                                     <Insets left="20.0" />
                                  </padding>
+                              </Label>
+                              <Label alignment="CENTER_RIGHT" layoutX="10.0" layoutY="44.0" prefHeight="64.0" prefWidth="242.0" text="Inserisci Dati">
+                                 <font>
+                                    <Font name="System Bold" size="16.0" />
+                                 </font>
+                              </Label>
+                              <Label alignment="CENTER_RIGHT" prefHeight="64.0" prefWidth="242.0" text="Orto Selezionato" GridPane.rowIndex="4">
+                                 <font>
+                                    <Font name="System Bold" size="16.0" />
+                                 </font>
                               </Label>
                            </children>
+                           <padding>
+                              <Insets bottom="10.0" />
+                           </padding>
                         </GridPane>
                      </children>
-                     <padding>
-                        <Insets left="20.0" />
-                     </padding>
                   </VBox>
                </children>
+               <VBox.margin>
+                  <Insets bottom="20.0" />
+               </VBox.margin>
             </GridPane>
             <Label fx:id="errorLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" text="Error Label">
                <font>
                   <Font size="16.0" />
                </font>
                <VBox.margin>
-                  <Insets bottom="10.0" top="10.0" />
+                  <Insets top="10.0" />
                </VBox.margin>
             </Label>
          </children>

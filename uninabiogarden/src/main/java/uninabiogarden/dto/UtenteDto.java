@@ -12,5 +12,5 @@ public class UtenteDto {
   public LocalDate bDay;
   public String gender;
   public String bio;
-  public Boolean isColtivatore;
+  public String tipo; // "COLTIVATORE" o "PROPRIETARIO"
 }

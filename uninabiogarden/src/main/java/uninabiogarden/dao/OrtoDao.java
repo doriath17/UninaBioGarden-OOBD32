@@ -11,7 +11,7 @@ public class OrtoDao {
   private Database database = Database.getInstance();
 
   public Long saveOrto(Orto orto) {
-    var sql = "INSERT INTO ortO (nome_orto, citta, cap, via, civico, id_proprietario) VALUES (?, ?, ?, ?, ?, ?)";
+    var sql = "INSERT INTO orto (nome_orto, citta, cap, via, civico, id_proprietario) VALUES (?, ?, ?, ?, ?, ?)";
 
     Long id = null;
 

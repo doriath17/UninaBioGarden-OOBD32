@@ -6,8 +6,8 @@ DROP TABLE IF EXISTS coltura CASCADE;
 DROP TYPE IF EXISTS tipo_coltura CASCADE;
 DROP TYPE IF EXISTS tipo_riproduzione_ortaggio CASCADE;
 
-CREATE TYPE tipo_coltura AS ENUM ('erba_aromatica', 'ortaggio', 'albero');
-CREATE TYPE tipo_riproduzione_ortaggio AS ENUM ('semina', 'trapianto');
+CREATE TYPE tipo_coltura AS ENUM ('ERBA_AROMATICA', 'ORTAGGIO', 'ALBERO');
+CREATE TYPE tipo_riproduzione_ortaggio AS ENUM ('SEMINA', 'TRAPIANTO');
 
 CREATE TABLE coltura (
   id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,

@@ -3,6 +3,7 @@
 /home/ale/tmp/UninaBioGarden-OOBD32/uninabiogarden/src/main/java/uninabiogarden/ControllerLotti.java
 /home/ale/tmp/UninaBioGarden-OOBD32/uninabiogarden/src/main/java/uninabiogarden/FxmlView.java
 /home/ale/tmp/UninaBioGarden-OOBD32/uninabiogarden/src/main/java/uninabiogarden/dto/UtenteDto.java
+/home/ale/tmp/UninaBioGarden-OOBD32/uninabiogarden/src/main/java/uninabiogarden/dao/LottoDao.java
 /home/ale/tmp/UninaBioGarden-OOBD32/uninabiogarden/src/main/java/uninabiogarden/dao/DatabaseController.java
 /home/ale/tmp/UninaBioGarden-OOBD32/uninabiogarden/src/main/java/uninabiogarden/dao/UtenteDao.java
 /home/ale/tmp/UninaBioGarden-OOBD32/uninabiogarden/src/main/java/uninabiogarden/UIController.java

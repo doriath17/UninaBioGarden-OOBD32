@@ -23,4 +23,34 @@ public class Utils {
     textField.setTextFormatter(new TextFormatter<>(filter));
   }
 
+  public static void addDoubleFilter(TextField textField) {
+    // Default limits derived from DECIMAL(10,2): 10 total precision, 2 fraction =>
+    // 8 integer, 2 fraction
+    addDoubleFilter(textField, 8, 2);
+  }
+
+  public static void addDoubleFilter(TextField textField, int maxIntegerDigits, int maxFractionDigits) {
+    UnaryOperator<TextFormatter.Change> filter = change -> {
+      String newText = change.getControlNewText();
+
+      // Allow empty string
+      if (newText.isEmpty()) {
+        return change;
+      }
+
+      if (maxIntegerDigits < 1 || maxFractionDigits < 0) {
+        return null;
+      }
+
+      String regex = "^\\d{1," + maxIntegerDigits + "}(\\.\\d{0," + maxFractionDigits + "})?$";
+
+      if (newText.matches(regex)) {
+        return change;
+      }
+
+      return null;
+    };
+
+    textField.setTextFormatter(new TextFormatter<>(filter));
+  }
 }

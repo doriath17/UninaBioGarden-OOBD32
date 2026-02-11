@@ -1,10 +1,13 @@
 package uninabiogarden.entities;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import uninabiogarden.dto.UtenteDto;
 
 public class Proprietario extends Utente {
+
+  private List<Lotto> lotti;
 
   public Proprietario() {
     super();
@@ -19,4 +22,13 @@ public class Proprietario extends Utente {
     super(utenteDto.username, utenteDto.password, utenteDto.email, utenteDto.codiceFiscale,
         utenteDto.nome, utenteDto.cognome, utenteDto.bDay, utenteDto.gender, utenteDto.bio);
   }
+
+  public List<Lotto> getLotti() {
+    return lotti;
+  }
+
+  public void setLotti(List<Lotto> lotti) {
+    this.lotti = lotti;
+  }
+
 }

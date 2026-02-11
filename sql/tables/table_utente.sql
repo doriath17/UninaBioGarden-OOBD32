@@ -7,7 +7,7 @@ DROP TYPE IF EXISTS tipo_utente CASCADE;
 DROP FUNCTION IF EXISTS is_proprietario(INT) CASCADE;
 
 
-CREATE TYPE tipo_utente AS ENUM ('proprietario', 'coltivatore');
+CREATE TYPE tipo_utente AS ENUM ('PROPRIETARIO', 'COLTIVATORE');
 
 CREATE TABLE utente (
   id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -30,7 +30,7 @@ BEGIN
   RETURN EXISTS (
     SELECT 1
     FROM utente
-    WHERE id = id_utente AND tipo = 'proprietario'
+    WHERE id = id_utente AND tipo = 'PROPRIETARIO'
   );
 END;
 $$ LANGUAGE plpgsql;

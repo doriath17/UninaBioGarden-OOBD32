@@ -18,6 +18,7 @@ public class DatabaseController {
 
   private UtenteDao utenteDao = new UtenteDao();
   private OrtoDao ortoDao = new OrtoDao();
+  private LottoDao lottoDao = new LottoDao();
 
   public UtenteDao getUtenteDao() {
     return utenteDao;
@@ -25,6 +26,10 @@ public class DatabaseController {
 
   public OrtoDao getOrtoDao() {
     return ortoDao;
+  }
+
+  public LottoDao getLottoDao() {
+    return lottoDao;
   }
 
 }

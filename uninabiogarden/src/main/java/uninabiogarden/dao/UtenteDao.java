@@ -10,7 +10,7 @@ public class UtenteDao {
   private Database database = Database.getInstance();
 
   public Long saveUtente(Utente utente) {
-    String isColtivatore = utente instanceof Coltivatore ? "coltivatore" : "proprietario";
+    String isColtivatore = utente instanceof Coltivatore ? "COLTIVATORE" : "PROPRIETARIO";
 
     String sql = "INSERT INTO utente (username, password, email, nome, cognome, b_day, codice_fiscale, gender, bio, tipo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?::tipo_utente)";
 
@@ -65,9 +65,9 @@ public class UtenteDao {
         dto.codiceFiscale = result.getString("codice_fiscale");
         dto.gender = result.getString("gender");
         dto.bio = result.getString("bio");
-        dto.isColtivatore = "coltivatore".equals(result.getString("tipo"));
+        dto.tipo = result.getString("tipo");
 
-        if (dto.isColtivatore) {
+        if ("COLTIVATORE".equals(dto.tipo)) {
           foundUtente = new Coltivatore(dto);
         } else {
           foundUtente = new Proprietario(dto);

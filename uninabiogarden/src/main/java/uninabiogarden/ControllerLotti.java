@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 import uninabiogarden.entities.Lotto;
 
@@ -35,7 +36,15 @@ public class ControllerLotti {
 
   @FXML
   public void initialize() {
-    // TODO: initialize table columns and load data
+    codiceLottoColumn.setCellValueFactory(new PropertyValueFactory<>("codiceLotto"));
+    estensioneColumn.setCellValueFactory(new PropertyValueFactory<>("estensioneMq"));
+    tipologiaTerrenoColumn.setCellValueFactory(new PropertyValueFactory<>("tipologiaTerreno"));
+    nomeOrtoColumn.setCellValueFactory(new PropertyValueFactory<>("nomeOrto"));
+    indirizzoColumn.setCellValueFactory(new PropertyValueFactory<>("indirizzo"));
+  }
+
+  public void init() {
+    lottiTable.setItems(MainController.getInstance().getLottiObservableList());
   }
 
   @FXML

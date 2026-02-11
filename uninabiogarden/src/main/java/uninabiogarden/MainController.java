@@ -5,14 +5,19 @@ import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import uninabiogarden.dao.DatabaseController;
+import uninabiogarden.dto.LottoDto;
 import uninabiogarden.dto.OrtoDto;
 import uninabiogarden.dto.UtenteDto;
 import uninabiogarden.entities.Coltivatore;
+import uninabiogarden.entities.Lotto;
 import uninabiogarden.entities.Orto;
 import uninabiogarden.entities.Proprietario;
 import uninabiogarden.entities.Utente;
 
 public class MainController {
+  // ==============================================================================================
+  // Sezione: Singleton e costruttore
+  // ==============================================================================================
 
   private static MainController instance;
 
@@ -24,8 +29,12 @@ public class MainController {
   }
 
   private MainController() {
-    // private constructor to prevent instantiation
+    // costruttore privato per evitare istanziazioni esterne
   }
+
+  // ==============================================================================================
+  // Sezione: Dipendenze e stato dell'applicazione
+  // ==============================================================================================
 
   private DatabaseController databaseController = DatabaseController.getInstance();
 
@@ -33,13 +42,30 @@ public class MainController {
 
   private ObservableList<Orto> ortiObservableList = FXCollections.observableArrayList();
 
+  // questa lista viene inizializzata in modo tale che tutte le modifiche su di
+  // essa si riflettano direttamente sulla lista di lotti nel proprietario loggato
+  // vedi caricamentoDatiUtente() per maggiori dettagli
+  private ObservableList<Lotto> lottiObservableList;
+
+  // ==============================================================================================
+  // Sezione: Accessors
+  // ==============================================================================================
+
   public ObservableList<Orto> getOrtiObservableList() {
     return ortiObservableList;
+  }
+
+  public ObservableList<Lotto> getLottiObservableList() {
+    return lottiObservableList;
   }
 
   public Utente getUtenteLoggato() {
     return utenteLoggato;
   }
+
+  // ==============================================================================================
+  // Sezione: Validazione dati Utente
+  // ==============================================================================================
 
   private String isValidUtenteDto(UtenteDto utenteDto) {
     if (utenteDto.username == null || utenteDto.username.isEmpty()) {
@@ -85,6 +111,10 @@ public class MainController {
     return null; // dati validi
   }
 
+  // ==============================================================================================
+  // Sezione: Registrazione e login
+  // ==============================================================================================
+
   public void registraUtente(UtenteDto utenteDto) {
     // validazione dei dati
     String validationError = isValidUtenteDto(utenteDto);
@@ -94,7 +124,7 @@ public class MainController {
 
     // creazione dell'utente
     Utente utente = null;
-    if (utenteDto.isColtivatore) {
+    if (utenteDto.tipo.equals("COLTIVATORE")) {
       utente = new Coltivatore(utenteDto);
     } else {
       utente = new Proprietario(utenteDto);
@@ -104,6 +134,18 @@ public class MainController {
     System.out.println("Utente registrato con ID: " + id);
     utente.setId(id);
     utenteLoggato = utente;
+  }
+
+  private void caricamentoDatiUtente(Utente utente) {
+    if (utente instanceof Proprietario) {
+      var proprietario = (Proprietario) utente;
+
+      caricaOrti();
+      caricaLotti(proprietario);
+
+      // carica i progetti
+
+    }
   }
 
   public void loginUtente(String username, String password) {
@@ -119,14 +161,19 @@ public class MainController {
       throw new IllegalArgumentException("Utente non trovato");
     }
 
-    // caricamento dati supplementari in base al ruolo
-    if (utenteLoggato instanceof Proprietario) {
-      loadOrti();
-      System.out.println("Caricati orti per proprietario: " + utenteLoggato.getUsername());
+    try {
+      caricamentoDatiUtente(utenteLoggato);
+    } catch (Exception e) {
+      System.err.println("Errore durante il login: " + e.getMessage());
+      throw new RuntimeException("Errore durante il login: errore durante il caricamento dei dati");
     }
 
     System.out.println("Login effettuato: " + utenteLoggato.getUsername());
   }
+
+  // ==============================================================================================
+  // Sezione: Validazione e creazione Orto
+  // ==============================================================================================
 
   private void isValidOrto(OrtoDto ortoDto) {
     if (ortoDto.nomeOrto == null || ortoDto.nomeOrto.isEmpty()) {
@@ -157,8 +204,73 @@ public class MainController {
     ortiObservableList.add(orto);
   }
 
-  private void loadOrti() {
+  private void caricaOrti() {
     List<Orto> orti = databaseController.getOrtoDao().findAll();
     ortiObservableList.setAll(orti);
+    System.out.println("Caricamento orti effettuato con successo");
   }
+
+  // ==============================================================================================
+  // Sezione: Validazione e creazione Lotto
+  // ==============================================================================================
+
+  private String isValidLotto(LottoDto lottoDto) {
+    if (lottoDto.codiceLotto == null || lottoDto.codiceLotto.isEmpty()) {
+      return "Codice lotto mancante";
+    }
+    if (lottoDto.estensioneMq == null || lottoDto.estensioneMq <= 0) {
+      return "Estensione del lotto mancante o non valida, (deve essere un numero positivo)";
+    }
+    if (lottoDto.ortoId == null) {
+      return "Orto per il lotto non selezionato";
+    }
+    return null;
+  }
+
+  public void creaLotto(LottoDto lottoDto) {
+    // validazione dati lotto
+    var validationError = isValidLotto(lottoDto);
+    if (validationError != null) {
+      throw new IllegalArgumentException(validationError);
+    }
+
+    // recupera il proprietario e l'orto associati al lotto
+    Lotto lotto = new Lotto(lottoDto);
+    lotto.setProprietario((Proprietario) utenteLoggato);
+    var selectedOrto = ortiObservableList
+        .stream()
+        .filter(orto -> orto.getId().equals(lottoDto.ortoId))
+        .findFirst()
+        .orElseThrow(() -> new IllegalArgumentException("Orto non trovato"));
+    lotto.setOrto(selectedOrto);
+
+    Long id = databaseController.getLottoDao().saveLotto(lotto);
+    System.out.println("Lotto creato con ID: " + id);
+    lotto.setId(id);
+    lottiObservableList.add(lotto);
+  }
+
+  private void caricaLotti(Proprietario proprietario) {
+    // carica i lotti
+    List<Lotto> lotti = databaseController.getLottoDao().findAll(proprietario.getId());
+
+    // associa ogni lotto al proprio orto
+    // cosi in memoria esiste un unico orto
+    for (var lotto : lotti) {
+      var orto = ortiObservableList
+          .stream()
+          .filter(o -> o.getId().equals(lotto.getOrto().getId()))
+          .findFirst()
+          .orElseThrow(() -> new RuntimeException("Orto non trovato per lotto: " + lotto.getId()));
+      lotto.setOrto(orto);
+    }
+
+    proprietario.setLotti(lotti);
+    // passaggio fondamentale per rendere la lista di lotti del proprietario
+    // osservabile dai componenti di JavaFX
+    this.lottiObservableList = FXCollections.observableList(lotti);
+
+    System.out.println("Caricamento lotti effettuato con successo");
+  }
+
 }

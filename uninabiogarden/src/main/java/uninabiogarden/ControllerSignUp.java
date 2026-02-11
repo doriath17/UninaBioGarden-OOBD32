@@ -54,8 +54,8 @@ public class ControllerSignUp {
   public void initialize() {
     loadTestData();
     errorLabel.setText("");
-    tipoUtenteField.getItems().addAll("Coltivatore", "Proprietario");
-    tipoUtenteField.setValue("Proprietario");
+    tipoUtenteField.getItems().addAll("COLTIVATORE", "PROPRIETARIO");
+    tipoUtenteField.setValue("PROPRIETARIO");
 
     // character limits for text fields
     Utils.addCharacterLimit(usernameField, 50);
@@ -78,10 +78,7 @@ public class ControllerSignUp {
     dto.bDay = bdayField.getValue();
     dto.gender = genderField.getText();
     dto.bio = bioField.getText();
-    if (tipoUtenteField.getValue().equals("Coltivatore"))
-      dto.isColtivatore = true;
-    else
-      dto.isColtivatore = false;
+    dto.tipo = tipoUtenteField.getValue();
     return dto;
   }
 
@@ -103,7 +100,7 @@ public class ControllerSignUp {
     try {
       MainController.getInstance().registraUtente(dto);
       clearForm();
-      if (dto.isColtivatore) {
+      if ("COLTIVATORE".equals(dto.tipo)) {
         UIController.getInstance().openColtivatoreHomeView();
       } else {
         UIController.getInstance().openProprietarioHomeView();

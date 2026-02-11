@@ -36,8 +36,8 @@ DECLARE
 BEGIN
 
   -- coerenza stato iniziale
-  IF NEW.stato <> 'pianificata' OR NEW.stato_salute <> 'ottimo' THEN
-    RAISE EXCEPTION 'Una nuova coltivazione deve avere ''stato = pianificata'' e ''stato_salute = ottimo''';
+  IF NEW.stato <> 'PIANIFICATA' OR NEW.stato_salute <> 'OTTIMO' THEN
+    RAISE EXCEPTION 'Una nuova coltivazione deve avere ''stato = PIANIFICATA'' e ''stato_salute = OTTIMO''';
   END IF;
 
     -- attributi che dovrebbero essere NULL all'inserimento
@@ -77,7 +77,7 @@ RETURNS TRIGGER AS $$
 BEGIN
 
   -- freeze dopo la terminazione
-  IF OLD.stato IN ('conclusa', 'fallita', 'annullata') THEN 
+  IF OLD.stato IN ('CONCLUSA', 'FALLITA', 'ANNULLATA') THEN 
     RAISE EXCEPTION 'Impossibile modificare una coltivazione terminata';
   END IF;
 
@@ -119,17 +119,17 @@ BEGIN
       , NEW.stato;
     END IF;
 
-    IF OLD.stato = 'pianificata' AND NEW.stato = 'attiva' THEN
+    IF OLD.stato = 'PIANIFICATA' AND NEW.stato = 'ATTIVA' THEN
       SELECT stato INTO v_stato_progetto 
       FROM PROGETTO
       WHERE id = OLD.id_progetto;
 
-      IF v_stato_progetto <> 'attivo' THEN 
-        RAISE EXCEPTION 'Transizione di stato (%, %) non permessa: il progetto non è in stato ''attivo''', OLD.stato, NEW.stato;
+      IF v_stato_progetto <> 'ATTIVO' THEN 
+        RAISE EXCEPTION 'Transizione di stato (%, %) non permessa: il progetto non è in stato ''ATTIVO''', OLD.stato, NEW.stato;
       END IF;
 
     -- terminazione coltivazione
-    ELSID NEW.stato IN ('conclusa', 'fallita', 'annullata') THEN
+    ELSIF NEW.stato IN ('CONCLUSA', 'FALLITA', 'ANNULLATA') THEN
       IF NEW.data_fine IS NOT NULL THEN
         RAISE NOTICE 'Attenzione: la data fine inserita % verrà ignorata, il sistema utilizzerà il timestamp attuale', NEW.data_creazione;
       END IF;

@@ -13,6 +13,9 @@ public class Orto {
 
   private Proprietario proprietario;
 
+  public Orto() {
+  }
+
   public Orto(String nomeOrto, String citta, String cap, String civico, String via, Proprietario proprietario) {
     this.nomeOrto = nomeOrto;
     this.citta = citta;

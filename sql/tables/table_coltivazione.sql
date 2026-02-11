@@ -8,7 +8,7 @@ DROP TYPE IF EXISTS stato_salute_coltivazione CASCADE;
 -- Tabella transizione dello stato della coltivazione
 -- ==============================================================================================
 
-CREATE TYPE stato_coltivazione AS ENUM ('pianificata', 'attiva', 'conclusa', 'fallita', 'annullata');
+CREATE TYPE stato_coltivazione AS ENUM ('PIANIFICATA', 'ATTIVA', 'CONCLUSA', 'FALLITA', 'ANNULLATA');
 
 CREATE TABLE transizione_stato_coltivazione (
   stato_corrente stato_coltivazione NOT NULL,
@@ -19,12 +19,11 @@ CREATE TABLE transizione_stato_coltivazione (
 
 INSERT INTO transizione_stato_coltivazione (stato_corrente, stato_successivo) 
 VALUES
-('pianificata', 'attiva'),
-('pianificata', 'annullata'),
-('attiva', 'conclusa'),
-('attiva', 'fallita'),
-('attiva', 'annullata');
-
+('PIANIFICATA', 'ATTIVA'),
+('PIANIFICATA', 'ANNULLATA'),
+('ATTIVA', 'CONCLUSA'),
+('ATTIVA', 'FALLITA'),
+('ATTIVA', 'ANNULLATA');
 -- ==============================================================================================
 -- Tabella coltivazione
 -- ==============================================================================================
@@ -33,7 +32,7 @@ VALUES
 -- non vi è la necessita di una tabella per definire le transizioni possibili:
 -- ad eccezione dello stato 'compromesso', si può passare liberamente da uno stato 
 -- all'altro. 
-CREATE TYPE stato_salute_coltivazione AS ENUM ('ottimo', 'stabile', 'sofferente', 'critico', 'compromesso');
+CREATE TYPE stato_salute_coltivazione AS ENUM ('OTTIMO', 'STABILE', 'SOFFERENTE', 'CRITICO', 'COMPROMESSO');
 
 
 CREATE TABLE coltivazione (
