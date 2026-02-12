@@ -125,23 +125,26 @@ public class UIController {
     loadViewIntoContent(FxmlView.CREA_LOTTO_VIEW, homeController.getSelectedContent());
   }
 
-  public void openCreaProgettoStep1View() {
+  public void openCreaProgettoStep1View(ProgettoDto progettoDto, boolean init) {
     ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
     loadViewIntoContent(FxmlView.CREA_PROGETTO_STEP_1, homeController.getSelectedContent());
 
-    ControllerCreaProgettoStep1 step1Controller = (ControllerCreaProgettoStep1) controllers
-        .get(FxmlView.CREA_PROGETTO_STEP_1);
-    step1Controller.init(); // per avere la lista aggiornata dei lotti disponibili ogni volta che si apre la
-                            // view
+    if (init) {
+      ControllerCreaProgettoStep1 step1Controller = (ControllerCreaProgettoStep1) controllers
+          .get(FxmlView.CREA_PROGETTO_STEP_1);
+      step1Controller.init(progettoDto); // passa il DTO al controller del passo 1 e indica di pulire i dati
+    }
   }
 
-  public void openCreaProgettoStep2View(ProgettoDto dto) {
+  public void openCreaProgettoStep2View(ProgettoDto dto, boolean init) {
     ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
     loadViewIntoContent(FxmlView.CREA_PROGETTO_STEP_2, homeController.getSelectedContent());
 
-    ControllerCreaProgettoStep2 step2Controller = (ControllerCreaProgettoStep2) controllers
-        .get(FxmlView.CREA_PROGETTO_STEP_2);
-    step2Controller.init(dto); // passa il DTO al controller del passo 2
+    if (init) {
+      ControllerCreaProgettoStep2 step2Controller = (ControllerCreaProgettoStep2) controllers
+          .get(FxmlView.CREA_PROGETTO_STEP_2);
+      step2Controller.init(dto); // passa il DTO al controller del passo 2 e indica di pulire i dati
+    }
   }
 
 }

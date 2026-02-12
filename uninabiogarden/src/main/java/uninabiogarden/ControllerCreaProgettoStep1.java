@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.layout.VBox;
 import uninabiogarden.dto.ProgettoDto;
 import uninabiogarden.entities.Lotto;
+import uninabiogarden.entities.Progetto;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextField;
@@ -54,6 +55,9 @@ public class ControllerCreaProgettoStep1 {
   private Label errorLabel;
 
   private ObservableList<Lotto> lottiDisponibiliObsList = FXCollections.observableArrayList();
+  private boolean initNextStep = true;
+
+  ProgettoDto progettoDto;
 
   @FXML
   private void initialize() {
@@ -84,13 +88,12 @@ public class ControllerCreaProgettoStep1 {
 
   }
 
-  public void init() {
-    errorLabel.setText("");
-    nomeProgettoField.setText("");
-    descrizioneField.setText("");
-    codiceSelectedLotto.setText("N/A");
-    nomeOrtoSelectedLotto.setText("N/A");
-    indirizzoSelectedLotto.setText("N/A");
+  public void init(ProgettoDto progettoDto) {
+    if (progettoDto == null) {
+      this.progettoDto = new ProgettoDto();
+    }
+    initNextStep = true;
+    clear();
 
     // carica i lotti disponibili per il coltivatore loggato
     try {
@@ -121,15 +124,17 @@ public class ControllerCreaProgettoStep1 {
   }
 
   private ProgettoDto getData() {
-    ProgettoDto dto = new ProgettoDto();
-    dto.nome = nomeProgettoField.getText();
-    dto.descrizione = descrizioneField.getText();
-    dto.stato = "PIANIFICATO"; // Stato iniziale del progetto
+    if (progettoDto == null) {
+      progettoDto = new ProgettoDto();
+    }
+    progettoDto.nome = nomeProgettoField.getText();
+    progettoDto.descrizione = descrizioneField.getText();
+    progettoDto.stato = "PIANIFICATO"; // Stato iniziale del progetto
     // le date sono impostate direttamente nel database
-    dto.lottoId = availableOrtiTable.getSelectionModel().getSelectedItem() != null
+    progettoDto.lottoId = availableOrtiTable.getSelectionModel().getSelectedItem() != null
         ? availableOrtiTable.getSelectionModel().getSelectedItem().getId()
         : null;
-    return dto;
+    return progettoDto;
   }
 
   private String isValidData(ProgettoDto progettoDto) {
@@ -144,13 +149,17 @@ public class ControllerCreaProgettoStep1 {
 
   @FXML
   private void nextStepAction() {
-    ProgettoDto dto = getData();
-    String validationError = isValidData(dto);
+    progettoDto = getData();
+    String validationError = isValidData(progettoDto);
     if (validationError != null) {
       errorLabel.setText(validationError);
       return;
     }
-    UIController.getInstance().openCreaProgettoStep2View(dto);
+    UIController.getInstance().openCreaProgettoStep2View(progettoDto, initNextStep);
+    if (initNextStep) {
+      initNextStep = false; // dopo il primo passaggio, non re-inizializzare i dati se si torna indietro al
+                            // passo 1
+    }
   }
 
 }

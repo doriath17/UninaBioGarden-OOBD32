@@ -11,5 +11,5 @@ public class ProgettoDto {
   public String dataFine;
 
   public Long lottoId;
-  public List<Long> coltivatori;
+  public List<Long> coltivatoriIds;
 }

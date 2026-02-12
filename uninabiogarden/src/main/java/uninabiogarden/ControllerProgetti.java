@@ -53,7 +53,7 @@ public class ControllerProgetti {
 
   @FXML
   private void creaProgettoAction(ActionEvent event) {
-    UIController.getInstance().openCreaProgettoStep1View();
+    UIController.getInstance().openCreaProgettoStep1View(null, true);
   }
 
 }

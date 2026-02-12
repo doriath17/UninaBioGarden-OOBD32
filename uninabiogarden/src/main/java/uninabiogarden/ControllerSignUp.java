@@ -75,7 +75,7 @@ public class ControllerSignUp {
     dto.codiceFiscale = codiceFiscaleField.getText();
     dto.nome = nomeField.getText();
     dto.cognome = cognomeField.getText();
-    dto.bDay = bdayField.getValue();
+    dto.bDay = bdayField.getValue() != null ? bdayField.getValue().toString() : null;
     dto.gender = genderField.getText();
     dto.bio = bioField.getText();
     dto.tipo = tipoUtenteField.getValue();

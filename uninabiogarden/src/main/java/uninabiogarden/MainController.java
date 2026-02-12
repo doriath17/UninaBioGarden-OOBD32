@@ -102,12 +102,18 @@ public class MainController {
       return "Cognome mancante";
     }
 
-    if (utenteDto.bDay == null) {
+    if (utenteDto.bDay == null || utenteDto.bDay.isEmpty()) {
       return "Data di nascita mancante";
     }
 
-    if (utenteDto.bDay == null || utenteDto.bDay.isAfter(java.time.LocalDate.now().minusYears(18))) {
-      return "L'utente deve essere maggiorenne";
+    // Parse and validate bDay
+    try {
+      java.time.LocalDate birthDate = java.time.LocalDate.parse(utenteDto.bDay);
+      if (birthDate.isAfter(java.time.LocalDate.now().minusYears(18))) {
+        return "L'utente deve essere maggiorenne";
+      }
+    } catch (Exception e) {
+      return "Formato data di nascita non valido";
     }
 
     return null; // dati validi
@@ -311,6 +317,16 @@ public class MainController {
     // // associa il progetto al proprietario loggato
     // ((Proprietario) utenteLoggato).addProgetto(progetto);
 
+  }
+
+  // ==============================================================================================
+  // Sezione: Coltivatori e assegnazione a Progetto
+  // ==============================================================================================
+
+  public List<Coltivatore> getColtivatoriDisponibili() {
+    List<Utente> coltivatori = databaseController.getUtenteDao().findAll("COLTIVATORE");
+    System.out.println("Coltivatori disponibili: " + coltivatori.size());
+    return coltivatori.stream().map(u -> (Coltivatore) u).toList();
   }
 
 }

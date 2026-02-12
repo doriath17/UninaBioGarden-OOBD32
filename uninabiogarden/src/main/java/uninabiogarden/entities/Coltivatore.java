@@ -11,7 +11,7 @@ public class Coltivatore extends Utente {
   }
 
   public Coltivatore(String username, String password, String email, String codiceFiscale, String nome,
-      String cognome, LocalDate bDay, String gender, String bio) {
+      String cognome, String bDay, String gender, String bio) {
     super(username, password, email, codiceFiscale, nome, cognome, bDay, gender, bio);
   }
 

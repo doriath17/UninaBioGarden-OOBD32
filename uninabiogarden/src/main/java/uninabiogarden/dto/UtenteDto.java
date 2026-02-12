@@ -1,7 +1,5 @@
 package uninabiogarden.dto;
 
-import java.time.LocalDate;
-
 public class UtenteDto {
   public String username;
   public String password;
@@ -9,7 +7,7 @@ public class UtenteDto {
   public String codiceFiscale;
   public String nome;
   public String cognome;
-  public LocalDate bDay;
+  public String bDay;
   public String gender;
   public String bio;
   public String tipo; // "COLTIVATORE" o "PROPRIETARIO"
