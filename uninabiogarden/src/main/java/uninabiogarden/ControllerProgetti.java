@@ -38,7 +38,11 @@ public class ControllerProgetti {
 
   @FXML
   private void initialize() {
-    // initialization if needed
+    // Setup table columns
+    // TODO: setup cell value factories when entities are defined
+
+    // Setup actions column with View button
+    // TODO: add button cell factory for actionsColumn to open dettaglio progetto
   }
 
   @FXML
@@ -54,6 +58,10 @@ public class ControllerProgetti {
   @FXML
   private void creaProgettoAction(ActionEvent event) {
     UIController.getInstance().openCreaProgettoStep1View(null, true);
+  }
+
+  private void openDettaglioProgetto() {
+    UIController.getInstance().openDettaglioProgettoView();
   }
 
 }

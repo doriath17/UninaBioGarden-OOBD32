@@ -17,7 +17,12 @@ public enum FxmlView {
   CREA_PROGETTO_STEP_2("/uninabiogarden/CreaProgettoStep2.fxml"),
   CREA_PROGETTO_STEP_3("/uninabiogarden/CreaProgettoStep3.fxml"),
 
-  DETTAGLIO_PROGETTO_VIEW("/uninabiogarden/DettaglioProgetto.fxml");
+  DETTAGLIO_PROGETTO_VIEW("/uninabiogarden/DettaglioProgetto.fxml"),
+  PROGETTO_INFO_GENERALI("/uninabiogarden/ProgettoInfoGenerali.fxml"),
+  PROGETTO_COLTIVATORI("/uninabiogarden/ProgettoColtivatori.fxml"),
+  PROGETTO_COLTIVAZIONI("/uninabiogarden/ProgettoColtivazioni.fxml"),
+  PROGETTO_ATTIVITA("/uninabiogarden/ProgettoAttivita.fxml"),
+  PROGETTO_NOTIFICHE("/uninabiogarden/ProgettoNotifiche.fxml");
 
   private final String fxmlPath;
 

@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="mainContent" prefHeight="566.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uninabiogarden.ControllerCreaProgettoStep3">
+<VBox fx:id="mainContent" prefHeight="566.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uninabiogarden.ControllerDettaglioProgetto">
    <children>
       <Label text="Dettagli Progetto">
          <font>
@@ -42,7 +42,7 @@
                         <Button layoutX="28.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#openColtivatoriProgetto" prefHeight="60.0" prefWidth="233.0" text="Coltivatori" GridPane.columnIndex="1" />
                      </children>
                   </GridPane>
-                  <VBox prefHeight="360.0" prefWidth="1050.0" />
+                  <VBox fx:id="dettaglioContent" prefHeight="360.0" prefWidth="1050.0" />
                </children>
             </VBox>
             <Label fx:id="errorLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" text="Error Label">

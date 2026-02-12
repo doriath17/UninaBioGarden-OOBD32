@@ -166,4 +166,42 @@ public class UIController {
     }
   }
 
+  public void openDettaglioProgettoView() {
+    ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
+    loadViewIntoContent(FxmlView.DETTAGLIO_PROGETTO_VIEW, homeController.getSelectedContent());
+
+    // Open info generali by default
+    openProgettoInfoGenerali();
+  }
+
+  public void openProgettoInfoGenerali() {
+    ControllerDettaglioProgetto dettaglioController = (ControllerDettaglioProgetto) controllers
+        .get(FxmlView.DETTAGLIO_PROGETTO_VIEW);
+    loadViewIntoContent(FxmlView.PROGETTO_INFO_GENERALI, dettaglioController.getDettaglioContent());
+  }
+
+  public void openProgettoColtivatori() {
+    ControllerDettaglioProgetto dettaglioController = (ControllerDettaglioProgetto) controllers
+        .get(FxmlView.DETTAGLIO_PROGETTO_VIEW);
+    loadViewIntoContent(FxmlView.PROGETTO_COLTIVATORI, dettaglioController.getDettaglioContent());
+  }
+
+  public void openProgettoColtivazioni() {
+    ControllerDettaglioProgetto dettaglioController = (ControllerDettaglioProgetto) controllers
+        .get(FxmlView.DETTAGLIO_PROGETTO_VIEW);
+    loadViewIntoContent(FxmlView.PROGETTO_COLTIVAZIONI, dettaglioController.getDettaglioContent());
+  }
+
+  public void openProgettoAttivita() {
+    ControllerDettaglioProgetto dettaglioController = (ControllerDettaglioProgetto) controllers
+        .get(FxmlView.DETTAGLIO_PROGETTO_VIEW);
+    loadViewIntoContent(FxmlView.PROGETTO_ATTIVITA, dettaglioController.getDettaglioContent());
+  }
+
+  public void openProgettoNotifiche() {
+    ControllerDettaglioProgetto dettaglioController = (ControllerDettaglioProgetto) controllers
+        .get(FxmlView.DETTAGLIO_PROGETTO_VIEW);
+    loadViewIntoContent(FxmlView.PROGETTO_NOTIFICHE, dettaglioController.getDettaglioContent());
+  }
+
 }
