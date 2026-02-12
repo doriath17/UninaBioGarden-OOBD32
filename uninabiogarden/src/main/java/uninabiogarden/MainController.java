@@ -10,6 +10,7 @@ import uninabiogarden.dto.OrtoDto;
 import uninabiogarden.dto.ProgettoDto;
 import uninabiogarden.dto.UtenteDto;
 import uninabiogarden.entities.Coltivatore;
+import uninabiogarden.entities.Coltura;
 import uninabiogarden.entities.Lotto;
 import uninabiogarden.entities.Orto;
 import uninabiogarden.entities.Progetto;
@@ -49,6 +50,8 @@ public class MainController {
   // vedi caricamentoDatiUtente() per maggiori dettagli
   private ObservableList<Lotto> lottiObservableList;
 
+  private ObservableList<Coltura> coltureObservableList = FXCollections.observableArrayList();
+
   // ==============================================================================================
   // Sezione: Accessors
   // ==============================================================================================
@@ -59,6 +62,10 @@ public class MainController {
 
   public ObservableList<Lotto> getLottiObservableList() {
     return lottiObservableList;
+  }
+
+  public ObservableList<Coltura> getColtureObservableList() {
+    return coltureObservableList;
   }
 
   public Utente getUtenteLoggato() {
@@ -319,14 +326,20 @@ public class MainController {
 
   }
 
-  // ==============================================================================================
-  // Sezione: Coltivatori e assegnazione a Progetto
-  // ==============================================================================================
-
   public List<Coltivatore> getColtivatoriDisponibili() {
     List<Utente> coltivatori = databaseController.getUtenteDao().findAll("COLTIVATORE");
     System.out.println("Coltivatori disponibili: " + coltivatori.size());
     return coltivatori.stream().map(u -> (Coltivatore) u).toList();
+  }
+
+  // ==============================================================================================
+  // Sezione: Colture
+  // ==============================================================================================
+
+  public void loadColture() {
+    List<Coltura> colture = databaseController.getColturaDao().findAll();
+    coltureObservableList.setAll(colture);
+    System.out.println("Caricamento colture effettuato con successo");
   }
 
 }

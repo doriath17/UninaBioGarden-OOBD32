@@ -19,6 +19,7 @@ public class DatabaseController {
   private UtenteDao utenteDao = new UtenteDao();
   private OrtoDao ortoDao = new OrtoDao();
   private LottoDao lottoDao = new LottoDao();
+  private ColturaDao colturaDao = new ColturaDao();
 
   public UtenteDao getUtenteDao() {
     return utenteDao;
@@ -30,6 +31,10 @@ public class DatabaseController {
 
   public LottoDao getLottoDao() {
     return lottoDao;
+  }
+
+  public ColturaDao getColturaDao() {
+    return colturaDao;
   }
 
 }

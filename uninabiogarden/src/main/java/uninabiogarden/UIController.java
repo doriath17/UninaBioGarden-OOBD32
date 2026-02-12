@@ -147,4 +147,15 @@ public class UIController {
     }
   }
 
+  public void openCreaProgettoStep3View(ProgettoDto dto, boolean init) {
+    ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
+    loadViewIntoContent(FxmlView.CREA_PROGETTO_STEP_3, homeController.getSelectedContent());
+
+    if (init) {
+      ControllerCreaProgettoStep3 step3Controller = (ControllerCreaProgettoStep3) controllers
+          .get(FxmlView.CREA_PROGETTO_STEP_3);
+      step3Controller.init(dto); // passa il DTO al controller del passo 3 e indica di pulire i dati
+    }
+  }
+
 }

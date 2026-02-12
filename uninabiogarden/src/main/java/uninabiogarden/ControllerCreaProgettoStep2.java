@@ -3,6 +3,7 @@ package uninabiogarden;
 import javafx.fxml.FXML;
 import javafx.scene.layout.VBox;
 import uninabiogarden.dto.ProgettoDto;
+import uninabiogarden.Utils;
 import uninabiogarden.entities.Coltivatore;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -73,66 +74,13 @@ public class ControllerCreaProgettoStep2 {
 
     availableNomeColumn.setCellValueFactory(new PropertyValueFactory<>("fullName"));
     availableUsernameColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
-    setupCheckBoxColumn(availableSelectionColumn, availableSelectionMap);
+    Utils.<Coltivatore>setupCheckBoxColumn(availableSelectionColumn, availableSelectionMap);
     availableColtivatoriTable.setItems(availableColtivatoriObsList);
 
     selectedNomeColumn.setCellValueFactory(new PropertyValueFactory<>("fullName"));
     selectedUsernameColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
-    setupCheckBoxColumn(selectedSelectionColumn, selectedSelectionMap);
+    Utils.<Coltivatore>setupCheckBoxColumn(selectedSelectionColumn, selectedSelectionMap);
     selectedColtivatoriTable.setItems(selectedColtivatoriObsList);
-  }
-
-  private void setupCheckBoxColumn(TableColumn<Coltivatore, Void> column,
-      Map<Coltivatore, SimpleBooleanProperty> selectionMap) {
-    column.setCellFactory(col -> new TableCell<Coltivatore, Void>() {
-      private final CheckBox checkBox = new CheckBox();
-      private SimpleBooleanProperty currentProperty = null;
-
-      {
-        // Initializza il checkbox e aggiungi listener per aggiornare la mappa di
-        // selezione quando viene cliccato
-        checkBox.setOnAction(event -> {
-          Coltivatore coltivatore = getTableRow().getItem();
-          if (coltivatore != null) {
-            // Aggiorna lo stato di selezione nella mappa
-            selectionMap.get(coltivatore).set(checkBox.isSelected());
-          }
-        });
-      }
-
-      @Override
-      protected void updateItem(Void item, boolean empty) {
-        super.updateItem(item, empty);
-
-        if (currentProperty != null) {
-          // Se c'è una proprietà attualmente associata al checkbox, rimuovi il binding
-          checkBox.selectedProperty().unbindBidirectional(currentProperty);
-          currentProperty = null;
-        }
-
-        if (empty || getTableRow() == null || getTableRow().getItem() == null) {
-          setGraphic(null);
-        } else {
-          Coltivatore coltivatore = getTableRow().getItem();
-
-          // Crea la SimpleBooleanProperty se non esiste
-          if (!selectionMap.containsKey(coltivatore)) {
-            selectionMap.put(coltivatore, new SimpleBooleanProperty(false));
-          }
-
-          // Qui le SimpleBooleanProperty vengono "colleggate" al checkbox con un binding
-          // bidirezionale che singnifica che se l'utente clicca il checkbox, la proprietà
-          // si aggiorna, e se la proprietà viene aggiornata (ad esempio quando si sposta
-          // un coltivatore da una tabella all'altra), il checkbox si aggiorna di
-          // conseguenza. In questo modo lo stato di selezione rimane sempre sincronizzato
-          // tra la UI e la logica dell'applicazione.
-          currentProperty = selectionMap.get(coltivatore);
-          checkBox.selectedProperty().bindBidirectional(currentProperty);
-
-          setGraphic(checkBox);
-        }
-      }
-    });
   }
 
   public void init(ProgettoDto progettoDto) {

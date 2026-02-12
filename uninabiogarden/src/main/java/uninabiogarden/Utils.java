@@ -1,10 +1,16 @@
 package uninabiogarden;
 
+import java.util.Map;
 import java.util.function.UnaryOperator;
 
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.control.TextInputControl;
+import uninabiogarden.entities.Coltivatore;
 
 public class Utils {
 
@@ -54,4 +60,58 @@ public class Utils {
 
     textField.setTextFormatter(new TextFormatter<>(filter));
   }
+
+  public static <T> void setupCheckBoxColumn(TableColumn<T, Void> column,
+      Map<T, SimpleBooleanProperty> selectionMap) {
+    column.setCellFactory(col -> new TableCell<T, Void>() {
+      private final CheckBox checkBox = new CheckBox();
+      private SimpleBooleanProperty currentProperty = null;
+
+      {
+        // Initializza il checkbox e aggiungi listener per aggiornare la mappa di
+        // selezione quando viene cliccato
+        checkBox.setOnAction(event -> {
+          T value = getTableRow().getItem();
+          if (value != null) {
+            // Aggiorna lo stato di selezione nella mappa
+            selectionMap.get(value).set(checkBox.isSelected());
+          }
+        });
+      }
+
+      @Override
+      protected void updateItem(Void item, boolean empty) {
+        super.updateItem(item, empty);
+
+        if (currentProperty != null) {
+          // Se c'è una proprietà attualmente associata al checkbox, rimuovi il binding
+          checkBox.selectedProperty().unbindBidirectional(currentProperty);
+          currentProperty = null;
+        }
+
+        if (empty || getTableRow() == null || getTableRow().getItem() == null) {
+          setGraphic(null);
+        } else {
+          T value = getTableRow().getItem();
+
+          // Crea la SimpleBooleanProperty se non esiste
+          if (!selectionMap.containsKey(value)) {
+            selectionMap.put(value, new SimpleBooleanProperty(false));
+          }
+
+          // Qui le SimpleBooleanProperty vengono "collegate" al checkbox con un binding
+          // bidirezionale che significa che se l'utente clicca il checkbox, la proprietà
+          // si aggiorna, e se la proprietà viene aggiornata (ad esempio quando si sposta
+          // un elemento da una tabella all'altra), il checkbox si aggiorna di
+          // conseguenza. In questo modo lo stato di selezione rimane sempre sincronizzato
+          // tra la UI e la logica dell'applicazione.
+          currentProperty = selectionMap.get(value);
+          checkBox.selectedProperty().bindBidirectional(currentProperty);
+
+          setGraphic(checkBox);
+        }
+      }
+    });
+  }
+
 }
