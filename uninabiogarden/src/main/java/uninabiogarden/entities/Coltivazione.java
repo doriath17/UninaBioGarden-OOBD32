@@ -6,7 +6,7 @@ public class Coltivazione {
   };
 
   public enum StatoColtivazione {
-    PIANIFICATA, ATTIVA, CONCLUSA, FALLITA, ANNULLATA
+    PIANIFICATA, ATTIVA, CONCLUSA
   };
 
   private Long id;

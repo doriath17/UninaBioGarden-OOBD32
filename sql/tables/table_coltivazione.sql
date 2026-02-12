@@ -8,7 +8,7 @@ DROP TYPE IF EXISTS stato_salute_coltivazione CASCADE;
 -- Tabella transizione dello stato della coltivazione
 -- ==============================================================================================
 
-CREATE TYPE stato_coltivazione AS ENUM ('PIANIFICATA', 'ATTIVA', 'CONCLUSA', 'FALLITA', 'ANNULLATA');
+CREATE TYPE stato_coltivazione AS ENUM ('PIANIFICATA', 'ATTIVA', 'CONCLUSA');
 
 CREATE TABLE transizione_stato_coltivazione (
   stato_corrente stato_coltivazione NOT NULL,
@@ -20,10 +20,8 @@ CREATE TABLE transizione_stato_coltivazione (
 INSERT INTO transizione_stato_coltivazione (stato_corrente, stato_successivo) 
 VALUES
 ('PIANIFICATA', 'ATTIVA'),
-('PIANIFICATA', 'ANNULLATA'),
-('ATTIVA', 'CONCLUSA'),
-('ATTIVA', 'FALLITA'),
-('ATTIVA', 'ANNULLATA');
+('PIANIFICATA', 'CONCLUSA'),
+('ATTIVA', 'CONCLUSA');
 -- ==============================================================================================
 -- Tabella coltivazione
 -- ==============================================================================================

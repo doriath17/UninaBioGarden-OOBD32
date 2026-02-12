@@ -8,7 +8,9 @@ DROP TYPE IF EXISTS stato_progetto CASCADE;
 
 DROP TABLE IF EXISTS lavora_per CASCADE;
 
-CREATE TYPE stato_progetto AS ENUM ('PIANIFICATO', 'ATTIVO', 'FALLITO', 'CONCLUSO');
+CREATE TYPE stato_progetto AS ENUM ('PIANIFICATO', 'ATTIVO', 'CONCLUSO');
+
+-- TODO: aggiungere le regole di transizione
 
 CREATE TABLE progetto (
   id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -19,7 +21,7 @@ CREATE TABLE progetto (
 
   nome VARCHAR(100) NOT NULL UNIQUE,
   descrizione TEXT,
-  stato stato_progetto NOT NULL,
+  stato stato_progetto NOT NULL DEFAULT 'PIANIFICATO',
 
   id_proprietario INT NOT NULL,
   id_lotto INT NOT NULL,

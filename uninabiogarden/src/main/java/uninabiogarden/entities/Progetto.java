@@ -10,7 +10,7 @@ import uninabiogarden.dto.ProgettoDto;
 public class Progetto {
 
   public enum Stato {
-    PIANIFICATO, ATTIVO, FALLITO, CONCLUSO
+    PIANIFICATO, ATTIVO, CONCLUSO
   }
 
   private Long id;
