@@ -17,8 +17,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Alert.AlertType;
+import javafx.util.Callback;
 import uninabiogarden.entities.Coltivatore;
 
 public class Utils {
@@ -165,6 +167,32 @@ public class Utils {
     alert.showAndWait().ifPresent(response -> {
       if (response == buttonConferma) {
         onConfirm.accept(data);
+      }
+    });
+  }
+
+  public static <T> void addButtonToColumn(
+      TableColumn<T, Void> column,
+      String buttonText,
+      Consumer<T> rowAction) {
+    column.setCellFactory(param -> new TableCell<T, Void>() {
+      private final Button btn = new Button(buttonText);
+
+      {
+        btn.setOnAction(event -> {
+          T rowData = getTableView().getItems().get(getIndex());
+          rowAction.accept(rowData);
+        });
+      }
+
+      @Override
+      protected void updateItem(Void item, boolean empty) {
+        super.updateItem(item, empty);
+        if (empty || getTableRow() == null || getTableRow().getItem() == null) {
+          setGraphic(null);
+        } else {
+          setGraphic(btn);
+        }
       }
     });
   }

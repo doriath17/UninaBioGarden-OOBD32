@@ -169,9 +169,13 @@ public class UIController {
     }
   }
 
-  public void openDettaglioProgettoView() {
+  public void openDettaglioProgettoView(Progetto progetto) {
     ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
     loadViewIntoContent(FxmlView.DETTAGLIO_PROGETTO_VIEW, homeController.getSelectedContent());
+
+    ControllerDettaglioProgetto dettaglioController = (ControllerDettaglioProgetto) controllers
+        .get(FxmlView.DETTAGLIO_PROGETTO_VIEW);
+    dettaglioController.setProgetto(progetto);
 
     // Open info generali by default
     openProgettoInfoGenerali();

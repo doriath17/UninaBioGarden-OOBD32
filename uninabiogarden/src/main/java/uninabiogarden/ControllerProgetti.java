@@ -52,7 +52,7 @@ public class ControllerProgetti {
     dataFineColumn.setCellValueFactory(new PropertyValueFactory<>("dataFine"));
 
     // Setup actions column with View button
-    // TODO: add button cell factory for actionsColumn to open dettaglio progetto
+    Utils.addButtonToColumn(actionsColumn, "View", this::openDettaglioProgetto);
   }
 
   public void init() {
@@ -76,8 +76,8 @@ public class ControllerProgetti {
     UIController.getInstance().openCreaProgettoStep1View(null, true);
   }
 
-  private void openDettaglioProgetto() {
-    UIController.getInstance().openDettaglioProgettoView();
+  private void openDettaglioProgetto(Progetto progetto) {
+    UIController.getInstance().openDettaglioProgettoView(progetto);
   }
 
 }

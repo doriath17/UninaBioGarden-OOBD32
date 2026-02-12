@@ -4,6 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
+import uninabiogarden.entities.Progetto;
 
 public class ControllerDettaglioProgetto {
 
@@ -16,9 +17,19 @@ public class ControllerDettaglioProgetto {
   @FXML
   private Label errorLabel;
 
+  private Progetto currentProgetto;
+
   @FXML
   private void initialize() {
     errorLabel.setVisible(false);
+  }
+
+  public void setProgetto(Progetto progetto) {
+    this.currentProgetto = progetto;
+  }
+
+  public Progetto getCurrentProgetto() {
+    return currentProgetto;
   }
 
   VBox getDettaglioContent() {
