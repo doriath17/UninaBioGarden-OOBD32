@@ -77,7 +77,7 @@ RETURNS TRIGGER AS $$
 BEGIN
 
   -- freeze dopo la terminazione
-  IF OLD.stato IN ('CONCLUSA', 'FALLITA', 'ANNULLATA') THEN 
+  IF OLD.stato = 'CONCLUSA' THEN 
     RAISE EXCEPTION 'Impossibile modificare una coltivazione terminata';
   END IF;
 
@@ -129,11 +129,17 @@ BEGIN
       END IF;
 
     -- terminazione coltivazione
-    ELSIF NEW.stato IN ('CONCLUSA', 'FALLITA', 'ANNULLATA') THEN
+    ELSIF NEW.stato = 'CONCLUSA' THEN
       IF NEW.data_fine IS NOT NULL THEN
         RAISE NOTICE 'Attenzione: la data fine inserita % verrà ignorata, il sistema utilizzerà il timestamp attuale', NEW.data_creazione;
       END IF;
       NEW.data_fine := CURRENT_TIMESTAMP;
+
+      -- terminazione a cascata di tutte le attività associate alla coltivazione
+      UPDATE attivita 
+      SET stato = 'ANNULLATA'
+      WHERE id_coltivazione = NEW.id AND stato IN ('PIANIFICATA', 'IN_CORSO');
+
     END IF;
   END IF;
 END;

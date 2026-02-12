@@ -33,13 +33,19 @@ public class ControllerOrti {
   @FXML
   private TableColumn<Orto, String> proprietarioColumn;
 
+  private ObservableList<Orto> ortiObservableList;
+
   @FXML
   public void initialize() {
     nomeOrtoColumn.setCellValueFactory(new PropertyValueFactory<>("nomeOrto"));
     indirizzoColumn.setCellValueFactory(new PropertyValueFactory<>("fullAddress"));
     proprietarioColumn.setCellValueFactory(new PropertyValueFactory<>("proprietarioFullName"));
+  }
 
-    ortiTable.setItems(MainController.getInstance().getOrtiObservableList());
+  public void init() {
+    // Crea ObservableList dal model - sincronizzato con la lista del model
+    ortiObservableList = FXCollections.observableList(MainController.getInstance().getOrti());
+    ortiTable.setItems(ortiObservableList);
   }
 
   @FXML

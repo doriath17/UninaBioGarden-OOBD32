@@ -56,8 +56,8 @@ BEGIN
   FROM coltivazione
   WHERE id = NEW.id_coltivazione;
 
-  IF v_stato_coltivazione IN ('FALLITA', 'CONCLUSA', 'ANNULLATA') THEN
-    RAISE EXCEPTION 'Impossibile associaRE l''attività ad una coltivazione terminata';
+  IF v_stato_coltivazione = 'CONCLUSA' THEN
+    RAISE EXCEPTION 'Impossibile associare l''attività ad una coltivazione terminata';
   END IF;
 
   RETURN NEW;

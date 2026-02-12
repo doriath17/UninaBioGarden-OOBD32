@@ -1,5 +1,8 @@
 package uninabiogarden.dao;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import uninabiogarden.dto.UtenteDto;
 import uninabiogarden.entities.Coltivatore;
 import uninabiogarden.entities.Proprietario;
@@ -61,7 +64,7 @@ public class UtenteDao {
         dto.email = result.getString("email");
         dto.nome = result.getString("nome");
         dto.cognome = result.getString("cognome");
-        dto.bDay = result.getDate("b_day").toLocalDate();
+        dto.bDay = result.getDate("b_day") != null ? result.getDate("b_day").toString() : null;
         dto.codiceFiscale = result.getString("codice_fiscale");
         dto.gender = result.getString("gender");
         dto.bio = result.getString("bio");
@@ -82,4 +85,42 @@ public class UtenteDao {
     return foundUtente; // null se non trovato
   }
 
+  public List<Utente> findAll(String tipo) {
+    var sql = "SELECT * FROM utente WHERE tipo = '" + tipo + "'";
+
+    List<Utente> utenti = new ArrayList<>();
+
+    try (var conn = database.getConnection(); var stmt = conn.createStatement()) {
+
+      var result = stmt.executeQuery(sql);
+      while (result.next()) {
+        UtenteDto dto = new UtenteDto();
+        dto.username = result.getString("username");
+        dto.password = result.getString("password");
+        dto.email = result.getString("email");
+        dto.nome = result.getString("nome");
+        dto.cognome = result.getString("cognome");
+        dto.bDay = result.getDate("b_day") != null ? result.getDate("b_day").toString() : null;
+        dto.codiceFiscale = result.getString("codice_fiscale");
+        dto.gender = result.getString("gender");
+        dto.bio = result.getString("bio");
+        dto.tipo = result.getString("tipo");
+
+        Utente utente;
+        if ("COLTIVATORE".equals(dto.tipo)) {
+          utente = new Coltivatore(dto);
+        } else {
+          utente = new Proprietario(dto);
+        }
+
+        utente.setId(result.getLong("id"));
+        utenti.add(utente);
+      }
+    } catch (Exception e) {
+      System.err.println("Errore durante la ricerca utenti: " + e.getMessage());
+      throw new RuntimeException("Errore durante la ricerca utenti");
+    }
+
+    return utenti;
+  }
 }

@@ -1,13 +1,29 @@
 package uninabiogarden;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Observable;
+import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
 
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
+import javafx.scene.control.TextInputControl;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Alert.AlertType;
+import uninabiogarden.entities.Coltivatore;
 
 public class Utils {
 
-  public static void addCharacterLimit(TextField textField, int limit) {
+  public static void addCharacterLimit(TextInputControl textField, int limit) {
     UnaryOperator<TextFormatter.Change> filter = change -> {
       // Se l'utente sta inserendo testo (non cancellando)
       if (change.isAdded()) {
@@ -53,4 +69,104 @@ public class Utils {
 
     textField.setTextFormatter(new TextFormatter<>(filter));
   }
+
+  public static <T> void setupCheckBoxColumn(TableColumn<T, Void> column,
+      Map<T, SimpleBooleanProperty> selectionMap) {
+    column.setCellFactory(col -> new TableCell<T, Void>() {
+      private final CheckBox checkBox = new CheckBox();
+      private SimpleBooleanProperty currentProperty = null;
+
+      {
+        // Initializza il checkbox e aggiungi listener per aggiornare la mappa di
+        // selezione quando viene cliccato
+        checkBox.setOnAction(event -> {
+          T value = getTableRow().getItem();
+          if (value != null) {
+            // Aggiorna lo stato di selezione nella mappa
+            selectionMap.get(value).set(checkBox.isSelected());
+          }
+        });
+      }
+
+      @Override
+      protected void updateItem(Void item, boolean empty) {
+        super.updateItem(item, empty);
+
+        if (currentProperty != null) {
+          // Se c'è una proprietà attualmente associata al checkbox, rimuovi il binding
+          checkBox.selectedProperty().unbindBidirectional(currentProperty);
+          currentProperty = null;
+        }
+
+        if (empty || getTableRow() == null || getTableRow().getItem() == null) {
+          setGraphic(null);
+        } else {
+          T value = getTableRow().getItem();
+
+          // Crea la SimpleBooleanProperty se non esiste
+          if (!selectionMap.containsKey(value)) {
+            selectionMap.put(value, new SimpleBooleanProperty(false));
+          }
+
+          // Qui le SimpleBooleanProperty vengono "collegate" al checkbox con un binding
+          // bidirezionale che significa che se l'utente clicca il checkbox, la proprietà
+          // si aggiorna, e se la proprietà viene aggiornata (ad esempio quando si sposta
+          // un elemento da una tabella all'altra), il checkbox si aggiorna di
+          // conseguenza. In questo modo lo stato di selezione rimane sempre sincronizzato
+          // tra la UI e la logica dell'applicazione.
+          currentProperty = selectionMap.get(value);
+          checkBox.selectedProperty().bindBidirectional(currentProperty);
+
+          setGraphic(checkBox);
+        }
+      }
+    });
+  }
+
+  public static <T> void moveSelectionTo(ObservableList<T> sourceList, ObservableList<T> targetList,
+      Map<T, SimpleBooleanProperty> sourceSelectionMap,
+      Map<T, SimpleBooleanProperty> targetSelectionMap) {
+    List<T> selectedFromSource = sourceList
+        .stream()
+        .filter(item -> sourceSelectionMap.containsKey(item) && sourceSelectionMap.get(item).get())
+        .collect(Collectors.toList());
+
+    // Aggiungi gli oggetti selezionati alla lista di destinazione
+    targetList.addAll(selectedFromSource);
+
+    // Rimuovi gli oggetti selezionati dalla lista di origine
+    sourceList.removeAll(selectedFromSource);
+
+    // Reset delle selezioni dopo il trasferimento
+    selectedFromSource.forEach(item -> {
+      if (sourceSelectionMap.containsKey(item)) {
+        sourceSelectionMap.get(item).set(false);
+      }
+    });
+  }
+
+  public static <T> void mostraDialogConfermaConAzione(
+      String messaggio,
+      T data,
+      Consumer<T> onConfirm) {
+    Alert alert = new Alert(AlertType.CONFIRMATION);
+    alert.setTitle("Conferma Azione");
+    alert.setHeaderText(null);
+    alert.setContentText(messaggio);
+
+    ButtonType buttonConferma = new ButtonType("Conferma");
+    ButtonType buttonAnnulla = new ButtonType("Annulla");
+    alert.getButtonTypes().setAll(buttonConferma, buttonAnnulla);
+
+    // Rendi il dialog non ridimensionabile
+    alert.setResizable(false);
+
+    // Mostra il dialog e esegui l'azione se l'utente conferma
+    alert.showAndWait().ifPresent(response -> {
+      if (response == buttonConferma) {
+        onConfirm.accept(data);
+      }
+    });
+  }
+
 }

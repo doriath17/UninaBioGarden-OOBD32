@@ -9,6 +9,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import uninabiogarden.entities.Progetto;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 
@@ -104,6 +105,9 @@ public class UIController {
   public void openOrtiView() {
     ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
     loadViewIntoContent(FxmlView.ORTI_VIEW, homeController.getSelectedContent());
+
+    ControllerOrti ortiController = (ControllerOrti) controllers.get(FxmlView.ORTI_VIEW);
+    ortiController.init(); // per avere la lista aggiornata degli orti ogni volta che si apre la view
   }
 
   public void openCreaOrtoView() {
@@ -128,4 +132,38 @@ public class UIController {
     ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
     loadViewIntoContent(FxmlView.PROFILO_VIEW, homeController.getSelectedContent());
   }
+
+  public void openCreaProgettoStep1View(Progetto nuovoProgetto, boolean init) {
+    ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
+    loadViewIntoContent(FxmlView.CREA_PROGETTO_STEP_1, homeController.getSelectedContent());
+
+    if (init) {
+      ControllerCreaProgettoStep1 step1Controller = (ControllerCreaProgettoStep1) controllers
+          .get(FxmlView.CREA_PROGETTO_STEP_1);
+      step1Controller.init(nuovoProgetto);
+    }
+  }
+
+  public void openCreaProgettoStep2View(Progetto nuovoProgetto, boolean init) {
+    ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
+    loadViewIntoContent(FxmlView.CREA_PROGETTO_STEP_2, homeController.getSelectedContent());
+
+    if (init) {
+      ControllerCreaProgettoStep2 step2Controller = (ControllerCreaProgettoStep2) controllers
+          .get(FxmlView.CREA_PROGETTO_STEP_2);
+      step2Controller.init(nuovoProgetto);
+    }
+  }
+
+  public void openCreaProgettoStep3View(Progetto nuovoProgetto, boolean init) {
+    ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
+    loadViewIntoContent(FxmlView.CREA_PROGETTO_STEP_3, homeController.getSelectedContent());
+
+    if (init) {
+      ControllerCreaProgettoStep3 step3Controller = (ControllerCreaProgettoStep3) controllers
+          .get(FxmlView.CREA_PROGETTO_STEP_3);
+      step3Controller.init(nuovoProgetto);
+    }
+  }
+
 }

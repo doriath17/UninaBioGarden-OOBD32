@@ -52,7 +52,6 @@ public class ControllerSignUp {
 
   @FXML
   public void initialize() {
-    loadTestData();
     errorLabel.setText("");
     tipoUtenteField.getItems().addAll("COLTIVATORE", "PROPRIETARIO");
     tipoUtenteField.setValue("PROPRIETARIO");
@@ -65,6 +64,9 @@ public class ControllerSignUp {
     Utils.addCharacterLimit(nomeField, 50);
     Utils.addCharacterLimit(cognomeField, 50);
     Utils.addCharacterLimit(genderField, 10);
+
+    loadTestData();
+
   }
 
   private UtenteDto getData() {
@@ -75,7 +77,7 @@ public class ControllerSignUp {
     dto.codiceFiscale = codiceFiscaleField.getText();
     dto.nome = nomeField.getText();
     dto.cognome = cognomeField.getText();
-    dto.bDay = bdayField.getValue();
+    dto.bDay = bdayField.getValue() != null ? bdayField.getValue().toString() : null;
     dto.gender = genderField.getText();
     dto.bio = bioField.getText();
     dto.tipo = tipoUtenteField.getValue();

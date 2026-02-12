@@ -22,16 +22,29 @@ public abstract class Utente {
   }
 
   public Utente(String username, String password, String email, String codiceFiscale, String nome, String cognome,
-      LocalDate bDay, String gender, String bio) {
+      String bDay, String gender, String bio) {
     this.username = username;
     this.password = password;
     this.email = email;
     this.codiceFiscale = codiceFiscale;
     this.nome = nome;
     this.cognome = cognome;
-    this.bDay = bDay;
+
+    // Parse bDay string to LocalDate with error handling
+    try {
+      if (bDay != null && !bDay.isEmpty()) {
+        this.bDay = LocalDate.parse(bDay);
+      }
+    } catch (Exception e) {
+      throw new IllegalArgumentException("Formato data non valido per la data di nascita");
+    }
+
     this.gender = gender;
     this.bio = bio;
+  }
+
+  public String getFullName() {
+    return nome + " " + cognome;
   }
 
   public Long getId() {

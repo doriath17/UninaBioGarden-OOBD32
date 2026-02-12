@@ -1,5 +1,7 @@
 package uninabiogarden;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
@@ -47,6 +49,8 @@ public class ControllerCreaLotto {
   @FXML
   private Label errorLabel;
 
+  private ObservableList<Orto> ortiObservableList;
+
   @FXML
   public void initialize() {
     Utils.addCharacterLimit(codiceLottoInputField, 20);
@@ -55,7 +59,9 @@ public class ControllerCreaLotto {
     nomeOrtoColumn.setCellValueFactory(new PropertyValueFactory<>("nomeOrto"));
     indirizzoOrtoColumn.setCellValueFactory(new PropertyValueFactory<>("fullAddress"));
 
-    availableOrtiTable.setItems(MainController.getInstance().getOrtiObservableList());
+    // Crea ObservableList dal model - sincronizzato con la lista degli orti
+    ortiObservableList = FXCollections.observableList(MainController.getInstance().getOrti());
+    availableOrtiTable.setItems(ortiObservableList);
 
     // Update labels when table selection changes
     availableOrtiTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSel, newSel) -> {
