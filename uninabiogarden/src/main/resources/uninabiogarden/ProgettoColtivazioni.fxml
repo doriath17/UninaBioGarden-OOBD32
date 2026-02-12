@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox prefHeight="360.0" prefWidth="1050.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label maxWidth="1.7976931348623157E308" prefHeight="44.0" prefWidth="525.0" text="Coltivazioni">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Label>
+      <TableView fx:id="coltivazioniTable" prefHeight="330.0" prefWidth="1050.0">
+         <columns>
+            <TableColumn fx:id="nomeColturaColumn" prefWidth="286.0" text="Nome Comune Coltura" />
+            <TableColumn fx:id="statoColumn" prefWidth="147.0" text="Stato" />
+            <TableColumn fx:id="statoSaluteColumn" prefWidth="183.0" text="Stato Salute" />
+            <TableColumn fx:id="quantitaPianteColumn" prefWidth="155.0" text="Quantità Piante" />
+            <TableColumn fx:id="tempoMaturazioneColumn" prefWidth="177.0" text="Tempo Maturazione (gg)" />
+            <TableColumn fx:id="viewColumn" prefWidth="101.0" />
+         </columns>
+      </TableView>
+   </children>
+</VBox>

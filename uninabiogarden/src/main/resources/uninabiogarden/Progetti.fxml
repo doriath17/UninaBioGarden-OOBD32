@@ -38,12 +38,12 @@
       </GridPane>
       <TableView fx:id="progettiTable" prefHeight="461.0" prefWidth="1070.0">
          <columns>
-            <TableColumn fx:id="nomeColumn" prefWidth="354.0" text="Nome" />
-            <TableColumn fx:id="statoColumn" prefWidth="177.0" text="Stato" />
-            <TableColumn fx:id="dataCreazioneColumn" prefWidth="122.0" text="Data Creazione" />
-            <TableColumn fx:id="dataInizioColumn" prefWidth="124.0" text="Data Inizio" />
-            <TableColumn fx:id="dataFineColumn" prefWidth="114.0" text="Data Fine" />
-            <TableColumn fx:id="actionsColumn" prefWidth="178.0" text="Azioni" />
+            <TableColumn fx:id="nomeColumn" prefWidth="465.0" text="Nome" />
+            <TableColumn fx:id="statoColumn" prefWidth="165.0" text="Stato" />
+            <TableColumn fx:id="dataCreazioneColumn" prefWidth="126.0" text="Data Creazione" />
+            <TableColumn fx:id="dataInizioColumn" prefWidth="116.0" text="Data Inizio" />
+            <TableColumn fx:id="dataFineColumn" prefWidth="116.0" text="Data Fine" />
+            <TableColumn fx:id="actionsColumn" prefWidth="81.0" />
          </columns>
       </TableView>
       <GridPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="100.0" prefWidth="1070.0">

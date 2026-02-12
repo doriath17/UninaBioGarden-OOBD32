@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox prefHeight="360.0" prefWidth="1050.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label maxWidth="1.7976931348623157E308" prefHeight="44.0" prefWidth="525.0" text="Attivita">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Label>
+      <TableView fx:id="attivitaTable" prefHeight="330.0" prefWidth="1050.0">
+         <columns>
+            <TableColumn fx:id="titoloColumn" prefWidth="286.0" text="Titolo" />
+            <TableColumn fx:id="statoColumn" prefWidth="147.0" text="Stato" />
+            <TableColumn fx:id="pianificazioneColumn" prefWidth="139.0" text="Data Pianificazione" />
+            <TableColumn fx:id="scadenzaColumn" prefWidth="126.0" text="Data Scadenza" />
+            <TableColumn fx:id="inizioColumn" prefWidth="110.0" text="Data Inizio" />
+            <TableColumn fx:id="fineColumn" minWidth="0.0" prefWidth="108.0" text="Data Fine" />
+            <TableColumn fx:id="viewColumn" minWidth="0.0" prefWidth="133.0" />
+         </columns>
+      </TableView>
+   </children>
+</VBox>

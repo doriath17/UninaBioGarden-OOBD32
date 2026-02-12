@@ -15,7 +15,9 @@ public enum FxmlView {
 
   CREA_PROGETTO_STEP_1("/uninabiogarden/CreaProgettoStep1.fxml"),
   CREA_PROGETTO_STEP_2("/uninabiogarden/CreaProgettoStep2.fxml"),
-  CREA_PROGETTO_STEP_3("/uninabiogarden/CreaProgettoStep3.fxml");
+  CREA_PROGETTO_STEP_3("/uninabiogarden/CreaProgettoStep3.fxml"),
+
+  DETTAGLIO_PROGETTO_VIEW("/uninabiogarden/DettaglioProgetto.fxml");
 
   private final String fxmlPath;
 
