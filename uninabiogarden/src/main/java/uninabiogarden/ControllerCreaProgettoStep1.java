@@ -2,7 +2,6 @@ package uninabiogarden;
 
 import javafx.fxml.FXML;
 import javafx.scene.layout.VBox;
-import uninabiogarden.dto.ProgettoDto;
 import uninabiogarden.entities.Lotto;
 import uninabiogarden.entities.Progetto;
 import javafx.scene.control.TableView;
@@ -57,7 +56,7 @@ public class ControllerCreaProgettoStep1 {
   private ObservableList<Lotto> lottiDisponibiliObsList = FXCollections.observableArrayList();
   private boolean initNextStep = true;
 
-  ProgettoDto progettoDto;
+  Progetto nuovoProgetto;
 
   @FXML
   private void initialize() {
@@ -88,9 +87,9 @@ public class ControllerCreaProgettoStep1 {
 
   }
 
-  public void init(ProgettoDto progettoDto) {
-    if (progettoDto == null) {
-      this.progettoDto = new ProgettoDto();
+  public void init(Progetto nuovoProgetto) {
+    if (nuovoProgetto == null) {
+      this.nuovoProgetto = new Progetto();
     }
     initNextStep = true;
     clear();
@@ -123,25 +122,24 @@ public class ControllerCreaProgettoStep1 {
     UIController.getInstance().openProgettiView();
   }
 
-  private ProgettoDto getData() {
-    if (progettoDto == null) {
-      progettoDto = new ProgettoDto();
+  private Progetto getData() {
+    if (nuovoProgetto == null) {
+      nuovoProgetto = new Progetto();
     }
-    progettoDto.nome = nomeProgettoField.getText();
-    progettoDto.descrizione = descrizioneField.getText();
-    progettoDto.stato = "PIANIFICATO"; // Stato iniziale del progetto
+    nuovoProgetto.setNomeProgetto(nomeProgettoField.getText());
+    nuovoProgetto.setDescrizione(descrizioneField.getText());
+
     // le date sono impostate direttamente nel database
-    progettoDto.lottoId = availableOrtiTable.getSelectionModel().getSelectedItem() != null
-        ? availableOrtiTable.getSelectionModel().getSelectedItem().getId()
-        : null;
-    return progettoDto;
+
+    nuovoProgetto.setLotto(availableOrtiTable.getSelectionModel().getSelectedItem());
+    return nuovoProgetto;
   }
 
-  private String isValidData(ProgettoDto progettoDto) {
-    if (progettoDto.nome == null || progettoDto.nome.isEmpty()) {
+  private String isValidData(Progetto nuovoProgetto) {
+    if (nuovoProgetto.getNomeProgetto() == null || nuovoProgetto.getNomeProgetto().isEmpty()) {
       return "Nome progetto mancante";
     }
-    if (progettoDto.lottoId == null) {
+    if (nuovoProgetto.getLotto() == null) {
       return "Lotto per il progetto non selezionato";
     }
     return null;
@@ -149,13 +147,13 @@ public class ControllerCreaProgettoStep1 {
 
   @FXML
   private void nextStepAction() {
-    progettoDto = getData();
-    String validationError = isValidData(progettoDto);
+    nuovoProgetto = getData();
+    String validationError = isValidData(nuovoProgetto);
     if (validationError != null) {
       errorLabel.setText(validationError);
       return;
     }
-    UIController.getInstance().openCreaProgettoStep2View(progettoDto, initNextStep);
+    UIController.getInstance().openCreaProgettoStep2View(nuovoProgetto, initNextStep);
     if (initNextStep) {
       initNextStep = false; // dopo il primo passaggio, non re-inizializzare i dati se si torna indietro al
                             // passo 1

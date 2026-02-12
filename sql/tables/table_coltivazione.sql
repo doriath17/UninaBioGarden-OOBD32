@@ -36,8 +36,8 @@ CREATE TYPE stato_salute_coltivazione AS ENUM ('OTTIMO', 'STABILE', 'SOFFERENTE'
 CREATE TABLE coltivazione (
   id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
 
-  stato stato_coltivazione NOT NULL,
-  stato_salute stato_salute_coltivazione NOT NULL,
+  stato stato_coltivazione NOT NULL DEFAULT 'PIANIFICATA',
+  stato_salute stato_salute_coltivazione NOT NULL DEFAULT 'OTTIMO',
   
   data_creazione TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   data_inizio TIMESTAMP,

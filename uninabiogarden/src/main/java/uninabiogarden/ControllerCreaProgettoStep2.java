@@ -15,8 +15,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
-import uninabiogarden.dto.ProgettoDto;
 import uninabiogarden.entities.Coltivatore;
+import uninabiogarden.entities.Progetto;
 
 public class ControllerCreaProgettoStep2 {
 
@@ -62,7 +62,7 @@ public class ControllerCreaProgettoStep2 {
 
   private boolean initNextStep = true;
 
-  ProgettoDto progettoDto;
+  Progetto nuovoProgetto;
 
   @FXML
   private void initialize() {
@@ -79,8 +79,8 @@ public class ControllerCreaProgettoStep2 {
     selectedColtivatoriTable.setItems(selectedColtivatoriObsList);
   }
 
-  public void init(ProgettoDto progettoDto) {
-    this.progettoDto = progettoDto;
+  public void init(Progetto nuovoProgetto) {
+    this.nuovoProgetto = nuovoProgetto;
     clear();
     initNextStep = true;
     loadColtivatoriDisponibili();
@@ -129,20 +129,20 @@ public class ControllerCreaProgettoStep2 {
 
   @FXML
   private void indietroAction() {
-    UIController.getInstance().openCreaProgettoStep1View(progettoDto, false);
+    UIController.getInstance().openCreaProgettoStep1View(nuovoProgetto, false);
   }
 
   @FXML
   private void nextStepAction() {
-    progettoDto.coltivatoriIds = selectedColtivatoriObsList.stream().map(Coltivatore::getId)
-        .collect(Collectors.toList());
+    List<Coltivatore> selectedColtivatori = selectedColtivatoriObsList.stream().collect(Collectors.toList());
+    nuovoProgetto.setColtivatori(selectedColtivatori);
 
-    if (progettoDto.coltivatoriIds.isEmpty()) {
+    if (nuovoProgetto.getColtivatori().isEmpty()) {
       errorLabel.setText("Seleziona almeno un coltivatore per procedere");
       return;
     }
 
-    UIController.getInstance().openCreaProgettoStep3View(progettoDto, initNextStep);
+    UIController.getInstance().openCreaProgettoStep3View(nuovoProgetto, initNextStep);
 
     if (initNextStep) {
       initNextStep = false;

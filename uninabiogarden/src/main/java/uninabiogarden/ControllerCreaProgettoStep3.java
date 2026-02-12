@@ -1,6 +1,7 @@
 package uninabiogarden;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -13,9 +14,10 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
-import uninabiogarden.dto.ProgettoDto;
+import uninabiogarden.entities.Coltivazione;
 import uninabiogarden.entities.Coltivatore;
 import uninabiogarden.entities.Coltura;
+import uninabiogarden.entities.Progetto;
 
 public class ControllerCreaProgettoStep3 {
 
@@ -56,7 +58,7 @@ public class ControllerCreaProgettoStep3 {
   private Map<Coltura, SimpleBooleanProperty> selectedSelectionMap = new HashMap<>();
 
   private boolean initNextStep = true;
-  private ProgettoDto progettoDto;
+  private Progetto nuovoProgetto;
 
   @FXML
   private void initialize() {
@@ -72,15 +74,17 @@ public class ControllerCreaProgettoStep3 {
 
   }
 
-  public void init(ProgettoDto progettoDto) {
-    this.progettoDto = progettoDto;
+  public void init(Progetto nuovoProgetto) {
+    this.nuovoProgetto = nuovoProgetto;
     clear();
     initNextStep = true;
     loadColtureDisponibili();
   }
 
   private void loadColtureDisponibili() {
-    availableColtureObsList.setAll(MainController.getInstance().getColtureObservableList());
+    // Crea ObservableList dal model - sincronizzato con la lista delle colture
+    ObservableList<Coltura> coltureFromModel = FXCollections.observableList(MainController.getInstance().getColture());
+    availableColtureObsList.setAll(coltureFromModel);
   }
 
   @FXML
@@ -103,18 +107,23 @@ public class ControllerCreaProgettoStep3 {
 
   @FXML
   private void indietroAction() {
-    UIController.getInstance().openCreaProgettoStep2View(progettoDto, false);
+    UIController.getInstance().openCreaProgettoStep2View(nuovoProgetto, false);
   }
 
   @FXML
   private void nextStepAction() {
     // Prepara i dati del progetto
-    progettoDto.coltureIds = selectedColtureObsList.stream().map(Coltura::getId)
-        .collect(Collectors.toList());
+    List<Coltivazione> coltivazioni = selectedColtureObsList.stream().map(coltura -> {
+      Coltivazione coltivazione = new Coltivazione();
+      coltivazione.setColtura(coltura);
+      coltivazione.setProgetto(nuovoProgetto);
+      return coltivazione;
+    }).collect(Collectors.toList());
+    nuovoProgetto.setColtivazioni(coltivazioni);
 
     Utils.mostraDialogConfermaConAzione(
         "Sei sicuro di voler creare il progetto?",
-        progettoDto,
+        nuovoProgetto,
         dto -> {
           MainController.getInstance().creaProgetto(dto);
         });

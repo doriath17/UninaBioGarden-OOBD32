@@ -1,5 +1,7 @@
 package uninabiogarden;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -34,6 +36,8 @@ public class ControllerLotti {
   @FXML
   private TableColumn<Lotto, String> indirizzoColumn;
 
+  private ObservableList<Lotto> lottiObservableList;
+
   @FXML
   public void initialize() {
     codiceLottoColumn.setCellValueFactory(new PropertyValueFactory<>("codiceLotto"));
@@ -44,7 +48,9 @@ public class ControllerLotti {
   }
 
   public void init() {
-    lottiTable.setItems(MainController.getInstance().getLottiObservableList());
+    // Crea ObservableList dal model - sincronizzato con la lista del Proprietario
+    lottiObservableList = FXCollections.observableList(MainController.getInstance().getLotti());
+    lottiTable.setItems(lottiObservableList);
   }
 
   @FXML

@@ -25,11 +25,13 @@ public class Coltivazione {
   private String noteTecniche;
 
   private Coltura coltura;
-  // private Progetto progetto; --- IGNORE ---
+  private Progetto progetto;
 
   public Coltivazione() {
     statoSalute = StatoSaluteColtivazione.OTTIMO;
     stato = StatoColtivazione.PIANIFICATA;
+    quantitaPiante = 0;
+    noteTecniche = "";
   }
 
   public Coltivazione(Coltura coltura, Integer quantitaPiante, String noteTecniche) {
@@ -109,6 +111,14 @@ public class Coltivazione {
 
   public void setColtura(Coltura coltura) {
     this.coltura = coltura;
+  }
+
+  public Progetto getProgetto() {
+    return progetto;
+  }
+
+  public void setProgetto(Progetto progetto) {
+    this.progetto = progetto;
   }
 
 }

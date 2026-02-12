@@ -2,12 +2,9 @@ package uninabiogarden;
 
 import java.util.List;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import uninabiogarden.dao.DatabaseController;
 import uninabiogarden.dto.LottoDto;
 import uninabiogarden.dto.OrtoDto;
-import uninabiogarden.dto.ProgettoDto;
 import uninabiogarden.dto.UtenteDto;
 import uninabiogarden.entities.Coltivatore;
 import uninabiogarden.entities.Coltura;
@@ -43,29 +40,34 @@ public class MainController {
 
   private Utente utenteLoggato;
 
-  private ObservableList<Orto> ortiObservableList = FXCollections.observableArrayList();
-
-  // questa lista viene inizializzata in modo tale che tutte le modifiche su di
-  // essa si riflettano direttamente sulla lista di lotti nel proprietario loggato
-  // vedi caricamentoDatiUtente() per maggiori dettagli
-  private ObservableList<Lotto> lottiObservableList;
-
-  private ObservableList<Coltura> coltureObservableList = FXCollections.observableArrayList();
+  // Liste di riferimento caricate dal database
+  private List<Orto> orti;
+  private List<Coltura> colture;
 
   // ==============================================================================================
   // Sezione: Accessors
   // ==============================================================================================
 
-  public ObservableList<Orto> getOrtiObservableList() {
-    return ortiObservableList;
+  public List<Orto> getOrti() {
+    return orti;
   }
 
-  public ObservableList<Lotto> getLottiObservableList() {
-    return lottiObservableList;
+  public List<Lotto> getLotti() {
+    if (utenteLoggato instanceof Proprietario) {
+      return ((Proprietario) utenteLoggato).getLotti();
+    }
+    return null;
   }
 
-  public ObservableList<Coltura> getColtureObservableList() {
-    return coltureObservableList;
+  public List<Progetto> getProgetti() {
+    if (utenteLoggato instanceof Proprietario) {
+      return ((Proprietario) utenteLoggato).getProgetti();
+    }
+    return null;
+  }
+
+  public List<Coltura> getColture() {
+    return colture;
   }
 
   public Utente getUtenteLoggato() {
@@ -163,9 +165,7 @@ public class MainController {
       caricaColture();
       caricaOrti();
       caricaLotti(proprietario);
-
-      // carica i progetti
-
+      caricaProgetti(proprietario);
     }
   }
 
@@ -222,12 +222,11 @@ public class MainController {
     Long id = databaseController.getOrtoDao().saveOrto(orto);
     System.out.println("Orto creato con ID: " + id);
     orto.setId(id);
-    ortiObservableList.add(orto);
+    orti.add(orto);
   }
 
   private void caricaOrti() {
-    List<Orto> orti = databaseController.getOrtoDao().findAll();
-    ortiObservableList.setAll(orti);
+    orti = databaseController.getOrtoDao().findAll();
     System.out.println("Caricamento orti effettuato con successo");
   }
 
@@ -258,7 +257,7 @@ public class MainController {
     // recupera il proprietario e l'orto associati al lotto
     Lotto lotto = new Lotto(lottoDto);
     lotto.setProprietario((Proprietario) utenteLoggato);
-    var selectedOrto = ortiObservableList
+    var selectedOrto = orti
         .stream()
         .filter(orto -> orto.getId().equals(lottoDto.ortoId))
         .findFirst()
@@ -268,17 +267,17 @@ public class MainController {
     Long id = databaseController.getLottoDao().saveLotto(lotto);
     System.out.println("Lotto creato con ID: " + id);
     lotto.setId(id);
-    lottiObservableList.add(lotto);
+    ((Proprietario) utenteLoggato).getLotti().add(lotto);
   }
 
   private void caricaLotti(Proprietario proprietario) {
-    // carica i lotti
+    // carica i lotti dal database
     List<Lotto> lotti = databaseController.getLottoDao().findAll(proprietario.getId());
 
-    // associa ogni lotto al proprio orto
-    // cosi in memoria esiste un unico orto
+    // associa ogni lotto al proprio orto già caricato in memoria
+    // così esiste un unico riferimento per ogni orto
     for (var lotto : lotti) {
-      var orto = ortiObservableList
+      var orto = orti
           .stream()
           .filter(o -> o.getId().equals(lotto.getOrto().getId()))
           .findFirst()
@@ -287,10 +286,6 @@ public class MainController {
     }
 
     proprietario.setLotti(lotti);
-    // passaggio fondamentale per rendere la lista di lotti del proprietario
-    // osservabile dai componenti di JavaFX
-    this.lottiObservableList = FXCollections.observableList(lotti);
-
     System.out.println("Caricamento lotti effettuato con successo");
   }
 
@@ -299,7 +294,7 @@ public class MainController {
     System.out.println("Lotti disponibili: " + lotti.size());
 
     for (var lotto : lotti) {
-      var orto = ortiObservableList
+      var orto = orti
           .stream()
           .filter(o -> o.getId().equals(lotto.getOrto().getId()))
           .findFirst()
@@ -314,17 +309,21 @@ public class MainController {
   // Sezione: Validazione e creazione Progetto
   // ==============================================================================================
 
-  public void creaProgetto(ProgettoDto progettoDto) {
+  public void creaProgetto(Progetto nuovoProgetto) {
     System.out.println("Crea progetto arriva qui nel MainController");
-    // conversione nell'entità Progetto
-    Progetto progetto = new Progetto(progettoDto);
+    // validazione del progetto
+    var validationError = nuovoProgetto.validate();
+    if (validationError != null) {
+      throw new IllegalArgumentException(validationError);
+    }
+    nuovoProgetto.setProprietario((Proprietario) utenteLoggato);
 
-    // progetto = databaseController.getProgettoDao().saveProgetto(progetto);
-    // System.out.println("Progetto creato con ID: " + progetto.getId());
+    // salva nel database e ottieni l'ID generato
+    nuovoProgetto = databaseController.getProgettoDao().saveProgetto(nuovoProgetto);
+    System.out.println("Progetto creato con ID: " + nuovoProgetto.getId());
 
-    // // associa il progetto al proprietario loggato
-    // ((Proprietario) utenteLoggato).addProgetto(progetto);
-
+    // aggiungi alla lista del proprietario
+    ((Proprietario) utenteLoggato).addProgetto(nuovoProgetto);
   }
 
   public List<Coltivatore> getColtivatoriDisponibili() {
@@ -338,11 +337,23 @@ public class MainController {
   // ==============================================================================================
 
   public void caricaColture() {
-    if (coltureObservableList == null || coltureObservableList.isEmpty()) {
-      List<Coltura> colture = databaseController.getColturaDao().findAll();
-      coltureObservableList.setAll(colture);
+    if (colture == null || colture.isEmpty()) {
+      colture = databaseController.getColturaDao().findAll();
       System.out.println("Caricamento colture effettuato con successo");
     }
+  }
+
+  // ==============================================================================================
+  // Sezione: Progetti
+  // ==============================================================================================
+
+  private void caricaProgetti(Proprietario proprietario) {
+    // I progetti verranno caricati quando necessario
+    // Per ora inizializziamo solo la lista vuota
+    if (proprietario.getProgetti() == null) {
+      proprietario.setProgetti(new java.util.ArrayList<>());
+    }
+    System.out.println("Inizializzazione progetti effettuata con successo");
   }
 
 }

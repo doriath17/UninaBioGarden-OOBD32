@@ -4,8 +4,8 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
-
-import uninabiogarden.dto.ProgettoDto;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Progetto {
 
@@ -23,44 +23,36 @@ public class Progetto {
 
   private Proprietario proprietario;
   private Lotto lotto;
+  private List<Coltivazione> coltivazioni = new ArrayList<>();
+  private List<Coltivatore> coltivatori = new ArrayList<>();
 
   public Progetto() {
   }
 
-  public Progetto(String nomeProgetto, String descrizione, Stato stato, LocalDateTime dataCreazione,
-      LocalDateTime dataInizio,
-      LocalDateTime dataFine) {
+  public Progetto(String nomeProgetto, String descrizione, Proprietario proprietario, Lotto lotto) {
     this.nomeProgetto = nomeProgetto;
     this.descrizione = descrizione;
-    this.stato = stato;
-    this.dataCreazione = dataCreazione;
-    this.dataInizio = dataInizio;
-    this.dataFine = dataFine;
+    this.proprietario = proprietario;
+    this.lotto = lotto;
   }
 
-  public Progetto(ProgettoDto dto) {
-    try {
-      this.nomeProgetto = dto.nome;
-      this.descrizione = dto.descrizione;
-      this.stato = Stato.valueOf(dto.stato);
-
-      this.dataCreazione = LocalDateTime.parse(dto.dataCreazione);
-      this.dataInizio = LocalDateTime.parse(dto.dataInizio);
-      this.dataFine = LocalDateTime.parse(dto.dataFine);
-
-      this.proprietario = new Proprietario();
-      if (dto.proprietarioId != null) {
-        this.proprietario.setId(dto.proprietarioId);
-      }
-
-    } catch (DateTimeParseException e) {
-      System.err.println("Errore nella conversione delle date: " + e.getMessage());
-      throw new IllegalArgumentException("Formato data non valido");
-    } catch (Exception e) {
-      System.err.println("Errore nella creazione del progetto: " + e.getMessage());
-      throw new RuntimeException("Errore nella creazione del progetto");
+  public String validate() {
+    if (this.nomeProgetto == null || this.nomeProgetto.isEmpty()) {
+      return "Nome progetto mancante";
+    }
+    if (this.lotto == null) {
+      return "Lotto per il progetto non selezionato";
     }
 
+    if (this.coltivazioni == null || this.coltivazioni.isEmpty()) {
+      return "Almeno una coltivazione deve essere aggiunta al progetto";
+    }
+
+    if (this.coltivatori == null || this.coltivatori.isEmpty()) {
+      return "Almeno un coltivatore deve essere assegnato al progetto";
+    }
+
+    return null; // Dati validi
   }
 
   public Long getId() {
@@ -134,4 +126,21 @@ public class Progetto {
   public void setLotto(Lotto lotto) {
     this.lotto = lotto;
   }
+
+  public List<Coltivazione> getColtivazioni() {
+    return coltivazioni;
+  }
+
+  public void setColtivazioni(List<Coltivazione> coltivazioni) {
+    this.coltivazioni = coltivazioni;
+  }
+
+  public List<Coltivatore> getColtivatori() {
+    return coltivatori;
+  }
+
+  public void setColtivatori(List<Coltivatore> coltivatori) {
+    this.coltivatori = coltivatori;
+  }
+
 }
