@@ -1,5 +1,6 @@
 package uninabiogarden.entities;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class Coltivazione {
@@ -17,9 +18,9 @@ public class Coltivazione {
   private StatoColtivazione stato;
 
   // le date sono impostate e gestite dal database
-  private LocalDateTime dataCreazione;
-  private LocalDateTime dataInizio;
-  private LocalDateTime dataFine;
+  private LocalDate dataCreazione;
+  private LocalDate dataInizio;
+  private LocalDate dataFine;
 
   private Integer quantitaPiante;
   private String noteTecniche;
@@ -65,27 +66,27 @@ public class Coltivazione {
     this.stato = stato;
   }
 
-  public LocalDateTime getDataCreazione() {
+  public LocalDate getDataCreazione() {
     return dataCreazione;
   }
 
-  public void setDataCreazione(LocalDateTime dataCreazione) {
+  public void setDataCreazione(LocalDate dataCreazione) {
     this.dataCreazione = dataCreazione;
   }
 
-  public LocalDateTime getDataInizio() {
+  public LocalDate getDataInizio() {
     return dataInizio;
   }
 
-  public void setDataInizio(LocalDateTime dataInizio) {
+  public void setDataInizio(LocalDate dataInizio) {
     this.dataInizio = dataInizio;
   }
 
-  public LocalDateTime getDataFine() {
+  public LocalDate getDataFine() {
     return dataFine;
   }
 
-  public void setDataFine(LocalDateTime dataFine) {
+  public void setDataFine(LocalDate dataFine) {
     this.dataFine = dataFine;
   }
 

@@ -5,11 +5,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import javafx.scene.chart.PieChart.Data;
 import uninabiogarden.entities.Coltivatore;
 import uninabiogarden.entities.Coltivazione;
 import uninabiogarden.entities.Coltura;
+import uninabiogarden.entities.Lotto;
 import uninabiogarden.entities.Progetto;
 
 public class ProgettoDao {
@@ -97,6 +100,108 @@ public class ProgettoDao {
         }
       }
     }
+  }
+
+  public List<Progetto> findAll(Long proprietarioId) {
+    var progettiQuerySql = """
+          SELECT *
+          FROM progetto
+          WHERE id_proprietario = ?
+        """;
+
+    var coltivazioniQuerySql = """
+          SELECT *
+          FROM coltivazione
+          WHERE id_progetto = ?
+        """;
+
+    var coltivatoriQuerySql = """
+          SELECT id
+          FROM utente
+          JOIN lavora_per AS lp ON utente.id = lp.id_coltivatore
+          WHERE lp.id_progetto = ?
+        """;
+
+    List<Progetto> progetti = new ArrayList<>();
+
+    try (Connection conn = database.getConnection();
+        PreparedStatement pstmtQueryProgetti = conn.prepareStatement(progettiQuerySql);
+        PreparedStatement pstmtQueryColtivazioni = conn.prepareStatement(coltivazioniQuerySql);
+        PreparedStatement pstmtQueryColtivatori = conn.prepareStatement(coltivatoriQuerySql)) {
+      pstmtQueryProgetti.setLong(1, proprietarioId);
+      ResultSet rs = pstmtQueryProgetti.executeQuery();
+      while (rs.next()) {
+        Progetto progetto = new Progetto();
+        progetto.setId(rs.getLong("id"));
+        progetto.setNomeProgetto(rs.getString("nome"));
+        progetto.setDescrizione(rs.getString("descrizione"));
+        progetto.setStato(Progetto.Stato.valueOf(rs.getString("stato")));
+
+        progetto.setDataCreazione(rs.getDate("data_creazione").toLocalDate());
+
+        var dataInizioProgetto = rs.getDate("data_inizio");
+        progetto.setDataInizio(dataInizioProgetto != null ? dataInizioProgetto.toLocalDate() : null);
+
+        var dataFineProgetto = rs.getDate("data_fine");
+        progetto.setDataFine(dataFineProgetto != null ? dataFineProgetto.toLocalDate() : null);
+
+        // il proprietario sarebbe l'utente loggato
+        // per il lotto si usa un proxy (assumendo che i lotti del proprietario siano
+        // gia in memoria)
+        var lottoProxy = new Lotto();
+        lottoProxy.setId(rs.getLong("id_lotto"));
+        progetto.setLotto(lottoProxy);
+
+        // recupero delle coltivazioni associate al progetto
+        List<Coltivazione> coltivazioni = new ArrayList<>();
+        pstmtQueryColtivazioni.setLong(1, progetto.getId());
+        ResultSet rsColtivazioni = pstmtQueryColtivazioni.executeQuery();
+        while (rsColtivazioni.next()) {
+          Coltivazione coltivazione = new Coltivazione();
+          coltivazione.setId(rsColtivazioni.getLong("id"));
+          coltivazione
+              .setStatoSalute(Coltivazione.StatoSaluteColtivazione.valueOf(rsColtivazioni.getString("stato_salute")));
+          coltivazione.setStato(Coltivazione.StatoColtivazione.valueOf(rsColtivazioni.getString("stato")));
+          coltivazione.setDataCreazione(rsColtivazioni.getDate("data_creazione").toLocalDate());
+
+          var dataInizio = rsColtivazioni.getDate("data_inizio");
+          coltivazione.setDataInizio(dataInizio != null ? dataInizio.toLocalDate() : null);
+
+          var dataFine = rsColtivazioni.getDate("data_fine");
+          coltivazione.setDataFine(dataFine != null ? dataFine.toLocalDate() : null);
+
+          coltivazione.setQuantitaPiante(rsColtivazioni.getInt("quantita_piante"));
+          coltivazione.setNoteTecniche(rsColtivazioni.getString("note_tecniche"));
+
+          // per la coltura si usa un proxy (assumendo che le colture siano gia in
+          // memoria)
+          var colturaProxy = new Coltura();
+          colturaProxy.setId(rsColtivazioni.getLong("id_coltura"));
+          coltivazione.setColtura(colturaProxy);
+          coltivazioni.add(coltivazione);
+        }
+        progetto.setColtivazioni(coltivazioni);
+
+        // recupero dei coltivatori associati al progetto
+        List<Coltivatore> coltivatori = new ArrayList<>();
+        pstmtQueryColtivatori.setLong(1, progetto.getId());
+        ResultSet rsColtivatori = pstmtQueryColtivatori.executeQuery();
+        while (rsColtivatori.next()) {
+          // per i coltivatori si usano proxy (assumendo che i coltivatori del progetto
+          // siano gia in memoria)
+          Coltivatore coltivatoreProxy = new Coltivatore();
+          coltivatoreProxy.setId(rsColtivatori.getLong("id"));
+          coltivatori.add(coltivatoreProxy);
+        }
+        progetto.setColtivatori(coltivatori);
+        progetti.add(progetto);
+      }
+    } catch (Exception e) {
+      System.err.println("Errore durante il recupero dei progetti: " + e.getMessage());
+      throw new RuntimeException("Errore durante il recupero dei progetti. Riprova più tardi.");
+    }
+
+    return progetti;
   }
 
 }

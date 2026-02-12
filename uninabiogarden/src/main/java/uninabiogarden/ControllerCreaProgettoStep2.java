@@ -87,7 +87,7 @@ public class ControllerCreaProgettoStep2 {
   }
 
   private void loadColtivatoriDisponibili() {
-    List<Coltivatore> coltivatoriDisponibili = MainController.getInstance().getColtivatoriDisponibili();
+    List<Coltivatore> coltivatoriDisponibili = MainController.getInstance().getColtivatori();
     availableColtivatoriObsList.setAll(coltivatoriDisponibili);
   }
 

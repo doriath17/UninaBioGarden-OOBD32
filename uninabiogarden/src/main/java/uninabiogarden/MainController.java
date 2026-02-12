@@ -43,6 +43,7 @@ public class MainController {
   // Liste di riferimento caricate dal database
   private List<Orto> orti;
   private List<Coltura> colture;
+  private List<Coltivatore> coltivatori;
 
   // ==============================================================================================
   // Sezione: Accessors
@@ -72,6 +73,13 @@ public class MainController {
 
   public Utente getUtenteLoggato() {
     return utenteLoggato;
+  }
+
+  public List<Coltivatore> getColtivatori() {
+    if (coltivatori == null) {
+      caricaColtivatori();
+    }
+    return coltivatori;
   }
 
   // ==============================================================================================
@@ -162,9 +170,10 @@ public class MainController {
     if (utente instanceof Proprietario) {
       var proprietario = (Proprietario) utente;
 
-      caricaColture();
-      caricaOrti();
+      caricaColture(); // deve essere caricato prima dei progetti (richiesto da caricaProgetti)
+      caricaOrti(); // deve essere caricato prima dei lotti
       caricaLotti(proprietario);
+      caricaColtivatori(); // deve essere caricato prima dei progetti (richiesto da caricaProgetti)
       caricaProgetti(proprietario);
     }
   }
@@ -326,10 +335,11 @@ public class MainController {
     ((Proprietario) utenteLoggato).addProgetto(nuovoProgetto);
   }
 
-  public List<Coltivatore> getColtivatoriDisponibili() {
+  public void caricaColtivatori() {
     List<Utente> coltivatori = databaseController.getUtenteDao().findAll("COLTIVATORE");
-    System.out.println("Coltivatori disponibili: " + coltivatori.size());
-    return coltivatori.stream().map(u -> (Coltivatore) u).toList();
+    this.coltivatori = coltivatori.stream().map(u -> (Coltivatore) u).toList();
+
+    System.out.println("Coltivatori caricati con successo: " + coltivatori.size() + " coltivatori trovati");
   }
 
   // ==============================================================================================
@@ -347,13 +357,51 @@ public class MainController {
   // Sezione: Progetti
   // ==============================================================================================
 
+  // il proprietario deve avere i lotti caricati
+  // le colture devono essere gia caricate
+  // i coltivatori vengono caricati su necessita (vedi getColtivatori())
   private void caricaProgetti(Proprietario proprietario) {
-    // I progetti verranno caricati quando necessario
-    // Per ora inizializziamo solo la lista vuota
-    if (proprietario.getProgetti() == null) {
-      proprietario.setProgetti(new java.util.ArrayList<>());
+    List<Progetto> progetti = databaseController.getProgettoDao().findAll(proprietario.getId());
+
+    try {
+      // risoluzione proxy dei progetti caricati
+      progetti.forEach(progetto -> {
+        progetto.setProprietario(proprietario);
+
+        // risoluzione proxy del lotto
+        var resolvedLotto = proprietario.getLotti().stream()
+            .filter(lotto -> lotto.getId().equals(progetto.getLotto().getId())).findFirst()
+            .orElseThrow(() -> new RuntimeException("Lotto non trovato"));
+        progetto.setLotto(resolvedLotto);
+
+        // risoluzione proxy delle colture nelle coltivazioni
+        progetto.getColtivazioni().forEach(coltivazione -> {
+          var resolvedColtura = this.colture.stream()
+              .filter(coltura -> coltura.getId().equals(coltivazione.getColtura().getId())).findFirst()
+              .orElseThrow(() -> new RuntimeException("Coltura non trovata"));
+          coltivazione.setColtura(resolvedColtura);
+        });
+
+        // risoluzione proxy dei coltivatori
+        var resolvedColtivatori = progetto.getColtivatori().stream()
+            // qui ogni coltivatore proxy e sostituito con is suo equivalente gia caricato
+            // in memoria.
+            .map(coltivatoreProxy -> this.getColtivatori().stream()
+                .filter(coltivatore -> coltivatore.getId().equals(coltivatoreProxy.getId()))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Coltivatore non trovato")))
+            // alla fine si ottiene una lista di coltivatori completamente risolti, senza
+            // proxy, che posso assegnare al progetto
+            .toList();
+        progetto.setColtivatori(resolvedColtivatori);
+      });
+    } catch (Exception e) {
+      System.err.println("Errore durante il caricamento dei progetti: " + e.getMessage());
+      throw new RuntimeException("Errore nell caricamento dei progetti. Riprova più tardi.");
     }
-    System.out.println("Inizializzazione progetti effettuata con successo");
+
+    proprietario.setProgetti(progetti);
+    System.out.println("Caricamento progetti effettuato con successo: " + progetti.size() + " progetti trovati");
   }
 
   // ==============================================================================================

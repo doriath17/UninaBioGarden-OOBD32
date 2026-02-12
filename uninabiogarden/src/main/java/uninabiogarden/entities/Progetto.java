@@ -17,9 +17,9 @@ public class Progetto {
   private String nomeProgetto;
   private String descrizione;
   private Stato stato; // "In preparazione", "In corso", "Completato"
-  private LocalDateTime dataCreazione;
-  private LocalDateTime dataInizio;
-  private LocalDateTime dataFine;
+  private LocalDate dataCreazione;
+  private LocalDate dataInizio;
+  private LocalDate dataFine;
 
   private Proprietario proprietario;
   private Lotto lotto;
@@ -87,27 +87,27 @@ public class Progetto {
     this.stato = stato;
   }
 
-  public LocalDateTime getDataCreazione() {
+  public LocalDate getDataCreazione() {
     return dataCreazione;
   }
 
-  public void setDataCreazione(LocalDateTime dataCreazione) {
+  public void setDataCreazione(LocalDate dataCreazione) {
     this.dataCreazione = dataCreazione;
   }
 
-  public LocalDateTime getDataInizio() {
+  public LocalDate getDataInizio() {
     return dataInizio;
   }
 
-  public void setDataInizio(LocalDateTime dataInizio) {
+  public void setDataInizio(LocalDate dataInizio) {
     this.dataInizio = dataInizio;
   }
 
-  public LocalDateTime getDataFine() {
+  public LocalDate getDataFine() {
     return dataFine;
   }
 
-  public void setDataFine(LocalDateTime dataFine) {
+  public void setDataFine(LocalDate dataFine) {
     this.dataFine = dataFine;
   }
 
