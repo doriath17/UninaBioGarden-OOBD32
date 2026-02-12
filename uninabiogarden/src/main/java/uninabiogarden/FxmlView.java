@@ -10,7 +10,9 @@ public enum FxmlView {
   ORTI_VIEW("/uninabiogarden/Orti.fxml"),
   CREA_ORTO_VIEW("/uninabiogarden/CreaOrto.fxml"),
   LOTTI_VIEW("/uninabiogarden/Lotti.fxml"),
-  CREA_LOTTO_VIEW("/uninabiogarden/CreaLotto.fxml");
+  CREA_LOTTO_VIEW("/uninabiogarden/CreaLotto.fxml"),
+  PROFILO_VIEW("/uninabiogarden/Profilo.fxml");
+
 
   private final String fxmlPath;
 

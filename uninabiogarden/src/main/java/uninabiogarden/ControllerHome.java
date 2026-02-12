@@ -21,7 +21,7 @@ public class ControllerHome {
 
   @FXML
   private void profiloAction(ActionEvent event) {
-    // TODO: implement profile action
+    UIController.getInstance().openProfiloView();
   }
 
   @FXML

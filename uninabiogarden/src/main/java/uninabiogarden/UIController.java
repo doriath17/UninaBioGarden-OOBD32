@@ -124,4 +124,8 @@ public class UIController {
     loadViewIntoContent(FxmlView.CREA_LOTTO_VIEW, homeController.getSelectedContent());
   }
 
+  public void openProfiloView() {
+    ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
+    loadViewIntoContent(FxmlView.PROFILO_VIEW, homeController.getSelectedContent());
+  }
 }

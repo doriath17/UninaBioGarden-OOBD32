@@ -273,4 +273,14 @@ public class MainController {
     System.out.println("Caricamento lotti effettuato con successo");
   }
 
+  // ==============================================================================================
+  // Sezione: Profilo
+  // ==============================================================================================
+
+  public void logout() {
+    utenteLoggato = null;
+    ortiObservableList.clear();
+    lottiObservableList.clear();
+  }
+
 }
