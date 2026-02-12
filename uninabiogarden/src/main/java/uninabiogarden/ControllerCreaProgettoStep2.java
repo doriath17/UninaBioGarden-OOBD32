@@ -1,17 +1,5 @@
 package uninabiogarden;
 
-import javafx.fxml.FXML;
-import javafx.scene.layout.VBox;
-import uninabiogarden.dto.ProgettoDto;
-import uninabiogarden.Utils;
-import uninabiogarden.entities.Coltivatore;
-import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableCell;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +9,14 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.VBox;
+import uninabiogarden.dto.ProgettoDto;
+import uninabiogarden.entities.Coltivatore;
 
 public class ControllerCreaProgettoStep2 {
 
@@ -97,46 +93,50 @@ public class ControllerCreaProgettoStep2 {
 
   @FXML
   private void selezionaDisponibili(ActionEvent event) {
-    List<Coltivatore> selectedFromAvailable = availableColtivatoriObsList
-        .stream()
-        .filter(coltivatore -> availableSelectionMap.containsKey(coltivatore)
-            && availableSelectionMap.get(coltivatore).get())
-        .collect(Collectors.toList());
+    // List<Coltivatore> selectedFromAvailable = availableColtivatoriObsList
+    // .stream()
+    // .filter(coltivatore -> availableSelectionMap.containsKey(coltivatore)
+    // && availableSelectionMap.get(coltivatore).get())
+    // .collect(Collectors.toList());
 
-    // Aggiungi i coltivatori selezionati alla tabella di destinazione
-    selectedColtivatoriObsList.addAll(selectedFromAvailable);
+    // // Aggiungi i coltivatori selezionati alla tabella di destinazione
+    // selectedColtivatoriObsList.addAll(selectedFromAvailable);
 
-    // Rimuovi i coltivatori selezionati dalla tabella di origine
-    availableColtivatoriObsList.removeAll(selectedFromAvailable);
+    // // Rimuovi i coltivatori selezionati dalla tabella di origine
+    // availableColtivatoriObsList.removeAll(selectedFromAvailable);
 
-    // Reset delle selezioni dopo il trasferimento
-    selectedFromAvailable.forEach(coltivatore -> {
-      if (availableSelectionMap.containsKey(coltivatore)) {
-        availableSelectionMap.get(coltivatore).set(false);
-      }
-    });
+    // // Reset delle selezioni dopo il trasferimento
+    // selectedFromAvailable.forEach(coltivatore -> {
+    // if (availableSelectionMap.containsKey(coltivatore)) {
+    // availableSelectionMap.get(coltivatore).set(false);
+    // }
+    // });
+    Utils.<Coltivatore>moveSelectionTo(availableColtivatoriObsList, selectedColtivatoriObsList,
+        availableSelectionMap, selectedSelectionMap);
   }
 
   @FXML
   private void deselezionaSelezionati() {
-    List<Coltivatore> selectedFromSelected = selectedColtivatoriObsList
-        .stream()
-        .filter(coltivatore -> selectedSelectionMap.containsKey(coltivatore)
-            && selectedSelectionMap.get(coltivatore).get())
-        .collect(Collectors.toList());
+    // List<Coltivatore> selectedFromSelected = selectedColtivatoriObsList
+    // .stream()
+    // .filter(coltivatore -> selectedSelectionMap.containsKey(coltivatore)
+    // && selectedSelectionMap.get(coltivatore).get())
+    // .collect(Collectors.toList());
 
-    // Aggiungi i coltivatori selezionati alla tabella di destinazione
-    availableColtivatoriObsList.addAll(selectedFromSelected);
+    // // Aggiungi i coltivatori selezionati alla tabella di destinazione
+    // availableColtivatoriObsList.addAll(selectedFromSelected);
 
-    // Rimuovi i coltivatori selezionati dalla tabella di origine
-    selectedColtivatoriObsList.removeAll(selectedFromSelected);
+    // // Rimuovi i coltivatori selezionati dalla tabella di origine
+    // selectedColtivatoriObsList.removeAll(selectedFromSelected);
 
-    // Reset delle selezioni dopo il trasferimento
-    selectedFromSelected.forEach(coltivatore -> {
-      if (selectedSelectionMap.containsKey(coltivatore)) {
-        selectedSelectionMap.get(coltivatore).set(false);
-      }
-    });
+    // // Reset delle selezioni dopo il trasferimento
+    // selectedFromSelected.forEach(coltivatore -> {
+    // if (selectedSelectionMap.containsKey(coltivatore)) {
+    // selectedSelectionMap.get(coltivatore).set(false);
+    // }
+    // });
+    Utils.<Coltivatore>moveSelectionTo(selectedColtivatoriObsList, availableColtivatoriObsList,
+        selectedSelectionMap, availableSelectionMap);
   }
 
   private void clear() {

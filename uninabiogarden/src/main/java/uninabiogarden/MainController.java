@@ -149,6 +149,11 @@ public class MainController {
     System.out.println("Utente registrato con ID: " + id);
     utente.setId(id);
     utenteLoggato = utente;
+
+    // Inizializza le liste osservabili per i nuovi proprietari
+    if (utente instanceof Proprietario) {
+      caricamentoDatiUtente(utente);
+    }
   }
 
   private void caricamentoDatiUtente(Utente utente) {

@@ -41,6 +41,7 @@ CREATE TABLE coltivazione (
   
   data_creazione TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   data_inizio TIMESTAMP,
+  data_fine TIMESTAMP,
   
   quantita_piante INT NOT NULL,
   note_tecniche TEXT,

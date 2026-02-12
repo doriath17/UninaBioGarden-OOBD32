@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="mainContent" prefHeight="566.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uninabiogarden.ControllerCreaProgettoStep2">
+<VBox fx:id="mainContent" prefHeight="566.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uninabiogarden.ControllerCreaProgettoStep3">
    <children>
       <Label text="Crea Nuovo Progetto -- Step 3">
          <font>
@@ -66,10 +66,10 @@
                               <Font name="System Bold" size="15.0" />
                            </font>
                         </Label>
-                        <TableView fx:id="availableColtureTable1" prefHeight="200.0" prefWidth="535.0" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="selectedColtureTable" prefHeight="200.0" prefWidth="535.0" VBox.vgrow="ALWAYS">
                            <columns>
-                              <TableColumn fx:id="availableNomeColturaColumn1" prefWidth="450.0" text="Nome Comune" />
-                              <TableColumn fx:id="availableSelectionColumn1" prefWidth="64.0" />
+                              <TableColumn fx:id="selectedNomeColturaColumn" prefWidth="450.0" text="Nome Comune" />
+                              <TableColumn fx:id="selectedSelectionColumn" prefWidth="64.0" />
                            </columns>
                            <VBox.margin>
                               <Insets bottom="10.0" />

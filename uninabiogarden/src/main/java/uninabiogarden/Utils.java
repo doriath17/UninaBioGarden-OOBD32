@@ -1,9 +1,14 @@
 package uninabiogarden;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Observable;
 import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
 
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -110,6 +115,28 @@ public class Utils {
 
           setGraphic(checkBox);
         }
+      }
+    });
+  }
+
+  public static <T> void moveSelectionTo(ObservableList<T> sourceList, ObservableList<T> targetList,
+      Map<T, SimpleBooleanProperty> sourceSelectionMap,
+      Map<T, SimpleBooleanProperty> targetSelectionMap) {
+    List<T> selectedFromSource = sourceList
+        .stream()
+        .filter(item -> sourceSelectionMap.containsKey(item) && sourceSelectionMap.get(item).get())
+        .collect(Collectors.toList());
+
+    // Aggiungi gli oggetti selezionati alla lista di destinazione
+    targetList.addAll(selectedFromSource);
+
+    // Rimuovi gli oggetti selezionati dalla lista di origine
+    sourceList.removeAll(selectedFromSource);
+
+    // Reset delle selezioni dopo il trasferimento
+    selectedFromSource.forEach(item -> {
+      if (sourceSelectionMap.containsKey(item)) {
+        sourceSelectionMap.get(item).set(false);
       }
     });
   }

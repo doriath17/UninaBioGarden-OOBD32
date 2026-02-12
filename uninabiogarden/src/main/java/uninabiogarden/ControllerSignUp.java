@@ -52,7 +52,6 @@ public class ControllerSignUp {
 
   @FXML
   public void initialize() {
-    loadTestData();
     errorLabel.setText("");
     tipoUtenteField.getItems().addAll("COLTIVATORE", "PROPRIETARIO");
     tipoUtenteField.setValue("PROPRIETARIO");
@@ -65,6 +64,9 @@ public class ControllerSignUp {
     Utils.addCharacterLimit(nomeField, 50);
     Utils.addCharacterLimit(cognomeField, 50);
     Utils.addCharacterLimit(genderField, 10);
+
+    loadTestData();
+
   }
 
   private UtenteDto getData() {
