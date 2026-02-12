@@ -1,11 +1,15 @@
 package uninabiogarden;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.event.ActionEvent;
+import uninabiogarden.entities.Progetto;
 
 public class ControllerProgetti {
 
@@ -16,38 +20,50 @@ public class ControllerProgetti {
   private TextField searchField;
 
   @FXML
-  private TableView<?> progettiTable;
+  private TableView<Progetto> progettiTable;
 
   @FXML
-  private TableColumn<?, ?> nomeColumn;
+  private TableColumn<Progetto, String> nomeColumn;
 
   @FXML
-  private TableColumn<?, ?> statoColumn;
+  private TableColumn<Progetto, String> statoColumn;
 
   @FXML
-  private TableColumn<?, ?> dataCreazioneColumn;
+  private TableColumn<Progetto, String> dataCreazioneColumn;
 
   @FXML
-  private TableColumn<?, ?> dataInizioColumn;
+  private TableColumn<Progetto, String> dataInizioColumn;
 
   @FXML
-  private TableColumn<?, ?> dataFineColumn;
+  private TableColumn<Progetto, String> dataFineColumn;
 
   @FXML
-  private TableColumn<?, ?> actionsColumn;
+  private TableColumn<Progetto, Void> actionsColumn;
+
+  private ObservableList<Progetto> progettiObservableList;
 
   @FXML
   private void initialize() {
     // Setup table columns
-    // TODO: setup cell value factories when entities are defined
+    nomeColumn.setCellValueFactory(new PropertyValueFactory<>("nomeProgetto"));
+    statoColumn.setCellValueFactory(new PropertyValueFactory<>("stato"));
+    dataCreazioneColumn.setCellValueFactory(new PropertyValueFactory<>("dataCreazione"));
+    dataInizioColumn.setCellValueFactory(new PropertyValueFactory<>("dataInizio"));
+    dataFineColumn.setCellValueFactory(new PropertyValueFactory<>("dataFine"));
 
     // Setup actions column with View button
     // TODO: add button cell factory for actionsColumn to open dettaglio progetto
   }
 
+  public void init() {
+    // Crea ObservableList dal model - sincronizzato con la lista del model
+    progettiObservableList = FXCollections.observableList(MainController.getInstance().getProgetti());
+    progettiTable.setItems(progettiObservableList);
+  }
+
   @FXML
   private void search(ActionEvent event) {
-    // TODO: implement search logic
+    // TODO: da rimuovere probabilmente
   }
 
   @FXML

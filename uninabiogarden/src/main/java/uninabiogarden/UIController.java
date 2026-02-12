@@ -100,6 +100,9 @@ public class UIController {
   public void openProgettiView() {
     ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
     loadViewIntoContent(FxmlView.PROGETTI_VIEW, homeController.getSelectedContent());
+
+    ControllerProgetti progettiController = (ControllerProgetti) controllers.get(FxmlView.PROGETTI_VIEW);
+    progettiController.init(); // per avere la lista aggiornata dei progetti ogni volta che si apre la view
   }
 
   public void openOrtiView() {
