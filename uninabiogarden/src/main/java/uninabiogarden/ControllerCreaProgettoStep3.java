@@ -2,6 +2,7 @@ package uninabiogarden;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
@@ -79,16 +80,19 @@ public class ControllerCreaProgettoStep3 {
   }
 
   private void loadColtureDisponibili() {
+    availableColtureObsList.setAll(MainController.getInstance().getColtureObservableList());
   }
 
   @FXML
   private void selezionaDisponibili() {
-    // TODO: implement
+    Utils.<Coltura>moveSelectionTo(availableColtureObsList, selectedColtureObsList, availableSelectionMap,
+        selectedSelectionMap);
   }
 
   @FXML
   private void deselezionaSelezionati() {
-    // TODO: implement
+    Utils.<Coltura>moveSelectionTo(selectedColtureObsList, availableColtureObsList, selectedSelectionMap,
+        availableSelectionMap);
   }
 
   private void clear() {
@@ -99,12 +103,21 @@ public class ControllerCreaProgettoStep3 {
 
   @FXML
   private void indietroAction() {
-    // TODO: implement
+    UIController.getInstance().openCreaProgettoStep2View(progettoDto, false);
   }
 
   @FXML
   private void nextStepAction() {
-    // TODO: implement
+    // Prepara i dati del progetto
+    progettoDto.coltureIds = selectedColtureObsList.stream().map(Coltura::getId)
+        .collect(Collectors.toList());
+
+    Utils.mostraDialogConfermaConAzione(
+        "Sei sicuro di voler creare il progetto?",
+        progettoDto,
+        dto -> {
+          MainController.getInstance().creaProgetto(dto);
+        });
   }
 
 }

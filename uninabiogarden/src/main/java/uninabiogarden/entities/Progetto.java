@@ -21,6 +21,9 @@ public class Progetto {
   private LocalDateTime dataInizio;
   private LocalDateTime dataFine;
 
+  private Proprietario proprietario;
+  private Lotto lotto;
+
   public Progetto() {
   }
 
@@ -44,6 +47,12 @@ public class Progetto {
       this.dataCreazione = LocalDateTime.parse(dto.dataCreazione);
       this.dataInizio = LocalDateTime.parse(dto.dataInizio);
       this.dataFine = LocalDateTime.parse(dto.dataFine);
+
+      this.proprietario = new Proprietario();
+      if (dto.proprietarioId != null) {
+        this.proprietario.setId(dto.proprietarioId);
+      }
+
     } catch (DateTimeParseException e) {
       System.err.println("Errore nella conversione delle date: " + e.getMessage());
       throw new IllegalArgumentException("Formato data non valido");
@@ -108,5 +117,21 @@ public class Progetto {
 
   public void setDataFine(LocalDateTime dataFine) {
     this.dataFine = dataFine;
+  }
+
+  public Proprietario getProprietario() {
+    return proprietario;
+  }
+
+  public void setProprietario(Proprietario proprietario) {
+    this.proprietario = proprietario;
+  }
+
+  public Lotto getLotto() {
+    return lotto;
+  }
+
+  public void setLotto(Lotto lotto) {
+    this.lotto = lotto;
   }
 }

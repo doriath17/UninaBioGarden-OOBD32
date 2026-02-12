@@ -25,7 +25,7 @@ public class ControllerLogIn {
   @FXML
   public void initialize() {
     // test data
-    usernameField.setText("testuser");
+    usernameField.setText("mario_prop");
     passwordField.setText("password123");
 
     errorLabel.setText("");

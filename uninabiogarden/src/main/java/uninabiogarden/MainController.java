@@ -160,6 +160,7 @@ public class MainController {
     if (utente instanceof Proprietario) {
       var proprietario = (Proprietario) utente;
 
+      caricaColture();
       caricaOrti();
       caricaLotti(proprietario);
 
@@ -314,14 +315,9 @@ public class MainController {
   // ==============================================================================================
 
   public void creaProgetto(ProgettoDto progettoDto) {
-    // // validazione dati progetto
-    // var validationError = isValidProgetto(progettoDto);
-    // if (validationError != null) {
-    // throw new IllegalArgumentException(validationError);
-    // }
-
-    // // conversione nell'entità Progetto
-    // Progetto progetto = new Progetto(progettoDto);
+    System.out.println("Crea progetto arriva qui nel MainController");
+    // conversione nell'entità Progetto
+    Progetto progetto = new Progetto(progettoDto);
 
     // progetto = databaseController.getProgettoDao().saveProgetto(progetto);
     // System.out.println("Progetto creato con ID: " + progetto.getId());
@@ -341,10 +337,12 @@ public class MainController {
   // Sezione: Colture
   // ==============================================================================================
 
-  public void loadColture() {
-    List<Coltura> colture = databaseController.getColturaDao().findAll();
-    coltureObservableList.setAll(colture);
-    System.out.println("Caricamento colture effettuato con successo");
+  public void caricaColture() {
+    if (coltureObservableList == null || coltureObservableList.isEmpty()) {
+      List<Coltura> colture = databaseController.getColturaDao().findAll();
+      coltureObservableList.setAll(colture);
+      System.out.println("Caricamento colture effettuato con successo");
+    }
   }
 
 }

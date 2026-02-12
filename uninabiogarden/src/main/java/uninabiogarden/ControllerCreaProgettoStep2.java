@@ -93,24 +93,6 @@ public class ControllerCreaProgettoStep2 {
 
   @FXML
   private void selezionaDisponibili(ActionEvent event) {
-    // List<Coltivatore> selectedFromAvailable = availableColtivatoriObsList
-    // .stream()
-    // .filter(coltivatore -> availableSelectionMap.containsKey(coltivatore)
-    // && availableSelectionMap.get(coltivatore).get())
-    // .collect(Collectors.toList());
-
-    // // Aggiungi i coltivatori selezionati alla tabella di destinazione
-    // selectedColtivatoriObsList.addAll(selectedFromAvailable);
-
-    // // Rimuovi i coltivatori selezionati dalla tabella di origine
-    // availableColtivatoriObsList.removeAll(selectedFromAvailable);
-
-    // // Reset delle selezioni dopo il trasferimento
-    // selectedFromAvailable.forEach(coltivatore -> {
-    // if (availableSelectionMap.containsKey(coltivatore)) {
-    // availableSelectionMap.get(coltivatore).set(false);
-    // }
-    // });
     Utils.<Coltivatore>moveSelectionTo(availableColtivatoriObsList, selectedColtivatoriObsList,
         availableSelectionMap, selectedSelectionMap);
   }
@@ -154,8 +136,16 @@ public class ControllerCreaProgettoStep2 {
   private void nextStepAction() {
     progettoDto.coltivatoriIds = selectedColtivatoriObsList.stream().map(Coltivatore::getId)
         .collect(Collectors.toList());
-    for (Long id : progettoDto.coltivatoriIds) {
-      System.out.println("Coltivatore selezionato: " + id);
+
+    if (progettoDto.coltivatoriIds.isEmpty()) {
+      errorLabel.setText("Seleziona almeno un coltivatore per procedere");
+      return;
+    }
+
+    UIController.getInstance().openCreaProgettoStep3View(progettoDto, initNextStep);
+
+    if (initNextStep) {
+      initNextStep = false;
     }
   }
 

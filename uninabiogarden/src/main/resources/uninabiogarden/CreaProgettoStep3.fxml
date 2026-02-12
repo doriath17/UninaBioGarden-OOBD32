@@ -114,7 +114,7 @@
                   <Insets />
                </GridPane.margin>
             </Button>
-            <Button mnemonicParsing="false" onAction="#nextStepAction" text="Prossimo Step" GridPane.columnIndex="1" />
+            <Button mnemonicParsing="false" onAction="#nextStepAction" text="Crea Progetto" GridPane.columnIndex="1" />
          </children>
       </GridPane>
    </children>

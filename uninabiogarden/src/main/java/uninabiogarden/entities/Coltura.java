@@ -1,6 +1,7 @@
 package uninabiogarden.entities;
 
 public class Coltura {
+
   private Long id;
   private String nomeComune;
   private Integer tempoMaturazione;

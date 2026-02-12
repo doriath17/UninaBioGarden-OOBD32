@@ -10,6 +10,8 @@ public class ProgettoDto {
   public String dataInizio;
   public String dataFine;
 
+  public Long proprietarioId;
   public Long lottoId;
   public List<Long> coltivatoriIds;
+  public List<Long> coltureIds;
 }

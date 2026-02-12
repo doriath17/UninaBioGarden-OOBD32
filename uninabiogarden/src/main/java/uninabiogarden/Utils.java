@@ -3,6 +3,7 @@ package uninabiogarden;
 import java.util.List;
 import java.util.Map;
 import java.util.Observable;
+import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
@@ -15,6 +16,9 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.control.TextInputControl;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Alert.AlertType;
 import uninabiogarden.entities.Coltivatore;
 
 public class Utils {
@@ -137,6 +141,30 @@ public class Utils {
     selectedFromSource.forEach(item -> {
       if (sourceSelectionMap.containsKey(item)) {
         sourceSelectionMap.get(item).set(false);
+      }
+    });
+  }
+
+  public static <T> void mostraDialogConfermaConAzione(
+      String messaggio,
+      T data,
+      Consumer<T> onConfirm) {
+    Alert alert = new Alert(AlertType.CONFIRMATION);
+    alert.setTitle("Conferma Azione");
+    alert.setHeaderText(null);
+    alert.setContentText(messaggio);
+
+    ButtonType buttonConferma = new ButtonType("Conferma");
+    ButtonType buttonAnnulla = new ButtonType("Annulla");
+    alert.getButtonTypes().setAll(buttonConferma, buttonAnnulla);
+
+    // Rendi il dialog non ridimensionabile
+    alert.setResizable(false);
+
+    // Mostra il dialog e esegui l'azione se l'utente conferma
+    alert.showAndWait().ifPresent(response -> {
+      if (response == buttonConferma) {
+        onConfirm.accept(data);
       }
     });
   }
