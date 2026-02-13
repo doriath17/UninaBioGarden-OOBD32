@@ -404,6 +404,32 @@ public class MainController {
     System.out.println("Caricamento progetti effettuato con successo: " + progetti.size() + " progetti trovati");
   }
 
+  public Progetto updateProgettoInfo(String nome, String descrizione, Progetto progetto) {
+    // validazione del progetto
+    if (nome == null || nome.isEmpty()) {
+      throw new IllegalArgumentException("Nome progetto mancante");
+    }
+    if (progetto.getLotto() == null) {
+      throw new IllegalArgumentException("Lotto per il progetto non selezionato");
+    }
+
+    // aggiorna nel database
+    databaseController.getProgettoDao().updateProgetto(nome, descrizione, progetto.getId());
+
+    progetto.setNomeProgetto(nome);
+    progetto.setDescrizione(descrizione);
+
+    System.out.println("Progetto aggiornato con successo: " + progetto.getId());
+    return progetto;
+  }
+
+  public void updateProgetto(String nuovoStato, Progetto progetto) {
+    databaseController.getProgettoDao().updateProgetto(nuovoStato, progetto.getId());
+    progetto.setStato(Progetto.Stato.valueOf(nuovoStato));
+    System.out
+        .println("Stato del progetto aggiornato con successo: " + progetto.getId() + " nuovo stato: " + nuovoStato);
+  }
+
   // ==============================================================================================
   // Sezione: Profilo
   // ==============================================================================================

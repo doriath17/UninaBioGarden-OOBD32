@@ -9,6 +9,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -125,7 +126,16 @@ public class ControllerCreaProgettoStep3 {
         "Sei sicuro di voler creare il progetto?",
         nuovoProgetto,
         dto -> {
-          MainController.getInstance().creaProgetto(dto);
+          try {
+            MainController.getInstance().creaProgetto(dto);
+            UIController.getInstance().openProgettiView();
+          } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Errore");
+            alert.setHeaderText("Errore durante la creazione del progetto");
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
+          }
         });
   }
 

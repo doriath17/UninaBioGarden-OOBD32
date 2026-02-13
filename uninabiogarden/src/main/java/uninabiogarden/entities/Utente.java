@@ -47,6 +47,14 @@ public abstract class Utente {
     return nome + " " + cognome;
   }
 
+  public Integer getAge() {
+    if (bDay == null) {
+      return 0;
+    }
+    LocalDate today = LocalDate.now();
+    return today.getYear() - bDay.getYear() - (today.getDayOfYear() < bDay.getDayOfYear() ? 1 : 0);
+  }
+
   public Long getId() {
     return id;
   }

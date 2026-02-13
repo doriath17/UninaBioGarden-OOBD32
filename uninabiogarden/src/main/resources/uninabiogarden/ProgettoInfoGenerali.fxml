@@ -8,6 +8,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
@@ -28,7 +29,7 @@
                   <Font name="System Bold" size="16.0" />
                </font>
             </Label>
-            <Button mnemonicParsing="false" onAction="#editInfoGeneraliProgetto" text="Modifica" GridPane.columnIndex="1" />
+            <Button fx:id="editButton" mnemonicParsing="false" onAction="#editInfoGeneraliProgetto" text="Modifica" GridPane.columnIndex="1" />
          </children>
       </GridPane>
       <GridPane VBox.vgrow="ALWAYS">
@@ -111,8 +112,28 @@
                               <Font name="System Bold" size="16.0" />
                            </font>
                         </Label>
-                        <ChoiceBox fx:id="statoProgettoChoiceBox" prefHeight="26.0" prefWidth="212.0" GridPane.columnIndex="1" />
+                        <Label fx:id="statoProgettoLabel" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="18.0" prefWidth="240.0" GridPane.columnIndex="1" />
                      </children>
+                  </GridPane>
+                  <GridPane>
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="247.0" minWidth="10.0" prefWidth="144.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="366.0" minWidth="10.0" prefWidth="366.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <Label maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="128.0" text="Cambia Stato:">
+                           <font>
+                              <Font name="System Bold" size="16.0" />
+                           </font>
+                        </Label>
+                        <ChoiceBox fx:id="statoChoiceBox" maxWidth="1.7976931348623157E308" prefWidth="150.0" GridPane.columnIndex="1" />
+                     </children>
+                     <VBox.margin>
+                        <Insets top="20.0" />
+                     </VBox.margin>
                   </GridPane>
                </children>
                <GridPane.margin>

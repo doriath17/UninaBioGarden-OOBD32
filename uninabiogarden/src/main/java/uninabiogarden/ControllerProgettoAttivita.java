@@ -1,8 +1,10 @@
 package uninabiogarden;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import uninabiogarden.entities.Progetto;
 
 public class ControllerProgettoAttivita {
 
@@ -30,9 +32,17 @@ public class ControllerProgettoAttivita {
   @FXML
   private TableColumn<?, ?> viewColumn;
 
+  private Progetto progetto;
+  private Label errorLabel;
+
   @FXML
   private void initialize() {
     // Setup table columns
+  }
+
+  public void init(Progetto progetto, Label errorLabel) {
+    this.progetto = progetto;
+    this.errorLabel = errorLabel;
   }
 
 }

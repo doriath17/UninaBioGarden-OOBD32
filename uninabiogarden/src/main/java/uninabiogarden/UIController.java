@@ -175,40 +175,60 @@ public class UIController {
 
     ControllerDettaglioProgetto dettaglioController = (ControllerDettaglioProgetto) controllers
         .get(FxmlView.DETTAGLIO_PROGETTO_VIEW);
-    dettaglioController.setProgetto(progetto);
+    dettaglioController.init(progetto);
 
-    // Open info generali by default
-    openProgettoInfoGenerali();
+    // Open info generali di default
+    openProgettoInfoGenerali(progetto, dettaglioController.getErrorLabel());
   }
 
-  public void openProgettoInfoGenerali() {
+  public void openProgettoInfoGenerali(Progetto progetto, javafx.scene.control.Label errorLabel) {
     ControllerDettaglioProgetto dettaglioController = (ControllerDettaglioProgetto) controllers
         .get(FxmlView.DETTAGLIO_PROGETTO_VIEW);
     loadViewIntoContent(FxmlView.PROGETTO_INFO_GENERALI, dettaglioController.getDettaglioContent());
+
+    ControllerProgettoInfoGenerali infoGeneraliController = (ControllerProgettoInfoGenerali) controllers
+        .get(FxmlView.PROGETTO_INFO_GENERALI);
+    infoGeneraliController.init(progetto, errorLabel);
   }
 
-  public void openProgettoColtivatori() {
+  public void openProgettoColtivatori(Progetto progetto, javafx.scene.control.Label errorLabel) {
     ControllerDettaglioProgetto dettaglioController = (ControllerDettaglioProgetto) controllers
         .get(FxmlView.DETTAGLIO_PROGETTO_VIEW);
     loadViewIntoContent(FxmlView.PROGETTO_COLTIVATORI, dettaglioController.getDettaglioContent());
+
+    ControllerProgettoColtivatori coltivatoriController = (ControllerProgettoColtivatori) controllers
+        .get(FxmlView.PROGETTO_COLTIVATORI);
+    coltivatoriController.init(progetto, errorLabel);
   }
 
-  public void openProgettoColtivazioni() {
+  public void openProgettoColtivazioni(Progetto progetto, javafx.scene.control.Label errorLabel) {
     ControllerDettaglioProgetto dettaglioController = (ControllerDettaglioProgetto) controllers
         .get(FxmlView.DETTAGLIO_PROGETTO_VIEW);
     loadViewIntoContent(FxmlView.PROGETTO_COLTIVAZIONI, dettaglioController.getDettaglioContent());
+
+    ControllerProgettoColtivazioni coltivazioniController = (ControllerProgettoColtivazioni) controllers
+        .get(FxmlView.PROGETTO_COLTIVAZIONI);
+    coltivazioniController.init(progetto, errorLabel);
   }
 
-  public void openProgettoAttivita() {
+  public void openProgettoAttivita(Progetto progetto, javafx.scene.control.Label errorLabel) {
     ControllerDettaglioProgetto dettaglioController = (ControllerDettaglioProgetto) controllers
         .get(FxmlView.DETTAGLIO_PROGETTO_VIEW);
     loadViewIntoContent(FxmlView.PROGETTO_ATTIVITA, dettaglioController.getDettaglioContent());
+
+    ControllerProgettoAttivita attivitaController = (ControllerProgettoAttivita) controllers
+        .get(FxmlView.PROGETTO_ATTIVITA);
+    attivitaController.init(progetto, errorLabel);
   }
 
-  public void openProgettoNotifiche() {
+  public void openProgettoNotifiche(Progetto progetto, javafx.scene.control.Label errorLabel) {
     ControllerDettaglioProgetto dettaglioController = (ControllerDettaglioProgetto) controllers
         .get(FxmlView.DETTAGLIO_PROGETTO_VIEW);
     loadViewIntoContent(FxmlView.PROGETTO_NOTIFICHE, dettaglioController.getDettaglioContent());
+
+    ControllerProgettoNotifiche notificheController = (ControllerProgettoNotifiche) controllers
+        .get(FxmlView.PROGETTO_NOTIFICHE);
+    notificheController.init(progetto, errorLabel);
   }
 
   public void openNotificheView() {

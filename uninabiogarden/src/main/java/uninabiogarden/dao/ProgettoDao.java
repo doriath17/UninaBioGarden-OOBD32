@@ -45,6 +45,26 @@ public class ProgettoDao {
         throw new RuntimeException("Errore durante la creazione del progetto. Riprova più tardi.");
       }
 
+      // Recupera i campi generati automaticamente dal database
+      String selectProgettoSql = "SELECT stato, data_creazione, data_inizio, data_fine FROM progetto WHERE id = ?";
+      try (PreparedStatement pstmt = conn.prepareStatement(selectProgettoSql)) {
+        pstmt.setLong(1, progetto.getId());
+        ResultSet rs = pstmt.executeQuery();
+        if (rs.next()) {
+          progetto.setStato(Progetto.Stato.valueOf(rs.getString("stato")));
+          progetto.setDataCreazione(rs.getDate("data_creazione").toLocalDate());
+
+          var dataInizio = rs.getDate("data_inizio");
+          progetto.setDataInizio(dataInizio != null ? dataInizio.toLocalDate() : null);
+
+          var dataFine = rs.getDate("data_fine");
+          progetto.setDataFine(dataFine != null ? dataFine.toLocalDate() : null);
+        }
+      } catch (Exception e) {
+        System.err.println("Errore durante il recupero dei dati del progetto: " + e.getMessage());
+        throw new RuntimeException("Errore durante la creazione del progetto. Riprova più tardi.");
+      }
+
       // 2. Inserimento delle coltivazioni in batch per performance
       String insertColtivazioneSql = "INSERT INTO coltivazione (quantita_piante, note_tecniche, id_progetto, id_coltura) VALUES (?, ?, ?, ?)";
       try (PreparedStatement pstmt = conn.prepareStatement(insertColtivazioneSql)) {
@@ -202,6 +222,33 @@ public class ProgettoDao {
     }
 
     return progetti;
+  }
+
+  public void updateProgetto(String nome, String descrizione, Long id) {
+    String updateProgettoSql = "UPDATE progetto SET nome = ?, descrizione = ? WHERE id = ?";
+    try (Connection conn = database.getConnection();
+        PreparedStatement pstmt = conn.prepareStatement(updateProgettoSql)) {
+      pstmt.setString(1, nome);
+      pstmt.setString(2, descrizione);
+      pstmt.setLong(3, id);
+      pstmt.executeUpdate();
+    } catch (Exception e) {
+      System.err.println("Errore durante l'aggiornamento del progetto: " + e.getMessage());
+      throw new RuntimeException("Errore durante l'aggiornamento del progetto. Riprova più tardi.");
+    }
+  }
+
+  public void updateProgetto(String nuovoStato, Long id) {
+    String updateProgettoSql = "UPDATE progetto SET stato = ?::stato_progetto WHERE id = ?";
+    try (Connection conn = database.getConnection();
+        PreparedStatement pstmt = conn.prepareStatement(updateProgettoSql)) {
+      pstmt.setString(1, nuovoStato);
+      pstmt.setLong(2, id);
+      pstmt.executeUpdate();
+    } catch (Exception e) {
+      System.err.println("Errore durante l'aggiornamento del progetto: " + e.getMessage());
+      throw new RuntimeException("Errore durante l'aggiornamento del progetto. Riprova più tardi.");
+    }
   }
 
 }

@@ -19,6 +19,7 @@ import javafx.scene.control.TextInputControl;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
 import javafx.scene.control.Alert.AlertType;
 import javafx.util.Callback;
 import uninabiogarden.entities.Coltivatore;
@@ -195,6 +196,29 @@ public class Utils {
         }
       }
     });
+  }
+
+  public static void showError(Label label, String message) {
+    if (label != null) {
+      label.setText(message);
+      label.setStyle("-fx-text-fill: #d32f2f; -fx-font-weight: bold;");
+      label.setVisible(true);
+    }
+  }
+
+  public static void showSuccess(Label label, String message) {
+    if (label != null) {
+      label.setText(message);
+      label.setStyle("-fx-text-fill: #388e3c; -fx-font-weight: bold;");
+      label.setVisible(true);
+    }
+  }
+
+  public static void hideMessage(Label label) {
+    if (label != null) {
+      label.setVisible(false);
+      label.setText("");
+    }
   }
 
 }

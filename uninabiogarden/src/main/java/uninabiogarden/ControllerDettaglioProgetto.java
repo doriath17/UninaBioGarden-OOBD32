@@ -24,41 +24,42 @@ public class ControllerDettaglioProgetto {
     errorLabel.setVisible(false);
   }
 
-  public void setProgetto(Progetto progetto) {
+  public void init(Progetto progetto) {
     this.currentProgetto = progetto;
-  }
 
-  public Progetto getCurrentProgetto() {
-    return currentProgetto;
   }
 
   VBox getDettaglioContent() {
     return dettaglioContent;
   }
 
+  Label getErrorLabel() {
+    return errorLabel;
+  }
+
   @FXML
   private void openInfoGeneraliProgetto(ActionEvent event) {
-    UIController.getInstance().openProgettoInfoGenerali();
+    UIController.getInstance().openProgettoInfoGenerali(currentProgetto, errorLabel);
   }
 
   @FXML
   private void openColtivatoriProgetto(ActionEvent event) {
-    UIController.getInstance().openProgettoColtivatori();
+    UIController.getInstance().openProgettoColtivatori(currentProgetto, errorLabel);
   }
 
   @FXML
   private void openColtivazioniProgetto(ActionEvent event) {
-    UIController.getInstance().openProgettoColtivazioni();
+    UIController.getInstance().openProgettoColtivazioni(currentProgetto, errorLabel);
   }
 
   @FXML
   private void openAttivitaProgetto(ActionEvent event) {
-    UIController.getInstance().openProgettoAttivita();
+    UIController.getInstance().openProgettoAttivita(currentProgetto, errorLabel);
   }
 
   @FXML
   private void openNotificheProgetto(ActionEvent event) {
-    UIController.getInstance().openProgettoNotifiche();
+    UIController.getInstance().openProgettoNotifiche(currentProgetto, errorLabel);
   }
 
   @FXML

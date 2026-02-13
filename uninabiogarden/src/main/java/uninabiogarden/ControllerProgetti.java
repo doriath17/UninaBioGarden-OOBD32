@@ -4,6 +4,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.layout.VBox;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableColumn;
@@ -44,14 +46,17 @@ public class ControllerProgetti {
 
   @FXML
   private void initialize() {
-    // Setup table columns
-    nomeColumn.setCellValueFactory(new PropertyValueFactory<>("nomeProgetto"));
-    statoColumn.setCellValueFactory(new PropertyValueFactory<>("stato"));
-    dataCreazioneColumn.setCellValueFactory(new PropertyValueFactory<>("dataCreazione"));
-    dataInizioColumn.setCellValueFactory(new PropertyValueFactory<>("dataInizio"));
-    dataFineColumn.setCellValueFactory(new PropertyValueFactory<>("dataFine"));
+    // Setup table columns with custom cell value factories to enable live updates
+    nomeColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNomeProgetto()));
+    statoColumn.setCellValueFactory(cellData -> new SimpleStringProperty(
+        cellData.getValue().getStato() != null ? cellData.getValue().getStato().name() : ""));
+    dataCreazioneColumn.setCellValueFactory(cellData -> new SimpleStringProperty(
+        cellData.getValue().getDataCreazione() != null ? cellData.getValue().getDataCreazione().toString() : ""));
+    dataInizioColumn.setCellValueFactory(cellData -> new SimpleStringProperty(
+        cellData.getValue().getDataInizio() != null ? cellData.getValue().getDataInizio().toString() : ""));
+    dataFineColumn.setCellValueFactory(cellData -> new SimpleStringProperty(
+        cellData.getValue().getDataFine() != null ? cellData.getValue().getDataFine().toString() : ""));
 
-    // Setup actions column with View button
     Utils.addButtonToColumn(actionsColumn, "View", this::openDettaglioProgetto);
   }
 
@@ -59,6 +64,7 @@ public class ControllerProgetti {
     // Crea ObservableList dal model - sincronizzato con la lista del model
     progettiObservableList = FXCollections.observableList(MainController.getInstance().getProgetti());
     progettiTable.setItems(progettiObservableList);
+    progettiTable.refresh(); // Forza refresh per assicurare che i dati siano visualizzati correttamente
   }
 
   @FXML
