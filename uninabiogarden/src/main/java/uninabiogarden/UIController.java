@@ -211,4 +211,24 @@ public class UIController {
     loadViewIntoContent(FxmlView.PROGETTO_NOTIFICHE, dettaglioController.getDettaglioContent());
   }
 
+  public void openNotificheView() {
+    ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
+    loadViewIntoContent(FxmlView.NOTIFICHE_VIEW, homeController.getSelectedContent());
+  }
+
+  public void openCreaNotificheView() {
+    ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
+    loadViewIntoContent(FxmlView.CREA_NOTIFICHE_VIEW, homeController.getSelectedContent());
+  }
+
+  public void openCreaNotificheAttivitaView() {
+    ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
+    loadViewIntoContent(FxmlView.CREA_NOTIFICHE_ATTIVITA_VIEW, homeController.getSelectedContent());
+  }
+
+  public void openCreaNotificheStep2View() {
+    ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
+    loadViewIntoContent(FxmlView.CREA_NOTIFICHE_STEP_2, homeController.getSelectedContent());
+  }
+
 }

@@ -10,6 +10,7 @@ public class Proprietario extends Utente {
 
   private List<Lotto> lotti;
   private List<Progetto> progetti;
+  private ArrayList<Notifica> notificheInviate = new ArrayList<>();
 
   public Proprietario() {
     super();

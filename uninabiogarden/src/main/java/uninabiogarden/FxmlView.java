@@ -6,6 +6,7 @@ public enum FxmlView {
   SIGNUP_VIEW("/uninabiogarden/SignUpView.fxml"),
   HOME_VIEW("/uninabiogarden/Home.fxml"),
   DASHBOARD_VIEW("/uninabiogarden/Dashboard.fxml"),
+  NOTIFICHE_VIEW("/uninabiogarden/Notifiche.fxml"),
   PROFILO_VIEW("/uninabiogarden/Profilo.fxml"),
   PROGETTI_VIEW("/uninabiogarden/Progetti.fxml"),
   ORTI_VIEW("/uninabiogarden/Orti.fxml"),
@@ -22,7 +23,11 @@ public enum FxmlView {
   PROGETTO_COLTIVATORI("/uninabiogarden/ProgettoColtivatori.fxml"),
   PROGETTO_COLTIVAZIONI("/uninabiogarden/ProgettoColtivazioni.fxml"),
   PROGETTO_ATTIVITA("/uninabiogarden/ProgettoAttivita.fxml"),
-  PROGETTO_NOTIFICHE("/uninabiogarden/ProgettoNotifiche.fxml");
+  PROGETTO_NOTIFICHE("/uninabiogarden/ProgettoNotifiche.fxml"),
+  
+  CREA_NOTIFICHE_VIEW("/uninabiogarden/CreaNotifica.fxml"),
+  CREA_NOTIFICHE_ATTIVITA_VIEW("/uninabiogarden/CreaNotificaAttivita.fxml"),
+  CREA_NOTIFICHE_STEP_2("/uninabiogarden/CreaNotificaStep2.fxml");
 
   private final String fxmlPath;
 

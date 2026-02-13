@@ -45,7 +45,7 @@ public class ControllerHome {
 
   @FXML
   private void notificheAction(ActionEvent event) {
-    // TODO: implement notifications navigation
+    UIController.getInstance().openNotificheView();
   }
 
   @FXML

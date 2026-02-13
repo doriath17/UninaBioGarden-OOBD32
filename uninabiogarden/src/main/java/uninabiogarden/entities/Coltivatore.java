@@ -1,10 +1,13 @@
 package uninabiogarden.entities;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 import uninabiogarden.dto.UtenteDto;
 
 public class Coltivatore extends Utente {
+
+  private ArrayList<Riceve> notificheRicevute = new ArrayList<>();
 
   public Coltivatore() {
     super();

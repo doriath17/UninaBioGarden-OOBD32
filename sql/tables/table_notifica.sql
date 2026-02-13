@@ -22,11 +22,18 @@ CREATE TABLE notifica (
 
   id_proprietario INT NOT NULL,
   id_progetto INT NOT NULL,
+  id_attività INT,
 
   FOREIGN KEY (id_proprietario) REFERENCES utente (id),
   FOREIGN KEY (id_progetto) REFERENCES progetto (id) ON DELETE CASCADE,
+  FOREIGN KEY (id_attività) REFERENCES attività (id),
 
-  UNIQUE (id_progetto, data_invio)
+  UNIQUE (id_progetto, data_invio),
+  
+  CHECK (
+    (tipo = 'NOTIFICA_ATTIVITA_IMMINENTE' AND id_attività IS NOT NULL) OR
+    (tipo = 'NOTIFICA_PROGETTO' AND id_attività IS NULL)
+  )
 );
 
 -- ==============================================================================================
