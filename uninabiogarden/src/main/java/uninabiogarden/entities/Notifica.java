@@ -1,6 +1,6 @@
 package uninabiogarden.entities;
 
-import java.security.Timestamp;
+import java.sql.Timestamp;
 import java.sql.Date;
 import java.util.ArrayList;
 
@@ -27,9 +27,10 @@ public class Notifica {
 
     private Proprietario mittente;
     private Progetto progetto;
+    private Attivita attivita;
     private ArrayList<Coltivatore> destinatari = new ArrayList<>();
 
-    public Notifica(Long id, Timestamp dataInvio, String nome, String descrizione, Urgenza urgenza, Tipo tipo, Integer giorniMancanti, Proprietario mittente, Progetto progetto) {
+    public Notifica(Long id, Timestamp dataInvio, String nome, String descrizione, Urgenza urgenza, Tipo tipo, Integer giorniMancanti, Proprietario mittente, Progetto progetto, Attivita attivita) {
         this.id = id;
         this.dataInvio = dataInvio;
         this.nome = nome;
@@ -39,6 +40,7 @@ public class Notifica {
         this.giorniMancanti = giorniMancanti;
         this.mittente = mittente;
         this.progetto = progetto;
+        this.attivita = attivita;
         
     }
 
@@ -114,6 +116,38 @@ public class Notifica {
 
     public void setProgetto(Progetto progetto) {
         this.progetto = progetto;
+    }
+
+    public Attivita getAttivita() {
+        return attivita;
+    }
+
+    public void setAttivita(Attivita attivita) {
+        this.attivita = attivita;
+    }
+
+    public ArrayList<Coltivatore> getDestinatari() {
+        return destinatari;
+    }
+
+    public void setDestinatari(ArrayList<Coltivatore> destinatari) {
+        this.destinatari = destinatari;
+    }
+
+    @Override
+    public String toString() {
+        return "Notifica{" +
+                "id=" + id +
+                ", dataInvio=" + dataInvio +
+                ", nome='" + nome + '\'' +
+                ", descrizione='" + descrizione + '\'' +
+                ", urgenza=" + urgenza +
+                ", tipo=" + tipo +
+                ", giorniMancanti=" + giorniMancanti +
+                ", mittente=" + mittente.getUsername() +
+                ", progetto=" + (progetto != null ? progetto.getNomeProgetto() : "null") +
+                /*", attivita=" + (attivita != null ? attivita.getNome() : "null") + */
+                '}';
     }
 
 }
