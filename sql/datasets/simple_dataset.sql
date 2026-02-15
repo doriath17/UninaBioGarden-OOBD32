@@ -96,26 +96,26 @@ INSERT INTO lavora_per (id_progetto, id_coltivatore) VALUES
 
 -- Progetto 1: Orto Primavera 2025
 INSERT INTO coltivazione (note_tecniche, stato, stato_salute, data_inizio, id_progetto, id_coltura) VALUES
-('Piantare in pieno sole, irrigazione regolare', 'ATTIVA', 'BUONO', '2025-03-05', 1, 5), -- Pomodoro San Marzano
+('Piantare in pieno sole, irrigazione regolare', 'ATTIVA', 'STABILE', '2025-03-05', 1, 5), -- Pomodoro San Marzano
 ('Coltivazione in aiuole rialzate', 'ATTIVA', 'OTTIMO', '2025-03-10', 1, 9), -- Lattuga Romana
-('Semina diretta in file distanziate', 'ATTIVA', 'BUONO', '2025-03-08', 1, 10); -- Rucola
+('Semina diretta in file distanziate', 'ATTIVA', 'STABILE', '2025-03-08', 1, 10); -- Rucola
 
 -- Progetto 2: Erbe Aromatiche Bio
 INSERT INTO coltivazione (note_tecniche, stato, stato_salute, data_inizio, id_progetto, id_coltura) VALUES
 ('Posizione soleggiata, terreno drenante', 'ATTIVA', 'OTTIMO', '2025-02-20', 2, 1), -- Basilico
-('Irrigazione moderata, potatura regolare', 'ATTIVA', 'BUONO', '2025-02-20', 2, 2), -- Rosmarino
+('Irrigazione moderata, potatura regolare', 'ATTIVA', 'STABILE', '2025-02-20', 2, 2), -- Rosmarino
 ('Controllare espansione, cresce velocemente', 'IN_RACCOLTA', 'OTTIMO', '2025-02-18', 2, 3), -- Menta
-('Semina scaglionata per raccolta continua', 'ATTIVA', 'BUONO', 2, 4); -- Prezzemolo
+('Semina scaglionata per raccolta continua', 'ATTIVA', 'STABILE', '2025-02-18', 2, 4); -- Prezzemolo
 
 -- Progetto 3: Orto Estivo 2024 (CONCLUSO)
-INSERT INTO coltivazione (note_tecniche, stato, stato_salute, data_inizio, data_fine, id_progetto, id_coltura) VALUES
-('Raccolta completata a settembre', 'CONCLUSA', 'BUONO', '2024-06-05', '2024-09-30', 3, 6), -- Zucchina Romanesca
-('Ottima produzione estiva', 'CONCLUSA', 'OTTIMO', '2024-06-10', '2024-10-10', 3, 7), -- Peperone Quadrato
-('Maturazione tardiva, raccolto abbondante', 'CONCLUSA', 'BUONO', '2024-06-08', '2024-10-05', 3, 8); -- Melanzana Violetta
+INSERT INTO coltivazione (note_tecniche, stato, stato_salute, data_inizio, id_progetto, id_coltura) VALUES
+('Raccolta completata a settembre', 'CONCLUSA', 'STABILE', '2024-06-05', 3, 6), -- Zucchina Romanesca
+('Ottima produzione estiva', 'CONCLUSA', 'OTTIMO', '2024-06-10', 3, 7), -- Peperone Quadrato
+('Maturazione tardiva, raccolto abbondante', 'CONCLUSA', 'STABILE', '2024-06-08', 3, 8); -- Melanzana Violetta
 
 -- Progetto 4: Legumi Autunnali
 INSERT INTO coltivazione (note_tecniche, stato, stato_salute, data_inizio, id_progetto, id_coltura) VALUES
-('Varietà rampicante, necessita supporti', 'ATTIVA', 'BUONO', '2025-09-05', 4, 12), -- Fagiolino
+('Varietà rampicante, necessita supporti', 'ATTIVA', 'STABILE', '2025-09-05', 4, 12), -- Fagiolino
 ('Semina autunnale, resistente al freddo', 'ATTIVA', 'OTTIMO', '2025-09-10', 4, 13); -- Pisello
 
 -- ==============================================================================================
@@ -154,7 +154,9 @@ INSERT INTO attivita (nome, stato, data_pianificazione, data_inizio, note_tecnic
 -- Attività per Coltivazione 6 (Menta - Progetto 2)
 INSERT INTO attivita (nome, stato, data_pianificazione, data_inizio, data_fine, note_tecniche, id_coltivazione, id_coltivatore) VALUES
 ('Trapianto Menta', 'COMPLETATA', '2025-02-16', '2025-02-18', '2025-02-18', 'Divisione cespi e trapianto', 6, 4),
-('Raccolta Menta', 'COMPLETATA', '2025-03-10', '2025-03-12', '2025-03-12', 'Prima raccolta foglie fresche', 6, 2),
+('Raccolta Menta', 'COMPLETATA', '2025-03-10', '2025-03-12', '2025-03-12', 'Prima raccolta foglie fresche', 6, 2);
+
+INSERT INTO attivita (nome, stato, data_pianificazione, data_inizio, note_tecniche, id_coltivazione, id_coltivatore) VALUES
 ('Contenimento Menta', 'PIANIFICATA', '2025-04-01', NULL, 'Limitare espansione radicale', 6, 4);
 
 -- Attività per Coltivazione 7 (Prezzemolo - Progetto 2)
@@ -203,4 +205,4 @@ INSERT INTO raccolta (id, quantita_prevista_kg, quantita_effettiva_kg) VALUES
 
 -- Trattamento
 INSERT INTO trattamento (id, nome_prodotto, tempo_carenza, diluzione_dose) VALUES
-(4, 'Estratto di Ortica', 0, '100ml/10L acqua');
+(4, 'Estratto di Ortica', NULL, '100ml/10L acqua');

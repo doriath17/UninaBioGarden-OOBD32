@@ -2,6 +2,8 @@ package uninabiogarden.entities;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Coltivazione {
   public enum StatoSaluteColtivazione {
@@ -9,7 +11,7 @@ public class Coltivazione {
   };
 
   public enum StatoColtivazione {
-    ATTIVA, CONCLUSA
+    ATTIVA, IN_RACCOLTA, CONCLUSA
   };
 
   private Long id;
@@ -23,7 +25,8 @@ public class Coltivazione {
   private String noteTecniche;
 
   private Coltura coltura;
-  private Progetto progetto;
+
+  private List<Attivita> attivita = new ArrayList<>();
 
   public Coltivazione() {
     statoSalute = StatoSaluteColtivazione.OTTIMO;
@@ -93,12 +96,12 @@ public class Coltivazione {
     this.coltura = coltura;
   }
 
-  public Progetto getProgetto() {
-    return progetto;
+  public List<Attivita> getAttivita() {
+    return attivita;
   }
 
-  public void setProgetto(Progetto progetto) {
-    this.progetto = progetto;
+  public void setAttivita(List<Attivita> attivita) {
+    this.attivita = attivita;
   }
 
 }

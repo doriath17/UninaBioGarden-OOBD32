@@ -20,7 +20,6 @@ public abstract class Attivita {
 
   String noteTecniche;
 
-  Coltivazione coltivazione;
   Coltivatore coltivatore;
 
   public Attivita() {
@@ -33,7 +32,6 @@ public abstract class Attivita {
     this.nome = nome;
     this.dataInizio = dataInizio;
     this.noteTecniche = noteTecniche;
-    this.coltivazione = coltivazione;
     this.coltivatore = coltivatore;
   }
 
@@ -91,14 +89,6 @@ public abstract class Attivita {
 
   public void setNoteTecniche(String noteTecniche) {
     this.noteTecniche = noteTecniche;
-  }
-
-  public Coltivazione getColtivazione() {
-    return coltivazione;
-  }
-
-  public void setColtivazione(Coltivazione coltivazione) {
-    this.coltivazione = coltivazione;
   }
 
   public Coltivatore getColtivatore() {

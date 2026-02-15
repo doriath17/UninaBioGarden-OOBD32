@@ -21,6 +21,8 @@ public class DatabaseController {
   private LottoDao lottoDao = new LottoDao();
   private ColturaDao colturaDao = new ColturaDao();
   private ProgettoDao progettoDao = new ProgettoDao();
+  private ColtivazioneDao coltivazioneDao = new ColtivazioneDao();
+  private AttivitaDao attivitaDao = new AttivitaDao();
 
   public UtenteDao getUtenteDao() {
     return utenteDao;
@@ -40,6 +42,18 @@ public class DatabaseController {
 
   public ProgettoDao getProgettoDao() {
     return progettoDao;
+  }
+
+  public Database getDatabase() {
+    return database;
+  }
+
+  public ColtivazioneDao getColtivazioneDao() {
+    return coltivazioneDao;
+  }
+
+  public AttivitaDao getAttivitaDao() {
+    return attivitaDao;
   }
 
 }

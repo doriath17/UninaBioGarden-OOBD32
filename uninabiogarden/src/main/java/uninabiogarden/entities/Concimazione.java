@@ -12,7 +12,6 @@ public class Concimazione extends Attivita {
 
   private TipoConcime tipoConcime;
   private double quantitaKg;
-  private String metodoApplicazione;
 
   public Concimazione() {
     super();
@@ -37,14 +36,6 @@ public class Concimazione extends Attivita {
 
   public void setQuantitaKg(double quantitaKg) {
     this.quantitaKg = quantitaKg;
-  }
-
-  public String getMetodoApplicazione() {
-    return metodoApplicazione;
-  }
-
-  public void setMetodoApplicazione(String metodoApplicazione) {
-    this.metodoApplicazione = metodoApplicazione;
   }
 
 }

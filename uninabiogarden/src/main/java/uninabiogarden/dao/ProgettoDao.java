@@ -122,98 +122,42 @@ public class ProgettoDao {
   }
 
   public List<Progetto> findAll(Long proprietarioId) {
-    var progettiQuerySql = """
+    var sql = """
           SELECT *
           FROM progetto
           WHERE id_proprietario = ?
         """;
 
-    var coltivazioniQuerySql = """
-          SELECT *
-          FROM coltivazione
-          WHERE id_progetto = ?
-        """;
-
-    var coltivatoriQuerySql = """
-          SELECT id
-          FROM utente
-          JOIN lavora_per AS lp ON utente.id = lp.id_coltivatore
-          WHERE lp.id_progetto = ?
-        """;
-
-    List<Progetto> progetti = new ArrayList<>();
-
     try (Connection conn = database.getConnection();
-        PreparedStatement pstmtQueryProgetti = conn.prepareStatement(progettiQuerySql);
-        PreparedStatement pstmtQueryColtivazioni = conn.prepareStatement(coltivazioniQuerySql);
-        PreparedStatement pstmtQueryColtivatori = conn.prepareStatement(coltivatoriQuerySql)) {
-      pstmtQueryProgetti.setLong(1, proprietarioId);
-      ResultSet rs = pstmtQueryProgetti.executeQuery();
+        PreparedStatement pstmt = conn.prepareStatement(sql)) {
+      pstmt.setLong(1, proprietarioId);
+
+      ResultSet rs = pstmt.executeQuery();
+      List<Progetto> progetti = new ArrayList<>();
       while (rs.next()) {
         Progetto progetto = new Progetto();
         progetto.setId(rs.getLong("id"));
         progetto.setNomeProgetto(rs.getString("nome"));
         progetto.setDescrizione(rs.getString("descrizione"));
         progetto.setStato(Progetto.Stato.valueOf(rs.getString("stato")));
+        var dataInizio = rs.getDate("data_inizio");
+        progetto.setDataInizio(dataInizio != null ? dataInizio.toLocalDate() : null);
+        var dataFine = rs.getDate("data_fine");
+        progetto.setDataFine(dataFine != null ? dataFine.toLocalDate() : null);
 
-        var dataInizioProgetto = rs.getDate("data_inizio");
-        progetto.setDataInizio(dataInizioProgetto != null ? dataInizioProgetto.toLocalDate() : null);
+        // proxy del lotto (gia caricato nel proprietario)
+        var lotto = new Lotto();
+        lotto.setId(rs.getLong("id_lotto"));
+        progetto.setLotto(lotto);
 
-        var dataFineProgetto = rs.getDate("data_fine");
-        progetto.setDataFine(dataFineProgetto != null ? dataFineProgetto.toLocalDate() : null);
-
-        // il proprietario sarebbe l'utente loggato
-        // per il lotto si usa un proxy (assumendo che i lotti del proprietario siano
-        // gia in memoria)
-        var lottoProxy = new Lotto();
-        lottoProxy.setId(rs.getLong("id_lotto"));
-        progetto.setLotto(lottoProxy);
-
-        // recupero delle coltivazioni associate al progetto
-        List<Coltivazione> coltivazioni = new ArrayList<>();
-        pstmtQueryColtivazioni.setLong(1, progetto.getId());
-        ResultSet rsColtivazioni = pstmtQueryColtivazioni.executeQuery();
-        while (rsColtivazioni.next()) {
-          Coltivazione coltivazione = new Coltivazione();
-          coltivazione.setId(rsColtivazioni.getLong("id"));
-          coltivazione
-              .setStatoSalute(Coltivazione.StatoSaluteColtivazione.valueOf(rsColtivazioni.getString("stato_salute")));
-          coltivazione.setStato(Coltivazione.StatoColtivazione.valueOf(rsColtivazioni.getString("stato")));
-
-          var dataInizio = rsColtivazioni.getDate("data_inizio");
-          coltivazione.setDataInizio(dataInizio != null ? dataInizio.toLocalDate() : null);
-
-          coltivazione.setNoteTecniche(rsColtivazioni.getString("note_tecniche"));
-
-          // per la coltura si usa un proxy (assumendo che le colture siano gia in
-          // memoria)
-          var colturaProxy = new Coltura();
-          colturaProxy.setId(rsColtivazioni.getLong("id_coltura"));
-          coltivazione.setColtura(colturaProxy);
-          coltivazioni.add(coltivazione);
-        }
-        progetto.setColtivazioni(coltivazioni);
-
-        // recupero dei coltivatori associati al progetto
-        List<Coltivatore> coltivatori = new ArrayList<>();
-        pstmtQueryColtivatori.setLong(1, progetto.getId());
-        ResultSet rsColtivatori = pstmtQueryColtivatori.executeQuery();
-        while (rsColtivatori.next()) {
-          // per i coltivatori si usano proxy (assumendo che i coltivatori del progetto
-          // siano gia in memoria)
-          Coltivatore coltivatoreProxy = new Coltivatore();
-          coltivatoreProxy.setId(rsColtivatori.getLong("id"));
-          coltivatori.add(coltivatoreProxy);
-        }
-        progetto.setColtivatori(coltivatori);
         progetti.add(progetto);
       }
-    } catch (Exception e) {
-      System.err.println("Errore durante il recupero dei progetti: " + e.getMessage());
-      throw new RuntimeException("Errore durante il recupero dei progetti. Riprova più tardi.");
-    }
+      return progetti;
 
-    return progetti;
+    } catch (Exception e) {
+      System.err.println("Errore durante l'aggiornamento del progetto: " + e.getMessage());
+      throw new RuntimeException("Errore durante l'aggiornamento del progetto. Riprova più tardi.");
+    }
   }
 
   public void updateProgetto(String nome, String descrizione, Long id) {
@@ -243,4 +187,33 @@ public class ProgettoDao {
     }
   }
 
+  public List<Coltivatore> findColtivatoriIds(Long progettoId) {
+    var sql = """
+          SELECT c.*
+          FROM (
+            SELECT * 
+            FROM utente 
+            WHERE tipo = 'COLTIVATORE'
+          ) c
+          JOIN lavora_per lp ON c.id = lp.id_coltivatore
+          WHERE lp.id_progetto = ?
+        """;
+
+    try (Connection conn = database.getConnection();
+        PreparedStatement pstmt = conn.prepareStatement(sql)) {
+      pstmt.setLong(1, progettoId);
+
+      ResultSet rs = pstmt.executeQuery();
+      List<Coltivatore> coltivatori = new ArrayList<>();
+      while (rs.next()) {
+        Coltivatore coltivatore = new Coltivatore();
+        coltivatore.setId(rs.getLong("id"));
+        coltivatori.add(coltivatore);
+      }
+      return coltivatori;
+    } catch (Exception e) {
+      System.err.println("Errore durante il recupero dei coltivatori del progetto: " + e.getMessage());
+      throw new RuntimeException("Errore durante il recupero dei coltivatori del progetto. Riprova più tardi.");
+    }
+  }
 }

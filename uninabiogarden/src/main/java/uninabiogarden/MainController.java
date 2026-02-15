@@ -7,6 +7,7 @@ import uninabiogarden.dto.LottoDto;
 import uninabiogarden.dto.OrtoDto;
 import uninabiogarden.dto.UtenteDto;
 import uninabiogarden.entities.Coltivatore;
+import uninabiogarden.entities.Coltivazione;
 import uninabiogarden.entities.Coltura;
 import uninabiogarden.entities.Lotto;
 import uninabiogarden.entities.Orto;
@@ -357,51 +358,81 @@ public class MainController {
   // Sezione: Progetti
   // ==============================================================================================
 
+  private void caricaAttivita(Coltivazione coltivazione, Progetto progetto) {
+    var attivita = databaseController.getAttivitaDao().findByColtivazioneId(coltivazione.getId());
+
+    // risolvi il proxy dei coltivatori nelle attività
+    attivita.forEach(attivitaItem -> {
+      var coltivatore = progetto.getColtivatori().stream()
+          .filter(c -> c.getId().equals(attivitaItem.getColtivatore().getId()))
+          .findFirst()
+          .orElseThrow(() -> new RuntimeException("Coltivatore non trovato per attivita: " + attivitaItem.getId()));
+      attivitaItem.setColtivatore(coltivatore);
+    });
+
+    coltivazione.setAttivita(attivita);
+    System.out.println("Caricamento attività effettuato con successo: " + attivita.size()
+        + " attività trovate per coltivazione: " + coltivazione.getId());
+  }
+
+  private void caricaColtivazioni(Progetto progetto) {
+    var coltivazioni = databaseController.getColtivazioneDao().findByProgettoId(progetto.getId());
+
+    coltivazioni.forEach(coltivazione -> {
+      // risolvi il proxy della coltura
+      var resolvedColtura = this.colture.stream()
+          .filter(coltura -> coltura.getId().equals(coltivazione.getColtura().getId())).findFirst()
+          .orElseThrow(() -> new RuntimeException("Coltura non trovata"));
+      coltivazione.setColtura(resolvedColtura);
+
+      // trova le attivita della coltivazione
+      caricaAttivita(coltivazione, progetto);
+    });
+
+    progetto.setColtivazioni(coltivazioni);
+    System.out
+        .println("Caricamento coltivazioni effettuato con successo: " + coltivazioni.size()
+            + " coltivazioni trovate per progetto: " + progetto.getId());
+  }
+
+  private void caricaColtivatori(Progetto progetto) {
+    List<Coltivatore> coltivatori = databaseController.getProgettoDao().findColtivatoriIds(progetto.getId());
+
+    // risolvi i proxy dei coltivatori
+    coltivatori = coltivatori.stream()
+        .map(coltivatore -> this.getColtivatori().stream()
+            .filter(c -> c.getId().equals(coltivatore.getId()))
+            .findFirst()
+            .orElseThrow(() -> new RuntimeException("Coltivatore non trovato per progetto: " + progetto.getId())))
+        .toList();
+
+    progetto.setColtivatori(coltivatori);
+    System.out.println("Caricamento coltivatori per progetto effettuato con successo: " + coltivatori.size()
+        + " coltivatori trovati per progetto: " + progetto.getId());
+  }
+
   // il proprietario deve avere i lotti caricati
   // le colture devono essere gia caricate
   // i coltivatori vengono caricati su necessita (vedi getColtivatori())
   private void caricaProgetti(Proprietario proprietario) {
     List<Progetto> progetti = databaseController.getProgettoDao().findAll(proprietario.getId());
 
-    try {
-      // risoluzione proxy dei progetti caricati
-      progetti.forEach(progetto -> {
-        progetto.setProprietario(proprietario);
+    progetti.forEach(progetto -> {
+      progetto.setProprietario(proprietario);
 
-        // risoluzione proxy del lotto
-        var resolvedLotto = proprietario.getLotti().stream()
-            .filter(lotto -> lotto.getId().equals(progetto.getLotto().getId())).findFirst()
-            .orElseThrow(() -> new RuntimeException("Lotto non trovato"));
-        progetto.setLotto(resolvedLotto);
+      // risolvi il proxy del lotto
+      var resolvedLotto = proprietario.getLotti().stream()
+          .filter(lotto -> lotto.getId().equals(progetto.getLotto().getId())).findFirst()
+          .orElseThrow(() -> new RuntimeException("Lotto non trovato"));
+      progetto.setLotto(resolvedLotto);
 
-        // risoluzione proxy delle colture nelle coltivazioni
-        progetto.getColtivazioni().forEach(coltivazione -> {
-          var resolvedColtura = this.colture.stream()
-              .filter(coltura -> coltura.getId().equals(coltivazione.getColtura().getId())).findFirst()
-              .orElseThrow(() -> new RuntimeException("Coltura non trovata"));
-          coltivazione.setColtura(resolvedColtura);
-        });
-
-        // risoluzione proxy dei coltivatori
-        var resolvedColtivatori = progetto.getColtivatori().stream()
-            // qui ogni coltivatore proxy e sostituito con is suo equivalente gia caricato
-            // in memoria.
-            .map(coltivatoreProxy -> this.getColtivatori().stream()
-                .filter(coltivatore -> coltivatore.getId().equals(coltivatoreProxy.getId()))
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("Coltivatore non trovato")))
-            // alla fine si ottiene una lista di coltivatori completamente risolti, senza
-            // proxy, che posso assegnare al progetto
-            .toList();
-        progetto.setColtivatori(resolvedColtivatori);
-      });
-    } catch (Exception e) {
-      System.err.println("Errore durante il caricamento dei progetti: " + e.getMessage());
-      throw new RuntimeException("Errore nell caricamento dei progetti. Riprova più tardi.");
-    }
+      caricaColtivatori(progetto);
+      caricaColtivazioni(progetto);
+    });
 
     proprietario.setProgetti(progetti);
-    System.out.println("Caricamento progetti effettuato con successo: " + progetti.size() + " progetti trovati");
+    System.out.println("Caricamento progetti effettuato con successo: " +
+        progetti.size() + " progetti trovati");
   }
 
   public Progetto updateProgettoInfo(String nome, String descrizione, Progetto progetto) {

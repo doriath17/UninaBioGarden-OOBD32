@@ -6,7 +6,6 @@ public class Trattamento extends Attivita {
 
   private String nomeProdotto;
   private Integer tempoCarenza;
-  private String diluzioneDose;
 
   public Trattamento() {
     super();
@@ -31,14 +30,6 @@ public class Trattamento extends Attivita {
 
   public void setTempoCarenza(Integer tempoCarenza) {
     this.tempoCarenza = tempoCarenza;
-  }
-
-  public String getDiluzioneDose() {
-    return diluzioneDose;
-  }
-
-  public void setDiluzioneDose(String diluzioneDose) {
-    this.diluzioneDose = diluzioneDose;
   }
 
 }

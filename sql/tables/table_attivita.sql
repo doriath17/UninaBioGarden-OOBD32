@@ -65,7 +65,6 @@ CREATE TABLE concimazione (
 
   tipo_concime t_tipo_concime NOT NULL,
   quantita_kg DECIMAL(5,2) NOT NULL CHECK (quantita_kg > 0),
-  metodo_applicazione VARCHAR(100),
 
   FOREIGN KEY (id) REFERENCES attivita (id) ON DELETE CASCADE 
 );
@@ -129,7 +128,6 @@ CREATE TABLE trattamento (
 
   nome_prodotto VARCHAR(50) NOT NULL CHECK (length(nome_prodotto) > 0),
   tempo_carenza INT CHECK (tempo_carenza IS NULL OR tempo_carenza > 0),
-  diluzione_dose VARCHAR(20) CHECK (diluzione_dose IS NULL OR length(diluzione_dose) > 0),
 
   FOREIGN KEY (id) REFERENCES attivita (id) ON DELETE CASCADE 
 );

@@ -117,7 +117,6 @@ public class ControllerCreaProgettoStep3 {
     List<Coltivazione> coltivazioni = selectedColtureObsList.stream().map(coltura -> {
       Coltivazione coltivazione = new Coltivazione();
       coltivazione.setColtura(coltura);
-      coltivazione.setProgetto(nuovoProgetto);
       return coltivazione;
     }).collect(Collectors.toList());
     nuovoProgetto.setColtivazioni(coltivazioni);
