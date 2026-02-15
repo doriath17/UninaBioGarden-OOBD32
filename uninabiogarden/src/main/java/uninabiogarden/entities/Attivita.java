@@ -17,6 +17,7 @@ public abstract class Attivita {
   LocalDate dataPianificazione;
   LocalDate dataInizio;
   LocalDate dataFine;
+  LocalDate dataScadenza;
 
   String noteTecniche;
 
@@ -97,6 +98,14 @@ public abstract class Attivita {
 
   public void setColtivatore(Coltivatore coltivatore) {
     this.coltivatore = coltivatore;
+  }
+
+  public LocalDate getDataScadenza() {
+    return dataScadenza;
+  }
+
+  public void setDataScadenza(LocalDate dataScadenza) {
+    this.dataScadenza = dataScadenza;
   }
 
 }

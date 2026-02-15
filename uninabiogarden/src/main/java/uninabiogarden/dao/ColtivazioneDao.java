@@ -31,8 +31,8 @@ public class ColtivazioneDao {
         coltivazione.setId(rs.getLong("id"));
         coltivazione.setDataInizio(rs.getDate("data_inizio").toLocalDate());
         coltivazione.setNoteTecniche(rs.getString("note_tecniche"));
-        coltivazione.setStatoSalute(Coltivazione.StatoSaluteColtivazione.valueOf(rs.getString("stato_salute")));
-        coltivazione.setStato(Coltivazione.StatoColtivazione.valueOf(rs.getString("stato")));
+        coltivazione.setStatoSalute(Coltivazione.StatoSalute.valueOf(rs.getString("stato_salute")));
+        coltivazione.setStato(Coltivazione.Stato.valueOf(rs.getString("stato")));
 
         // proxy della coltura (gia caricata nel progetto)
         var coltura = new Coltura();

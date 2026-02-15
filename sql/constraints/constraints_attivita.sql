@@ -65,7 +65,7 @@ EXECUTE FUNCTION check_insert_attivita();
 
 
 -- ============================================================
--- UPDATE attributi immutabili
+-- UPDATE 
 -- ============================================================
 
 
@@ -133,6 +133,18 @@ BEGIN
     SET stato = 'IN_RACCOLTA'
     WHERE id = NEW.id_coltivazione;
 
+  END IF;
+
+  -- se l'attività di raccolta passa da IN_CORSO a COMPLETATA, chiudi la coltivazione
+  IF EXISTS (
+    SELECT 1
+    FROM raccolta
+    WHERE id = OLD.id
+  ) AND NEW.stato = 'COMPLETATA' AND OLD.stato = 'IN_CORSO' THEN
+    -- Imposta lo stato della coltivazione a CONCLUSA
+    UPDATE coltivazione
+    SET stato = 'CONCLUSA'
+    WHERE id = NEW.id_coltivazione;
   END IF;
 
   RETURN NEW;

@@ -66,10 +66,9 @@ public class ControllerProgettoColtivazioni {
   }
 
   private void openDettaglioColtivazione(Coltivazione coltivazione) {
-    // TODO: implementare view dettaglio coltivazione
     System.out.println("Apertura dettagli coltivazione: " +
         (coltivazione.getColtura() != null ? coltivazione.getColtura().getNomeComune() : "N/A"));
-    Utils.showError(errorLabel, "Vista dettaglio coltivazione non ancora implementata");
+    UIController.getInstance().openDettaglioColtivazioneView(progetto, coltivazione, errorLabel);
   }
 
 }

@@ -85,6 +85,8 @@ public class AttivitaDao {
             : null);
         attivitaItem.setDataInizio(rs.getDate("data_inizio") != null ? rs.getDate("data_inizio").toLocalDate() : null);
         attivitaItem.setDataFine(rs.getDate("data_fine") != null ? rs.getDate("data_fine").toLocalDate() : null);
+        attivitaItem
+            .setDataScadenza(rs.getDate("data_scadenza") != null ? rs.getDate("data_scadenza").toLocalDate() : null);
         attivitaItem.setStato(Attivita.Stato.valueOf(rs.getString("stato")));
         attivitaItem.setNoteTecniche(rs.getString("note_tecniche"));
 

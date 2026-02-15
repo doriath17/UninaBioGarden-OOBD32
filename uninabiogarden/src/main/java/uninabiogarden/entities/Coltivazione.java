@@ -6,18 +6,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Coltivazione {
-  public enum StatoSaluteColtivazione {
+
+  public enum StatoSalute {
     OTTIMO, STABILE, SOFFERENTE, CRITICO, COMPROMESSO
   };
 
-  public enum StatoColtivazione {
+  public enum Stato {
     ATTIVA, IN_RACCOLTA, CONCLUSA
   };
 
   private Long id;
 
-  private StatoSaluteColtivazione statoSalute;
-  private StatoColtivazione stato;
+  private StatoSalute statoSalute;
+  private Stato stato;
 
   private LocalDate dataInizio;
   private LocalDate dataFine;
@@ -29,8 +30,8 @@ public class Coltivazione {
   private List<Attivita> attivita = new ArrayList<>();
 
   public Coltivazione() {
-    statoSalute = StatoSaluteColtivazione.OTTIMO;
-    stato = StatoColtivazione.ATTIVA;
+    statoSalute = StatoSalute.OTTIMO;
+    stato = Stato.ATTIVA;
     noteTecniche = "";
   }
 
@@ -38,6 +39,14 @@ public class Coltivazione {
     super();
     this.coltura = coltura;
     this.noteTecniche = noteTecniche;
+  }
+
+  public Raccolta getRaccolta() {
+    return attivita.stream()
+        .filter(a -> a instanceof Raccolta)
+        .map(a -> (Raccolta) a)
+        .findFirst()
+        .orElse(null);
   }
 
   public Long getId() {
@@ -48,19 +57,19 @@ public class Coltivazione {
     this.id = id;
   }
 
-  public StatoSaluteColtivazione getStatoSalute() {
+  public StatoSalute getStatoSalute() {
     return statoSalute;
   }
 
-  public void setStatoSalute(StatoSaluteColtivazione statoSalute) {
+  public void setStatoSalute(StatoSalute statoSalute) {
     this.statoSalute = statoSalute;
   }
 
-  public StatoColtivazione getStato() {
+  public Stato getStato() {
     return stato;
   }
 
-  public void setStato(StatoColtivazione stato) {
+  public void setStato(Stato stato) {
     this.stato = stato;
   }
 

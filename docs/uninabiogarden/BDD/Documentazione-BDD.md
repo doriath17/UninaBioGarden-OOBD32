@@ -78,7 +78,7 @@ _Convenzione: Tutte le PK sono `id`, le FK seguono il formato `id_entita`._
 | :-------------- | :----------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------- |
 | -               | ATTIVA             |                                                                                                                                                      |
 | ATTIVA          | IN_RACCOLTA        | Non ci devono essere attività associate non terminate, ad eccezione dell'attività di raccolta che deve essere in corso (`raccolta.stato = IN_CORSO`) |
-| IN_RACCOLTA     | CONCLUSA           | L'attività di raccolta è terminata                                                                                                                   |
+| IN_RACCOLTA     | CONCLUSA           | L'attività di raccolta è conclusa: `raccolta.stato = IN_CORSO``                                                                                      |
 | CONCLUSA        | **-**              |                                                                                                                                                      |
 
 - se `stato = IN_RACCOLTA o CONCLUSA` allora non è più possibile pianificare attività sulla coltivazione

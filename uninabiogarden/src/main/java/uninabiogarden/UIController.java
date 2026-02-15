@@ -9,9 +9,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import uninabiogarden.entities.Attivita;
+import uninabiogarden.entities.Coltivazione;
 import uninabiogarden.entities.Progetto;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 
 public class UIController {
 
@@ -249,6 +252,24 @@ public class UIController {
   public void openCreaNotificheStep2View() {
     ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
     loadViewIntoContent(FxmlView.CREA_NOTIFICHE_STEP_2, homeController.getSelectedContent());
+  }
+
+  public void openDettaglioColtivazioneView(Progetto progetto, Coltivazione coltivazione, Label errorLabel) {
+    ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
+    loadViewIntoContent(FxmlView.DETTAGLIO_COLTIVAZIONE, homeController.getSelectedContent());
+
+    ControllerDettaglioColtivazione dettaglioColtivazioneController = (ControllerDettaglioColtivazione) controllers
+        .get(FxmlView.DETTAGLIO_COLTIVAZIONE);
+    dettaglioColtivazioneController.init(progetto, coltivazione, errorLabel);
+  }
+
+  public void openDettaglioAttivitaView(Progetto progetto, Coltivazione coltivazione, Label errorLabel) {
+    ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
+    loadViewIntoContent(FxmlView.DETTAGLIO_ATTIVITA, homeController.getSelectedContent());
+
+    ControllerDettaglioAttivita dettaglioAttivitaController = (ControllerDettaglioAttivita) controllers
+        .get(FxmlView.DETTAGLIO_ATTIVITA);
+    dettaglioAttivitaController.init(progetto, coltivazione, errorLabel);
   }
 
 }

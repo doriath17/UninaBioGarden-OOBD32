@@ -24,7 +24,10 @@ public enum FxmlView {
   PROGETTO_COLTIVAZIONI("/uninabiogarden/ProgettoColtivazioni.fxml"),
   PROGETTO_ATTIVITA("/uninabiogarden/ProgettoAttivita.fxml"),
   PROGETTO_NOTIFICHE("/uninabiogarden/ProgettoNotifiche.fxml"),
-  
+
+  DETTAGLIO_COLTIVAZIONE("/uninabiogarden/DettaglioColtivazione.fxml"),
+  DETTAGLIO_ATTIVITA("/uninabiogarden/DettagliAttivita.fxml"),
+
   CREA_NOTIFICHE_VIEW("/uninabiogarden/CreaNotifica.fxml"),
   CREA_NOTIFICHE_ATTIVITA_VIEW("/uninabiogarden/CreaNotificaAttivita.fxml"),
   CREA_NOTIFICHE_STEP_2("/uninabiogarden/CreaNotificaStep2.fxml");
