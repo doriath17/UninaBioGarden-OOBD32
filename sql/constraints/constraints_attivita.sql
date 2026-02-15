@@ -111,20 +111,19 @@ EXECUTE FUNCTION check_update_attivita();
 
 CREATE FUNCTION check_update_attivita_raccolta()
 RETURNS TRIGGER AS $$
-DECLARE 
-  v_id_coltivazione coltivazione.id%TYPE;
 BEGIN
 
-  SELECT id_coltivazione INTO v_id_coltivazione
-  FROM attivita
-  WHERE id = NEW.id;
-
-  IF NEW.stato = 'IN_CORSO' AND OLD.stato = 'PIANIFICATA' THEN
+  -- vedi se esiste un attivita di raccolta e se questa sta passando allo stato IN_CORSO
+  IF EXISTS (
+    SELECT 1 
+    FROM raccolta 
+    WHERE id = OLD.id
+  ) AND NEW.stato = 'IN_CORSO' AND OLD.stato = 'PIANIFICATA' THEN
     IF EXISTS (
       SELECT 1 
       FROM attivita 
       WHERE stato <> 'COMPLETATA' 
-        AND id_coltivazione = v_id_coltivazione 
+        AND id_coltivazione = OLD.id_coltivazione 
         AND id <> OLD.id
     ) THEN 
       RAISE EXCEPTION 'Non è possibile iniziare un''attività di raccolta se non sono state completate tutte le attività precedenti della stessa coltivazione';

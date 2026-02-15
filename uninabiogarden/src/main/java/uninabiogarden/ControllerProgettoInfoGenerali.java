@@ -19,9 +19,6 @@ public class ControllerProgettoInfoGenerali {
   private TextArea descrizioneField;
 
   @FXML
-  private Label dataCreazioneLabel;
-
-  @FXML
   private Label dataInizioLabel;
 
   @FXML
@@ -58,7 +55,6 @@ public class ControllerProgettoInfoGenerali {
       nomeField.setText(progetto.getNomeProgetto());
       descrizioneField.setText(progetto.getDescrizione());
 
-      dataCreazioneLabel.setText(progetto.getDataCreazione() != null ? progetto.getDataCreazione().toString() : "N/A");
       dataInizioLabel.setText(progetto.getDataInizio() != null ? progetto.getDataInizio().toString() : "N/A");
       dataFineLabel.setText(progetto.getDataFine() != null ? progetto.getDataFine().toString() : "N/A");
       statoProgettoLabel.setText(progetto.getStato() != null ? progetto.getStato().name() : "N/A");
@@ -68,9 +64,6 @@ public class ControllerProgettoInfoGenerali {
   private void configureStatoChoiceBox() {
     // Configura gli stati disponibili in base allo stato attuale
     switch (progetto.getStato()) {
-      case PIANIFICATO:
-        statoChoiceBox.setItems(FXCollections.observableArrayList("ATTIVO", "CONCLUSO"));
-        break;
       case ATTIVO:
         statoChoiceBox.setItems(FXCollections.observableArrayList("CONCLUSO"));
         break;

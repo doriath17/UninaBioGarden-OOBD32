@@ -1,5 +1,6 @@
 package uninabiogarden;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.Observable;
@@ -25,6 +26,35 @@ import javafx.util.Callback;
 import uninabiogarden.entities.Coltivatore;
 
 public class Utils {
+
+  public static String extractSQLErrorMessage(SQLException e) {
+    if (e == null) {
+      return "Errore sconosciuto";
+    }
+
+    String message = e.getMessage();
+    if (message == null || message.isEmpty()) {
+      return "Errore del database";
+    }
+
+    // Rimuovi il prefisso "ERROR: "
+    if (message.startsWith("ERROR: ")) {
+      message = message.substring(7);
+    }
+
+    // Trova l'indice di "Where:" o "\n Where:"
+    int whereIndex = message.indexOf("\n  Where:");
+    if (whereIndex == -1) {
+      whereIndex = message.indexOf("\nWhere:");
+    }
+    if (whereIndex != -1) {
+      message = message.substring(0, whereIndex);
+    }
+
+    message = message.trim();
+
+    return message;
+  }
 
   public static void addCharacterLimit(TextInputControl textField, int limit) {
     UnaryOperator<TextFormatter.Change> filter = change -> {

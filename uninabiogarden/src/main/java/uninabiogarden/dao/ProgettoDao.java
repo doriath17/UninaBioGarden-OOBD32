@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javafx.scene.chart.PieChart.Data;
+import uninabiogarden.Utils;
 import uninabiogarden.entities.Coltivatore;
 import uninabiogarden.entities.Coltivazione;
 import uninabiogarden.entities.Coltura;
@@ -46,13 +47,12 @@ public class ProgettoDao {
       }
 
       // Recupera i campi generati automaticamente dal database
-      String selectProgettoSql = "SELECT stato, data_creazione, data_inizio, data_fine FROM progetto WHERE id = ?";
+      String selectProgettoSql = "SELECT stato, data_inizio, data_fine FROM progetto WHERE id = ?";
       try (PreparedStatement pstmt = conn.prepareStatement(selectProgettoSql)) {
         pstmt.setLong(1, progetto.getId());
         ResultSet rs = pstmt.executeQuery();
         if (rs.next()) {
           progetto.setStato(Progetto.Stato.valueOf(rs.getString("stato")));
-          progetto.setDataCreazione(rs.getDate("data_creazione").toLocalDate());
 
           var dataInizio = rs.getDate("data_inizio");
           progetto.setDataInizio(dataInizio != null ? dataInizio.toLocalDate() : null);
@@ -66,19 +66,18 @@ public class ProgettoDao {
       }
 
       // 2. Inserimento delle coltivazioni in batch per performance
-      String insertColtivazioneSql = "INSERT INTO coltivazione (quantita_piante, note_tecniche, id_progetto, id_coltura) VALUES (?, ?, ?, ?)";
+      String insertColtivazioneSql = "INSERT INTO coltivazione (note_tecniche, id_progetto, id_coltura) VALUES (?, ?, ?)";
       try (PreparedStatement pstmt = conn.prepareStatement(insertColtivazioneSql)) {
         for (Coltivazione coltivazione : progetto.getColtivazioni()) {
-          // usa valori di default se mancanti
-          pstmt.setInt(1, coltivazione.getQuantitaPiante());
-          pstmt.setString(2, coltivazione.getNoteTecniche());
-          pstmt.setLong(3, progetto.getId());
-          pstmt.setLong(4, coltivazione.getColtura().getId());
+          pstmt.setString(1, coltivazione.getNoteTecniche());
+          pstmt.setLong(2, progetto.getId());
+          pstmt.setLong(3, coltivazione.getColtura().getId());
           pstmt.addBatch();
         }
         pstmt.executeBatch();
-      } catch (Exception e) {
-        System.err.println("Errore durante l'inserimento delle coltivazioni: " + e.getMessage());
+      } catch (SQLException e) {
+        String errorMessage = Utils.extractSQLErrorMessage(e);
+        System.err.println("Errore durante l'inserimento delle coltivazioni: " + errorMessage);
         throw new RuntimeException("Errore durante la creazione del progetto. Riprova più tardi.");
       }
 
@@ -157,8 +156,6 @@ public class ProgettoDao {
         progetto.setDescrizione(rs.getString("descrizione"));
         progetto.setStato(Progetto.Stato.valueOf(rs.getString("stato")));
 
-        progetto.setDataCreazione(rs.getDate("data_creazione").toLocalDate());
-
         var dataInizioProgetto = rs.getDate("data_inizio");
         progetto.setDataInizio(dataInizioProgetto != null ? dataInizioProgetto.toLocalDate() : null);
 
@@ -182,15 +179,10 @@ public class ProgettoDao {
           coltivazione
               .setStatoSalute(Coltivazione.StatoSaluteColtivazione.valueOf(rsColtivazioni.getString("stato_salute")));
           coltivazione.setStato(Coltivazione.StatoColtivazione.valueOf(rsColtivazioni.getString("stato")));
-          coltivazione.setDataCreazione(rsColtivazioni.getDate("data_creazione").toLocalDate());
 
           var dataInizio = rsColtivazioni.getDate("data_inizio");
           coltivazione.setDataInizio(dataInizio != null ? dataInizio.toLocalDate() : null);
 
-          var dataFine = rsColtivazioni.getDate("data_fine");
-          coltivazione.setDataFine(dataFine != null ? dataFine.toLocalDate() : null);
-
-          coltivazione.setQuantitaPiante(rsColtivazioni.getInt("quantita_piante"));
           coltivazione.setNoteTecniche(rsColtivazioni.getString("note_tecniche"));
 
           // per la coltura si usa un proxy (assumendo che le colture siano gia in

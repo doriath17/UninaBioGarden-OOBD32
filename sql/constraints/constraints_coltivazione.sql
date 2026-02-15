@@ -20,10 +20,6 @@ BEGIN
     RAISE EXCEPTION 'Una nuova coltivazione deve avere ''stato = ATTIVA''';
   END IF;
 
-  IF NEW.data_fine IS NOT NULL THEN 
-    RAISE EXCEPTION 'Un attività appena creata deve avere ''data_fine = NULL''';
-  END IF;
-
   SELECT * INTO v_progetto
   FROM progetto
   WHERE id = NEW.id_progetto;
@@ -68,10 +64,6 @@ BEGIN
 
   IF NEW.id_coltura <> OLD.id_coltura THEN 
     RAISE EXCEPTION 'Impossibile modificare la coltura della coltivazione';
-  END IF;
-
-  IF NEW.stato = 'CONCLUSA' AND NEW.data_fine IS NULL THEN 
-    NEW.data_fine := CURRENT_TIMESTAMP;
   END IF;
 
   RETURN NEW;

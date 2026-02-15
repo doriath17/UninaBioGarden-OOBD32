@@ -10,14 +10,13 @@ import java.util.List;
 public class Progetto {
 
   public enum Stato {
-    PIANIFICATO, ATTIVO, CONCLUSO
+    ATTIVO, CONCLUSO
   }
 
   private Long id;
   private String nomeProgetto;
   private String descrizione;
-  private Stato stato; // "In preparazione", "In corso", "Completato"
-  private LocalDate dataCreazione;
+  private Stato stato;
   private LocalDate dataInizio;
   private LocalDate dataFine;
 
@@ -85,14 +84,6 @@ public class Progetto {
 
   public void setStato(Stato stato) {
     this.stato = stato;
-  }
-
-  public LocalDate getDataCreazione() {
-    return dataCreazione;
-  }
-
-  public void setDataCreazione(LocalDate dataCreazione) {
-    this.dataCreazione = dataCreazione;
   }
 
   public LocalDate getDataInizio() {

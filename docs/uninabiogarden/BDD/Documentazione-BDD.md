@@ -86,7 +86,7 @@ _Convenzione: Tutte le PK sono `id`, le FK seguono il formato `id_entita`._
 - `data_inizio` deve essere maggiore o uguale della data di inizio del progetto associato alla coltivazione
 - `id_progetto` non può essere modificato
 - `id_coltura` non può essere modificato
-
+- ad una coltivazione può essere associata solo una attività di raccolta
 ## Progetto
 
 - `id_proprietario` deve riferirsi ad un utente esistente tale che `utente.tipo = PROPRIETARIO`

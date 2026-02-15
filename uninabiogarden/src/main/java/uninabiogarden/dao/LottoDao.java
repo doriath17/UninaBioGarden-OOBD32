@@ -77,7 +77,7 @@ public class LottoDao {
   public List<Lotto> findLottiDisponibili(Long id) {
     var sql = """
           SELECT *
-          FROM vista_lotti_disponibili
+          FROM view_lotti_disponibili
           WHERE id_proprietario = {{id}}
         """;
     sql = sql.replace("{{id}}", String.valueOf(id));

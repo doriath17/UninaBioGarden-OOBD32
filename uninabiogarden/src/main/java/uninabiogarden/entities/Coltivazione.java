@@ -9,7 +9,7 @@ public class Coltivazione {
   };
 
   public enum StatoColtivazione {
-    PIANIFICATA, ATTIVA, CONCLUSA
+    ATTIVA, CONCLUSA
   };
 
   private Long id;
@@ -17,12 +17,9 @@ public class Coltivazione {
   private StatoSaluteColtivazione statoSalute;
   private StatoColtivazione stato;
 
-  // le date sono impostate e gestite dal database
-  private LocalDate dataCreazione;
   private LocalDate dataInizio;
   private LocalDate dataFine;
 
-  private Integer quantitaPiante;
   private String noteTecniche;
 
   private Coltura coltura;
@@ -30,15 +27,13 @@ public class Coltivazione {
 
   public Coltivazione() {
     statoSalute = StatoSaluteColtivazione.OTTIMO;
-    stato = StatoColtivazione.PIANIFICATA;
-    quantitaPiante = 0;
+    stato = StatoColtivazione.ATTIVA;
     noteTecniche = "";
   }
 
-  public Coltivazione(Coltura coltura, Integer quantitaPiante, String noteTecniche) {
+  public Coltivazione(Coltura coltura, String noteTecniche) {
     super();
     this.coltura = coltura;
-    this.quantitaPiante = quantitaPiante;
     this.noteTecniche = noteTecniche;
   }
 
@@ -66,14 +61,6 @@ public class Coltivazione {
     this.stato = stato;
   }
 
-  public LocalDate getDataCreazione() {
-    return dataCreazione;
-  }
-
-  public void setDataCreazione(LocalDate dataCreazione) {
-    this.dataCreazione = dataCreazione;
-  }
-
   public LocalDate getDataInizio() {
     return dataInizio;
   }
@@ -88,14 +75,6 @@ public class Coltivazione {
 
   public void setDataFine(LocalDate dataFine) {
     this.dataFine = dataFine;
-  }
-
-  public Integer getQuantitaPiante() {
-    return quantitaPiante;
-  }
-
-  public void setQuantitaPiante(Integer quantitaPiante) {
-    this.quantitaPiante = quantitaPiante;
   }
 
   public String getNoteTecniche() {

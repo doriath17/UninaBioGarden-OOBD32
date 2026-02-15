@@ -51,9 +51,6 @@ public class ControllerProgettoColtivazioni {
     statoSaluteColumn.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(
         cellData.getValue().getStatoSalute() != null ? cellData.getValue().getStatoSalute().name() : "N/A"));
 
-    quantitaPianteColumn.setCellValueFactory(
-        cellData -> new javafx.beans.property.SimpleObjectProperty<>(cellData.getValue().getQuantitaPiante()));
-
     tempoMaturazioneColumn.setCellValueFactory(cellData -> new javafx.beans.property.SimpleObjectProperty<>(
         cellData.getValue().getColtura() != null ? cellData.getValue().getColtura().getTempoMaturazione() : null));
 

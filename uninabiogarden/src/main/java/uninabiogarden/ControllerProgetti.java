@@ -31,9 +31,6 @@ public class ControllerProgetti {
   private TableColumn<Progetto, String> statoColumn;
 
   @FXML
-  private TableColumn<Progetto, String> dataCreazioneColumn;
-
-  @FXML
   private TableColumn<Progetto, String> dataInizioColumn;
 
   @FXML
@@ -50,8 +47,6 @@ public class ControllerProgetti {
     nomeColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNomeProgetto()));
     statoColumn.setCellValueFactory(cellData -> new SimpleStringProperty(
         cellData.getValue().getStato() != null ? cellData.getValue().getStato().name() : ""));
-    dataCreazioneColumn.setCellValueFactory(cellData -> new SimpleStringProperty(
-        cellData.getValue().getDataCreazione() != null ? cellData.getValue().getDataCreazione().toString() : ""));
     dataInizioColumn.setCellValueFactory(cellData -> new SimpleStringProperty(
         cellData.getValue().getDataInizio() != null ? cellData.getValue().getDataInizio().toString() : ""));
     dataFineColumn.setCellValueFactory(cellData -> new SimpleStringProperty(

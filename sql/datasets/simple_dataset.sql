@@ -34,24 +34,35 @@ INSERT INTO lotto (codice_lotto, estensione_mq, tipologia_terreno, id_proprietar
 ('C2', 90.00, 'MEDIO_IMPASTO', 1, 3);
 
 -- ==============================================================================================
--- COLTURE (10 colture: 3 erbe aromatiche, 5 ortaggi, 2 alberi)
+-- COLTURE (15 colture: erbe aromatiche, ortaggi, legumi, alberi da frutto)
 -- ==============================================================================================
 
 -- Erbe Aromatiche
 INSERT INTO coltura (nome_comune, tempo_maturazione, caratteristiche) VALUES
-('Basilico', 30, 'Erba aromatica molto usata nella cucina italiana'),
-('Rosmarino', 60, 'Pianta perenne con foglie aghiformi profumate'),
-('Menta', 45, 'Pianta rinfrescante con molte varietà');
+('Basilico', 60, 'Erba aromatica annuale, ideale per pesto e insalate. Richiede clima caldo e annaffiature regolari'),
+('Rosmarino', 90, 'Pianta perenne sempreverde con foglie aghiformi. Resistente alla siccità, ottima per arrosti'),
+('Menta', 70, 'Pianta perenne rinfrescante con crescita vigorosa. Utilizzata per tisane e cocktail'),
+('Prezzemolo', 75, 'Erba biennale ricca di vitamina C. Cresce bene all''ombra parziale');
 
--- Ortaggi
+-- Ortaggi a Frutto
 INSERT INTO coltura (nome_comune, tempo_maturazione, caratteristiche) VALUES
-('Pomodoro', 80, 'Ortaggio versatile, ricco di licopene'),
-('Zucchina', 50, 'Cresce rapidamente, produzione abbondante'),
-('Lattuga', 40, 'Insalata a foglia verde tenera'),
-('Peperone', 90, 'Ortaggio colorato, ricco di vitamina C'),
-('Melanzana', 85, 'Ortaggio viola dalla polpa spugnosa');
+('Pomodoro San Marzano', 85, 'Varietà classica a pomodoro allungato. Ideale per conserve e sughi. Necessita di tutori'),
+('Zucchina Romanesca', 55, 'Varietà precoce con frutti striati. Raccolta scalare per 2-3 mesi'),
+('Peperone Quadrato', 100, 'Peperone dolce di forma cubica, ricco di antiossidanti. Maturazione da verde a rosso'),
+('Melanzana Violetta', 90, 'Varietà tradizionale con buccia viola scuro. Preferisce clima caldo');
 
--- Alberi da frutto
+-- Ortaggi a Foglia
 INSERT INTO coltura (nome_comune, tempo_maturazione, caratteristiche) VALUES
-('Limone', 365, 'Albero da frutto sempreverde, produce limoni tutto l''anno'),
-('Fico', 180, 'Albero rustico che produce fichi dolci');
+('Lattuga Romana', 65, 'Insalata croccante a cespo allungato. Ottima resistenza al calore'),
+('Rucola', 30, 'Insalata dal sapore piccante. Crescita rapida, raccolta a taglio'),
+('Spinacio', 45, 'Ortaggio a foglia verde ricco di ferro. Adatto a coltivazioni primaverili e autunnali');
+
+-- Legumi
+INSERT INTO coltura (nome_comune, tempo_maturazione, caratteristiche) VALUES
+('Fagiolino', 60, 'Legume rampicante o nano. Baccelli teneri da consumare freschi'),
+('Pisello', 70, 'Legume fresco dolce e nutriente. Preferisce clima fresco');
+
+-- Alberi da Frutto
+INSERT INTO coltura (nome_comune, tempo_maturazione, caratteristiche) VALUES
+('Limone', 240, 'Agrume sempreverde che fruttifica in 8-10 mesi. Necessita di clima mite e irrigazione costante'),
+('Fico', 150, 'Albero rustico con due fruttificazioni annuali. Resiste bene alla siccità');

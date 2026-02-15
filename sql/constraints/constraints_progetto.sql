@@ -61,16 +61,28 @@ BEGIN
     RAISE EXCEPTION 'Impossibile modificare un progetto concluso';
   END IF;
 
-  IF NEW.stato = 'CONCLUSO' AND NEW.data_fine IS NULL THEN 
-    NEW.data_fine := CURRENT_TIMESTAMP;
-  END IF;
-
   IF NEW.id_proprietario <> OLD.id_proprietario THEN 
     RAISE EXCEPTION 'Impossibile modificare il proprietario del progetto';
   END IF;
 
   IF NEW.id_lotto <> OLD.id_lotto THEN 
     RAISE EXCEPTION 'Impossibile modificare il lotto del progetto';
+  END IF;
+
+  IF NEW.stato = 'CONCLUSO' AND NEW.data_fine IS NULL THEN 
+    NEW.data_fine := CURRENT_TIMESTAMP;
+  END IF;
+
+  IF NEW.stato = 'CONCLUSO' AND OLD.stato <> 'CONCLUSO' THEN 
+    IF EXISTS (
+      SELECT 1
+      FROM coltivazione c
+      JOIN progetto p ON p.id = c.id_progetto
+      WHERE p.id = NEW.id
+      AND c.stato <> 'CONCLUSA'
+    ) THEN
+      RAISE EXCEPTION 'Non è possibile concludere un progetto con coltivazioni non concluse';
+    END IF;
   END IF;
 
   RETURN NEW;

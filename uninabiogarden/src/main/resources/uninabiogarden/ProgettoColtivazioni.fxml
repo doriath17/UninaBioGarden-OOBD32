@@ -18,7 +18,6 @@
             <TableColumn fx:id="nomeColturaColumn" prefWidth="286.0" text="Nome Comune Coltura" />
             <TableColumn fx:id="statoColumn" prefWidth="147.0" text="Stato" />
             <TableColumn fx:id="statoSaluteColumn" prefWidth="183.0" text="Stato Salute" />
-            <TableColumn fx:id="quantitaPianteColumn" prefWidth="155.0" text="Quantità Piante" />
             <TableColumn fx:id="tempoMaturazioneColumn" prefWidth="177.0" text="Tempo Maturazione (gg)" />
             <TableColumn fx:id="viewColumn" prefWidth="101.0" />
          </columns>
