@@ -1,212 +1,133 @@
-
 ---
 title: "Documentazione BDD"
 header-includes:
-   - \usepackage{float}
-   - \makeatletter
-   - \setkeys{Gin}{width=\linewidth,height=\textheight,keepaspectratio}
-   - \floatplacement{figure}{H}
-   - \makeatother
+  - \usepackage{float}
+  - \makeatletter
+  - \setkeys{Gin}{width=\linewidth,height=\textheight,keepaspectratio}
+  - \floatplacement{figure}{H}
+  - \makeatother
 ---
+
 # Documentazione Progetto: Sistema Gestione Agricola
+
 **Data:** 21 Gennaio 2026  
 **Autori:** [Tuo Nome] & [Nome Collega]
 
 ---
 
-## 1. Analisi del Dominio
-*Descrizione sintetica del contesto: gestione di orti, lotti e cicli colturali con tracciamento delle attività e sistema di notifiche.*
+## Analisi del Dominio
 
-## 2. Modellazione Dati
+_Descrizione sintetica del contesto: gestione di orti, lotti e cicli colturali con tracciamento delle attività e sistema di notifiche._
+
+## Modellazione Dati
+
 todo
 
 \newpage
-### 2.1 Schema Concettuale (EER)
+
+### Schema Concettuale (EER)
+
 Versione EER dello schema concettuale.
 
-
-![Schema EER](../asset/eer-bdd.svg){ width=100% }
+![Schema EER](../asset/eer-bdd.svg){ width=95% }
 
 \newpage
-### 2.2 Schema Concettuale (UML)
+
+### Schema Concettuale (UML)
+
 Questa è la versione UML del precedente schema.
 
-
-![Schema UML](../asset/uml-bdd.svg){ width=100% }
-
+![Schema UML](../asset/uml-bdd.svg){ width=95% }
 
 \newpage
-### 2.3 Schema Ristrutturato (UML)
-*Descrizione delle scelte di ristrutturazione (es. accorpamento gerarchie, eliminazione attributi composti).*
 
+### Schema Ristrutturato (UML)
 
+_Descrizione delle scelte di ristrutturazione (es. accorpamento gerarchie, eliminazione attributi composti)._
 
-![Schema UML](../asset/uml-ristrutturato-bdd.svg){ width=100% }
-
+![Schema UML](../asset/uml-ristrutturato-bdd.svg){ width=95% }
 
 \newpage
-### 2.3 Schema Logico
-*Convenzione: Tutte le PK sono `id`, le FK seguono il formato `id_entita`.*
 
-![Schema UML](../asset/logico-bdd.svg){ width=100% }
+### Schema Logico
 
+_Convenzione: Tutte le PK sono `id`, le FK seguono il formato `id_entita`._
+
+![Schema UML](../asset/logico-bdd.svg){ width=95% }
 
 # Dizionario dei Vincoli
-## Vincoli Attività
 
-### Stato Iniziale e Finale
-- **Stato Iniziale**: un attività appena creata deve essere nello stato PIANIFICATA
-- **Stato Finale**: se lo stato diventa COMPLETATA o ANNULLATA ogni attributo non può essere più modificato. 
+## Attività
 
-### Regole di Transizione
+- `id_coltivatore` deve riferirsi ad un utente esistente tale che `utente.tipo = 'COLTIVATORE'` e inoltre questo coltivatore deve essere associato al progetto dell'attività tramite la relazione `lavora_per`.
 
-| Stato Originale | Stato Destinazione | Condizione                                             |
-| :-------------- | :----------------- | :----------------------------------------------------- |
-| **-**           | PIANIFICATA        |                                                        |
-| PIANIFICATA     | IN_CORSO           | La coltivazione a cui è associata ha `stato == ATTIVA` |
-| PIANIFICATA     | ANNULLATA          |                                                        |
-| IN_CORSO        | COMPLETATA         |                                                        |
-| IN_CORSO        | ANNULLATA          |                                                        |
-| COMPLETATA      | **-**              |                                                        |
-| ANNULLATA       | **-**              |                                                        |
-- **Vincolo Quantità Effettiva a Raccolta `ANNULLATA`**: se una **Raccolta** è `ANNULLATA` allora la quantità effettiva deve essere 0.
+| Stato Originale | Stato Destinazione | Condizione |     |
+| :-------------- | :----------------- | :--------- | --- |
+| **-**           | PIANIFICATA        |            |     |
+| PIANIFICATA     | IN_CORSO           |            |     |
+| IN_CORSO        | COMPLETATA         |            |     |
+| COMPLETATA      | **-**              |            |     |
 
-### Coerenza Temporale delle Date
-- `data_pianificazione`: non può essere modificata dopo la creazione dell'attività.
-- `data_scadenza >= data_pianificazione`
-- `data_inizio`: `NULL` finché l'attività non viene spostata nello stato `IN_CORSO`, dopodiché diventa immutabile. Deve valere che: `data_inizio >= data_pianificazione`.
-- `data_fine`: `NULL` finché l'attività non viene spostata nello stato `COMPLETATA`, dopodiché diventa immutabile. Deve valere che: `data_fine >= data_inizio`
+- se `stato = COMPLETATA` non è più possibile modificare l'attività che entra in modalità read only
+- `data_pianificazione` non può essere modificata
+- `id_coltivazione` non può essere modificato
 
-## Vincoli Coltivazione
-### Stato Iniziale e Finale
-- **Stato Iniziale**: una coltivazione appena creata deve avere `stato_salute = OTTIMO` e `stato_coltivazione = PIANIFICATA`.
-- **Stato Finale**:  se `stato = CONCLUSA OR FALLITA OR ANNULLATA`, allora:
-	- **Congelamento Attributi**: ogni attributo della coltivazione non può essere più modificato. 
-	- **Annullamento Attività Rimanenti**: lo `stato` di tutte le attività associate tali che `attivita.stato == COMPLETATA OR ANNULLATA` deve essere impostato ad `ANNULLATA`.
-	- **Fine Attività**: non è possibile pianificare ulteriori attività sulla coltivazione.
+## Coltivazione
 
-**Nota**
-- Quando una coltivazione entra in uno dei suoi stati finali **tutte** le sue attività sono ***congelate***: lo stato di tutte le attività associate alla coltivazione, che non sono in uno stato terminale, diventa `ANNULLATO` e, per definizione dello stato finale di una attività, queste diventano immutabili. Inoltre alla coltivazione stessa non sarà più possibile associare nuove attività. 
+| Stato Originale | Stato Destinazione | Condizione                                                                                                                                           |
+| :-------------- | :----------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------- |
+| -               | ATTIVA             |                                                                                                                                                      |
+| ATTIVA          | IN_RACCOLTA        | Non ci devono essere attività associate non terminate, ad eccezione dell'attività di raccolta che deve essere in corso (`raccolta.stato = IN_CORSO`) |
+| IN_RACCOLTA     | CONCLUSA           | L'attività di raccolta è terminata                                                                                                                   |
+| CONCLUSA        | **-**              |                                                                                                                                                      |
 
-### Regole di Transizione: `stato_coltivazione` 
+- se `stato = IN_RACCOLTA o CONCLUSA` allora non è più possibile pianificare attività sulla coltivazione
+- se `stato = CONCLUSA` non è più possibile modificare la coltivazione che entra in modalità read only
+- `data_inizio` deve essere maggiore o uguale della data di inizio del progetto associato alla coltivazione
+- `id_progetto` non può essere modificato
+- `id_coltura` non può essere modificato
 
-| Stato Originale | Stato Destinazione | Condizione                                                              |
-| --------------- | ------------------ | ----------------------------------------------------------------------- |
-| -               | PIANIFICATA        |                                                                         |
-| PIANIFICATA     | ATTIVA             | il progetto associato ha `stato == ATTIVO`                              |
-| PIANIFICATA     | ANNULLATA          |                                                                         |
-| ATTIVA          | CONCLUSA           | solo se esiste una attività **Raccolta** che è nello stato `COMPLETATA` |
-| ATTIVA          | FALLITA            | lo stato di salute della coltivazione è `COMPROMESSO`                   |
-| ATTIVA          | ANNULLATA          |                                                                         |
-| ANNULLATA       | **-**              |                                                                         |
-| CONCLUSA        | **-**              |                                                                         |
-| FALLITA         | **-**              |                                                                         |
+## Progetto
 
-### Coerenza Temporale
-- `data_creazione` deve essere inserita soltanto durante la creazione della coltivazione e il suo valore non sarà ulteriormente modificabile.
-- `data_inizio` 
-	- deve essere `NULL` se `stato == PIANIFICATA`
-	- deve essere inserita soltanto durante la transizione di stato `PIANIFICATA --> ATTIVA` e non può essere successivamente modificata.
-- Tutte le attività associate ad una coltivazione devono avere una `data_inizio` tale che: `attivita.data_inizio >= coltivazione.data_inizio`.
-- Data una coltivazione Y e un attività X che è associata a Y: `Data Inizio Attività X​ <= Data Fine Attività X <= Data Fine Raccolta Y​`
+- `id_proprietario` deve riferirsi ad un utente esistente tale che `utente.tipo = PROPRIETARIO`
+- la `data_fine` deve essere `NULL` finché il progetto non viene concluso
+- `id_lotto` non può essere modificato
+- `id_progetto` non può essere modificato
 
-### Regole di Transizione: `stato_salute` 
+| Stato Originale | Stato Destinazione | Condizione                                                                        |
+| :-------------- | :----------------- | :-------------------------------------------------------------------------------- |
+| **-**           | ATTIVO             |                                                                                   |
+| ATTIVO          | CONCLUSO           | se tutte le coltivazioni associate sono concluse: `coltivazione.stato = CONCLUSA` |
+| CONCLUSO        | **-**              |                                                                                   |
 
-| Stato Originale                      | Stato Destinazione                                | Condizione                                                                                         |
-| ------------------------------------ | ------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| -                                    | OTTIMO                                            |                                                                                                    |
-| OTTIMO, STABILE, SOFFERENTE, CRITICO | OTTIMO, STABILE, SOFFERENTE, CRITICO, COMPROMESSO | La coltivazione deve trovarsi nello stato `ATTIVA` per poter modificare il proprio stato di salute |
-| COMPROMESSO                          | **-**                                             |                                                                                                    |
+- se un progetto è concluso
+  - non è possibile creare nuove coltivazioni
+  - non è possibile associare nuovi coltivatori tramite la relazione `lavora_per`
+  - non si può modificare ulteriormente il progetto che entra in uno stato read only
 
-**Nota**
- Lo stato `COMPROMESSO` è uno stato pozzo per la salute: una volta raggiunto, la transizione verso `FALLITA` è immediata e irreversibile. Si nota inoltre che una coltivazione può *fallire* solo se lo stato della coltivazione è `ATTIVA` e il suo stato di salute diventa `COMPROMESSO`. Una coltivazione può essere *annullata* se non è ancora *attiva*.
+- il lotto che il progetto occupa deve essere uno dei lotti posseduti dall'utente proprietario del progetto
 
-### Vincoli sulle Attività Associate
+## Relazione `lavora_per`
 
-**Vincolo di Unicità Semina/Raccolta:** Data una coltivazione, non può essere inserita un'attività di semina (raccolta) se già esiste un'attività di semina (raccolta) in uno stato diverso da `ANNULLATA`.
+- `id_proprietario` deve riferirsi ad un utente esistente tale che `utente.tipo = PROPRIETARIO`
 
-**Vincolo di Sequenza Semina/Raccolta**: Si può iniziare l'attività di **Raccolta** solo se l'attività di **Semina** esiste e ha `stato = COMPLETATA`.
+## Lotto
 
-## Vincoli del Progetto
-### Stato Iniziale e Finale
-- **Stato Iniziale**: un progetto appena creato deve avere `stato = PIANIFICATO`.
-- **Stato Finale**: se `stato = CONCLUSO OR FALLITO`, allora:
-	- **Fine Coltivazioni**: non è possibile associare nuove coltivazioni al progetto.
-	- **Congelamento Attributi**: tutti gli attributi del progetto non sono ulteriormente modificabili.
-**Nota**
-- Si fa notare che se un progetto è concluso o fallito non c'è bisogno di annullare le coltivazioni associate siccome queste o sono tutte annullate (progetto fallito in preparazione) o sono tutte terminate o fallite (progetto concluso o fallito). 
+- la `data_registrazione` del lotto non può essere modificata
+- le chiavi esterne `id_proprietario` e `id_orto` non possono essere modificate
+- `id_proprietario` deve riferirsi ad un utente esistente tale che `utente.tipo = PROPRIETARIO`
+- un lotto può essere occupato da più progetti ma da un solo progetto attivo alla volta (`progetto.stato = ATTIVO`)
 
-### Regole di Transizione
+## Orto
 
-| Stato Originale | Stato Destinazione | Condizione                                                                                             |
-| --------------- | ------------------ | ------------------------------------------------------------------------------------------------------ |
-| **-**           | PIANIFICATO        |                                                                                                        |
-| PIANIFICATO     | ATTIVO             |                                                                                                        |
-| PIANIFICATO     | FALLITO            | solo se tutte le coltivazioni associate hanno `stato_coltivazione = ANNULLATA`.                        |
-| ATTIVO          | CONCLUSO           | solo se tutte le coltivazioni associate hanno `stato_coltivazione = CONCLUSA OR FALLITA OR ANNULLATA`. |
-| ATTIVO          | FALLITO            | solo se tutte le coltivazioni associate hanno `stato_coltivazione = CONCLUSA OR FALLITA OR ANNULLATA`. |
-| CONCLUSO        | **-**              |                                                                                                        |
-| FALLITO         | **-**              |                                                                                                        |
+- `id_proprietario` deve riferirsi ad un utente esistente tale che `utente.tipo = PROPRIETARIO`
 
-**Nota**
-- Il progetto può fallire se il proprietario decide di annullarlo. Questo può avvenire se, per esempio, tutte le coltivazioni falliscono o sono annullate. Questo sistema però non dovrebbe essere automatizzato ma è il proprietario a sancire se il progetto è definitivamente fallito: si fa notare che ad un progetto in preparazione o attivo è possibile associare nuove coltivazioni.
+## Notifica
 
-### Coerenza Temporale delle Date
-- `data_creazione` non può essere modificata successivamente alla creazione del progetto.
-- `data_inizio` deve essere `NULL` se `stato = PIANIFICATO`. Il valore può essere inserito soltanto durante la transizione da `PIANIFICATO` ad `ATTIVO` e non può essere modificato successivamente. Deve valere che `data_inizio >= data_creazione`.
-- `data_fine` deve essere `NULL` se `stato <> CONCLUSO OR FALLITO`. Il valore può essere inserito soltanto durante le transizioni terminali. Deve valere che: `data_fine >= data_creazione` e, se `data_inizio <> NULL`, `data_fine >= data_inizio`.
+- se `tipo = NOTIFICA_PROGETTO` allora `id_attivita` deve essere `NULL`
+- se `tipo = NOTIFICA_ATTIVITA_IMMINENTE` questa notifica **non** deve essere associata ad un coltivatore tramite la relazione `riceve`
+- se `tipo = NOTIFICA_ATTIVITA_IMMINENTE` allora `id_attivita` deve riferirsi ad un attività del progetto
 
-## Vincoli sul Lotto
-- Il lotto può ospitare soltanto un progetto in stato non terminale per volta. 
-- `id_proprietario` deve essere l'`id` di un utente tale che `utente.tipo == PROPRIETARIO`
-- `data_registrazione` non può essere modificato dopo la creazione.
-- `id_proprietario` non può essere modificato dopo la creazione.
-- `id_lotto` non può essere modificato dopo la creazione.
+## Relazione `riceve`
 
-## Vincoli su Orto
-- `data_registrazione` deve essere inserito durante la creazione del lotto e non deve essere ulteriormente modificato.
-- `id_proprietario` deve essere inserito durante la creazione dell'orto e non deve essere più modificato.
-## Ricezione Notifiche
-**Coerenza di Lettura**
-Data un'istanza di relazione **riceve**, deve valere che:
-    - Se `is_letta` è **FALSE**, allora `data_presa_visione` deve essere **NULL**.
-    - Se `is_letta` è **TRUE**, allora `data_presa_visione` deve essere **NOT NULL**.
-
-**Coerenza Temporale**
-Data la `data_inizio` della notifica associata, deve valere che: `data_lettura` >= `data_invio`.
-
-**Integrità Lettura**:
-Una volta che `is_letta` passa a **TRUE**, non può più tornare a **FALSE**.
-
-## Coltura
-- `tempo_maturazione` deve essere un valore maggiore di 0 (considera metterlo nel dizionario degli attributi)
-## Vincoli Utente
-
-**Utente -- Proprietario**
-- Un utente può possedere un lotto solo se `Utente.tipo == PROPRIETARIO`
-- Un utente può gestire un orto solo se `Utente.tipo == PROPRIETARIO`
-**Nota**
-Un utente proprietario può possedere un lotto su un qualsiasi orto anche se lo stesso proprietario, ad esempio, gestisce altri orti. 
-
-- Un utente può inviare una notifica solo se `Utente.tipo == PROPRIETARIO`
-- Un utente può pianificare un progetto solo se `Utente.tipo == PROPRIETARIO`
-
-**Utente -- Coltivatore**
-- Un utente può svolgere un attività solo se `Utente.tipo == COLTIVATORE`
-- Un utente può ricevere una notifica solo se `Utente.tipo == COLTIVATORE`
-
-**Data Registrazione**
-`data_registrazione` dell'utente deve essere inserita durante la creazione dell'utente e non può essere più modificata in seguito.
-## Deprecated
-- `data_inizio_prevista`: non può essere modificata se la data di inizio è diversa da NULL. Deve valere che `data_inizio_prevista >= data_pianificazione`.
-## 4. Dizionario degli Attributi
-
-DA FARE
-
-| Entità | Attributo | Tipo | Descrizione |
-| :--- | :--- | :--- | :--- |
-| **Progetto** | `stato` | ENUM | {PIANIFICATO, ATTIVO, CONCLUSO} |
-| **Attività** | `tipo` | VARCHAR | Es: 'Semina', 'Irrigazione', 'Raccolta' |
-| **Lettura** | `is_letta` | BOOLEAN | Flag di visualizzazione notifica |
-
----
+- una notifica può essere inviata soltanto ai coltivatori associati al progetto della notifica tramite la relazione `lavora_per`

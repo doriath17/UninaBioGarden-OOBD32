@@ -1,32 +1,11 @@
 -- VINCOLI ATTIVITA
 
-DROP TRIGGER IF EXISTS transizione_attivita_immutability ON transizione_attivita;
 DROP TRIGGER IF EXISTS insert_attivita ON attivita;
-DROP TRIGGER IF EXISTS update_immutables_attivita ON attivita;
-DROP TRIGGER IF EXISTS update_stato_attivita ON attivita;
-
-DROP FUNCTION IF EXISTS block_modification_transizione_attivita() CASCADE;
 DROP FUNCTION IF EXISTS check_insert_attivita() CASCADE;
-DROP FUNCTION IF EXISTS check_immutables_attivita() CASCADE;
-DROP FUNCTION IF EXISTS check_stato_attivita() CASCADE;
-
--- ============================================================
--- immutabilità delle transizioni
--- ============================================================
-
-
-CREATE OR REPLACE FUNCTION 
-block_modification_transizione_attivita()
-RETURNS TRIGGER AS $$
-BEGIN
-    RAISE EXCEPTION 'Le regole di transizione di un attività sono immutabili';
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER transizione_attivita_immutability
-BEFORE INSERT OR UPDATE OR DELETE ON transizione_attivita
-FOR EACH ROW EXECUTE FUNCTION block_modification_transizione_attivita();
-
+DROP TRIGGER IF EXISTS updates_attivita ON attivita;
+DROP FUNCTION IF EXISTS check_update_attivita() CASCADE;
+DROP TRIGGER IF EXISTS updates_attivita_raccolta ON attivita;
+DROP FUNCTION IF EXISTS check_update_attivita_raccolta() CASCADE;
 
 -- ============================================================
 -- INSERT di una attività
@@ -36,15 +15,11 @@ FOR EACH ROW EXECUTE FUNCTION block_modification_transizione_attivita();
 CREATE OR REPLACE FUNCTION check_insert_attivita()
 RETURNS TRIGGER AS $$
 DECLARE 
-  v_stato_coltivazione stato_coltivazione;
+  v_stato_coltivazione coltivazione.stato%TYPE;
+  v_coltivatore utente%ROWTYPE;
 BEGIN
   IF NEW.stato <> 'PIANIFICATA' THEN 
     RAISE EXCEPTION 'Un attività appena creata deve avere stato ''PIANIFICATA''';
-  END IF;
-
-  -- attributi che dovrebbero essere NULL all'inserimento
-  IF NEW.data_inizio IS NOT NULL THEN 
-    RAISE EXCEPTION 'Un attività appena creata deve avere ''data_inizio = NULL''';
   END IF;
 
   IF NEW.data_fine IS NOT NULL THEN 
@@ -56,8 +31,27 @@ BEGIN
   FROM coltivazione
   WHERE id = NEW.id_coltivazione;
 
-  IF v_stato_coltivazione = 'CONCLUSA' THEN
-    RAISE EXCEPTION 'Impossibile associare l''attività ad una coltivazione terminata';
+  IF v_stato_coltivazione IN ('CONCLUSA', 'IN_RACCOLTA') THEN
+    RAISE EXCEPTION 'Impossibile inserire una nuova attività ad una coltivazione conclusa o in raccolta';
+  END IF;
+
+  -- check sul coltivatore
+  SELECT * INTO v_coltivatore
+  FROM utente
+  WHERE id = NEW.id_coltivatore;
+
+  IF v_coltivatore.tipo <> 'COLTIVATORE' THEN 
+    RAISE EXCEPTION 'L''utente con ID = % non è un coltivatore', NEW.id_coltivatore;
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT 1
+    FROM lavora_per lp
+    JOIN coltivazione c ON c.id_progetto = lp.id_progetto
+    WHERE lp.id_coltivatore = NEW.id_coltivatore
+    AND c.id = NEW.id_coltivazione
+  ) THEN
+    RAISE EXCEPTION 'Il coltivatore con ID = % non è assegnato al progetto della coltivazione %', NEW.id_coltivatore, NEW.id_coltivazione;
   END IF;
 
   RETURN NEW;
@@ -75,82 +69,78 @@ EXECUTE FUNCTION check_insert_attivita();
 -- ============================================================
 
 
-CREATE FUNCTION check_immutables_attivita() 
+CREATE FUNCTION check_update_attivita() 
 RETURNS TRIGGER AS $$ 
 BEGIN 
-  -- freeze dopo lo stato terminale
-  IF OLD.stato IN ('ANNULLATA', 'COMPLETATA') THEN 
+  IF OLD.stato = 'COMPLETATA' THEN 
     RAISE EXCEPTION 'Non è possibile modificare un''attività terminata';
   END IF;
 
-  -- immutablita della data di pianificazione
   IF NEW.data_pianificazione <> OLD.data_pianificazione THEN 
     RAISE EXCEPTION '''data_pianificazione'' non può essere modificata dopo la creazine dell''attività';
   END IF;
 
-  -- immutablita della coltivazione
   IF NEW.id_coltivazione <> OLD.id_coltivazione THEN 
     RAISE EXCEPTION 'Non è possibile modificare a quale coltivazione un''attività è associata';
+  END IF;
+
+  IF OLD.stato = 'PIANIFICATA' AND NEW.stato = 'IN_CORSO' AND NEW.data_inizio IS NULL THEN 
+    NEW.data_inizio := CURRENT_TIMESTAMP;
+  END IF;
+
+  IF NEW.stato = 'PIANIFICATA' AND OLD.stato = 'IN_CORSO' THEN 
+    RAISE EXCEPTION 'Non è possibile riportare un''attività in stato ''PIANIFICATA''';
+  END IF;
+
+  IF NEW.stato = 'COMPLETATA' AND NEW.data_fine IS NULL THEN 
+    NEW.data_fine := CURRENT_TIMESTAMP;
   END IF;
 
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER update_immutables_attivita
+CREATE TRIGGER updates_attivita
 BEFORE UPDATE ON attivita
 FOR EACH ROW
-EXECUTE FUNCTION check_immutables_attivita();
-
+EXECUTE FUNCTION check_update_attivita();
 
 -- ============================================================
--- UPDATE -- transizioni di stato
+-- UPDATE -- raccolta
 -- ============================================================
 
-
-CREATE FUNCTION check_stato_attivita()
+CREATE FUNCTION check_update_attivita_raccolta()
 RETURNS TRIGGER AS $$
 DECLARE 
-  v_stato_coltivazione stato_coltivazione;
+  v_id_coltivazione coltivazione.id%TYPE;
 BEGIN
-  IF NEW.stato <> OLD.stato THEN
 
-    -- verifica se la transizione è permessa
-    IF NOT EXISTS (
+  SELECT id_coltivazione INTO v_id_coltivazione
+  FROM attivita
+  WHERE id = NEW.id;
+
+  IF NEW.stato = 'IN_CORSO' AND OLD.stato = 'PIANIFICATA' THEN
+    IF EXISTS (
       SELECT 1 
-      FROM transizione_attivita
-      WHERE stato_corrente = OLD.stato AND stato_successivo = NEW.stato
+      FROM attivita 
+      WHERE stato <> 'COMPLETATA' 
+        AND id_coltivazione = v_id_coltivazione 
+        AND id <> OLD.id
     ) THEN 
-      RAISE EXCEPTION 'Transizione di stato (%, %) non permessa', OLD.stato, NEW.stato;
+      RAISE EXCEPTION 'Non è possibile iniziare un''attività di raccolta se non sono state completate tutte le attività precedenti della stessa coltivazione';
     END IF;
 
-    -- transizione a in_corso
-    IF OLD.stato = 'PIANIFICATA' AND NEW.stato = 'IN_CORSO' THEN
-      SELECT stato INTO v_stato_coltivazione 
-      FROM coltivazione
-      WHERE id = NEW.id_coltivazione;
+    UPDATE coltivazione 
+    SET stato = 'IN_RACCOLTA'
+    WHERE id = NEW.id_coltivazione;
 
-      IF v_stato_coltivazione <> 'ATTIVA' THEN 
-        RAISE EXCEPTION 'Transizione di stato (%, %) non permessa: la coltivazione non è in stato ''ATTIVA''', OLD.stato, NEW.stato;
-      END IF;
-      NEW.data_inizio := CURRENT_TIMESTAMP;
-
-    -- terminazione attività
-    ELSIF NEW.stato IN ('COMPLETATA', 'ANNULLATA') THEN 
-      NEW.data_fine := CURRENT_TIMESTAMP;
-    END IF;
-
-  END IF; 
+  END IF;
 
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER update_stato_attivita
+CREATE TRIGGER updates_attivita_raccolta
 BEFORE UPDATE ON attivita
 FOR EACH ROW
-EXECUTE FUNCTION check_stato_attivita();
-
--- ============================================================
--- DELETE
--- ============================================================
+EXECUTE FUNCTION check_update_attivita_raccolta();  

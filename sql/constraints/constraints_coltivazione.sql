@@ -1,151 +1,84 @@
 -- VINCOLI COLTIVAZIONE
 
-DROP TRIGGER IF EXISTS transizione_stato_immutability ON transizione_stato;
-
-
-DROP FUNCTION IF EXISTS block_modification_transizione_stato() CASCADE;
-
--- ============================================================
--- immutabilità delle transizioni
--- ============================================================
-
-CREATE OR REPLACE FUNCTION 
-block_modification_transizione_stato()
-RETURNS TRIGGER AS $$
-BEGIN
-  RAISE EXCEPTION 'Le regole di transizione dello stato della coltivazione sono immutabili';
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER transizione_stato_immutability
-BEFORE INSERT OR UPDATE OR DELETE 
-ON transizione_stato
-FOR EACH ROW 
-EXECUTE FUNCTION block_modification_transizione_stato();
-
+DROP TRIGGER IF EXISTS insert_coltivazione ON coltivazione;
+DROP FUNCTION IF EXISTS check_insert_coltivazione() CASCADE;
+DROP TRIGGER IF EXISTS update_coltivazione ON coltivazione;
+DROP FUNCTION IF EXISTS check_update_coltivazione() CASCADE;
 
 -- ============================================================
--- INSERT -- stato iniziale
+-- INSERT 
 -- ============================================================
 
 CREATE OR REPLACE FUNCTION 
 check_insert_coltivazione()
 RETURNS TRIGGER AS $$
 DECLARE
-  v_data_creazione_progetto progetto.data_creazione%TYPE;
+  v_progetto progetto%ROWTYPE;
 BEGIN
 
-  -- coerenza stato iniziale
-  IF NEW.stato <> 'PIANIFICATA' OR NEW.stato_salute <> 'OTTIMO' THEN
-    RAISE EXCEPTION 'Una nuova coltivazione deve avere ''stato = PIANIFICATA'' e ''stato_salute = OTTIMO''';
-  END IF;
-
-    -- attributi che dovrebbero essere NULL all'inserimento
-  IF NEW.data_inizio IS NOT NULL THEN 
-    RAISE EXCEPTION 'Un coltivazione appena creata deve avere ''data_inizio = NULL''';
+  IF NEW.stato IS NOT NULL AND NEW.stato <> 'ATTIVA' THEN
+    RAISE EXCEPTION 'Una nuova coltivazione deve avere ''stato = ATTIVA''';
   END IF;
 
   IF NEW.data_fine IS NOT NULL THEN 
     RAISE EXCEPTION 'Un attività appena creata deve avere ''data_fine = NULL''';
   END IF;
 
-  -- se l utente cerca di inserire la data di creazione manualmente
-  -- questa viene ignorata e si usa il current timestamp. Questo 
-  -- approccio garantisce che la data_creazione >= progetto.data_creazione
-  -- dove progetto è il progetto associato
-  IF NEW.data_creazione IS NOT NULL THEN 
-    RAISE NOTICE 'Attenzione: la data creazione inserita % verrà ignorata, il sistema utilizzerà il timestamp attuale', NEW.data_creazione;
+  SELECT * INTO v_progetto
+  FROM progetto
+  WHERE id = NEW.id_progetto;
+
+  IF v_progetto.stato <> 'ATTIVO' THEN 
+    RAISE EXCEPTION 'Impossibile creare una coltivazione per un progetto non attivo';
   END IF;
-  NEW.data_creazione := CURRENT_TIMESTAMP;
+
+  IF NEW.data_inizio IS NOT NULL AND NEW.data_inizio < v_progetto.data_inizio THEN 
+    RAISE EXCEPTION 'La data di inizio di una coltivazione non può essere precedente alla data di inizio del progetto';
+  END IF;
 
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER stato_iniziale_coltivazione
+CREATE TRIGGER insert_coltivazione
 BEFORE INSERT ON coltivazione
 FOR EACH ROW
 EXECUTE FUNCTION check_insert_coltivazione();
 
 -- ============================================================
--- UPDATE attributi immutabili
+-- UPDATE 
 -- ============================================================
 
 CREATE OR REPLACE FUNCTION
-check_immutables_coltivazione()
+check_update_coltivazione()
 RETURNS TRIGGER AS $$
 BEGIN
 
-  -- freeze dopo la terminazione
   IF OLD.stato = 'CONCLUSA' THEN 
     RAISE EXCEPTION 'Impossibile modificare una coltivazione terminata';
   END IF;
 
-  IF NEW.data_creazione <> OLD.data_creazione THEN 
-    RAISE EXCEPTION 'Impossibile modificare la data di creazione della coltivazione';
+  IF NEW.data_inizio <> OLD.data_inizio THEN 
+    RAISE EXCEPTION 'Impossibile modificare la data di inizio della coltivazione';
   END IF;
 
   IF NEW.id_progetto <> OLD.id_progetto THEN 
     RAISE EXCEPTION 'Impossibile modificare il progetto della coltivazione';
   END IF;
 
+  IF NEW.id_coltura <> OLD.id_coltura THEN 
+    RAISE EXCEPTION 'Impossibile modificare la coltura della coltivazione';
+  END IF;
+
+  IF NEW.stato = 'CONCLUSA' AND NEW.data_fine IS NULL THEN 
+    NEW.data_fine := CURRENT_TIMESTAMP;
+  END IF;
+
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER update_immutables_coltivazione
+CREATE TRIGGER update_coltivazione
 BEFORE UPDATE ON coltivazione
 FOR EACH ROW
-EXECUTE FUNCTION check_immutables_coltivazione();
-
--- ============================================================
--- UPDATE -- transizioni di stato
--- ============================================================
-
-CREATE OR REPLACE FUNCTION
-check_update_coltivazione()
-RETURNS TRIGGER AS $$
-DECLARE 
-  v_stato_progetto progetto.stato%TYPE;
-BEGIN
-  IF NEW.stato <> OLD.stato THEN
-    -- verifica se le transizione è permessa
-    IF NOT EXISTS (
-      SELECT 1 
-      FROM transizione_stato
-      WHERE stato_corrente = OLD.stato AND stato_successivo = NEW.stato
-    ) THEN 
-      RAISE EXCEPTION 'Transizione di stato (%, %) non permessa', OLD.stato
-      , NEW.stato;
-    END IF;
-
-    IF OLD.stato = 'PIANIFICATA' AND NEW.stato = 'ATTIVA' THEN
-      SELECT stato INTO v_stato_progetto 
-      FROM PROGETTO
-      WHERE id = OLD.id_progetto;
-
-      IF v_stato_progetto <> 'ATTIVO' THEN 
-        RAISE EXCEPTION 'Transizione di stato (%, %) non permessa: il progetto non è in stato ''ATTIVO''', OLD.stato, NEW.stato;
-      END IF;
-
-    -- terminazione coltivazione
-    ELSIF NEW.stato = 'CONCLUSA' THEN
-      IF NEW.data_fine IS NOT NULL THEN
-        RAISE NOTICE 'Attenzione: la data fine inserita % verrà ignorata, il sistema utilizzerà il timestamp attuale', NEW.data_creazione;
-      END IF;
-      NEW.data_fine := CURRENT_TIMESTAMP;
-
-      -- terminazione a cascata di tutte le attività associate alla coltivazione
-      UPDATE attivita 
-      SET stato = 'ANNULLATA'
-      WHERE id_coltivazione = NEW.id AND stato IN ('PIANIFICATA', 'IN_CORSO');
-
-    END IF;
-  END IF;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER update_immutables_coltivazione
-BEFORE UPDATE ON coltivazione 
-FOR EACH ROW 
 EXECUTE FUNCTION check_update_coltivazione();

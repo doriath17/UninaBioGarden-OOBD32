@@ -15,6 +15,7 @@ CREATE TABLE lotto (
   tipologia_terreno tipologia_terreno NOT NULL,
   id_proprietario INT NOT NULL,
   id_orto INT NOT NULL,
+  
   FOREIGN KEY (id_orto) REFERENCES orto (id) ON DELETE CASCADE,
   FOREIGN KEY (id_proprietario) REFERENCES utente (id) ON DELETE CASCADE,
   UNIQUE (id_orto, codice_lotto)

@@ -1,5 +1,7 @@
 
 
+TRUNCATE TABLE utente, orto, lotto, coltura CASCADE;
+
 -- ==============================================================================================
 -- UTENTI (1 proprietario + 3 coltivatori)
 -- ==============================================================================================
@@ -36,20 +38,20 @@ INSERT INTO lotto (codice_lotto, estensione_mq, tipologia_terreno, id_proprietar
 -- ==============================================================================================
 
 -- Erbe Aromatiche
-INSERT INTO coltura (nome_comune, tempo_maturazione, caratteristiche, tipo, erba_numero_tagli_stimati, erba_utilizzo_principale) VALUES
-('Basilico', 30, 'Erba aromatica molto usata nella cucina italiana', 'ERBA_AROMATICA', 4, 'Cucina'),
-('Rosmarino', 60, 'Pianta perenne con foglie aghiformi profumate', 'ERBA_AROMATICA', 6, 'Cucina e cosmetica'),
-('Menta', 45, 'Pianta rinfrescante con molte varietà', 'ERBA_AROMATICA', 5, 'Cucina e tisane');
+INSERT INTO coltura (nome_comune, tempo_maturazione, caratteristiche) VALUES
+('Basilico', 30, 'Erba aromatica molto usata nella cucina italiana'),
+('Rosmarino', 60, 'Pianta perenne con foglie aghiformi profumate'),
+('Menta', 45, 'Pianta rinfrescante con molte varietà');
 
 -- Ortaggi
-INSERT INTO coltura (nome_comune, tempo_maturazione, caratteristiche, tipo, ortaggio_durata_ciclo_coltivazione, ortaggio_tipo_riproduzione) VALUES
-('Pomodoro', 80, 'Ortaggio versatile, ricco di licopene', 'ORTAGGIO', 120, 'TRAPIANTO'),
-('Zucchina', 50, 'Cresce rapidamente, produzione abbondante', 'ORTAGGIO', 90, 'SEMINA'),
-('Lattuga', 40, 'Insalata a foglia verde tenera', 'ORTAGGIO', 60, 'SEMINA'),
-('Peperone', 90, 'Ortaggio colorato, ricco di vitamina C', 'ORTAGGIO', 130, 'TRAPIANTO'),
-('Melanzana', 85, 'Ortaggio viola dalla polpa spugnosa', 'ORTAGGIO', 120, 'TRAPIANTO');
+INSERT INTO coltura (nome_comune, tempo_maturazione, caratteristiche) VALUES
+('Pomodoro', 80, 'Ortaggio versatile, ricco di licopene'),
+('Zucchina', 50, 'Cresce rapidamente, produzione abbondante'),
+('Lattuga', 40, 'Insalata a foglia verde tenera'),
+('Peperone', 90, 'Ortaggio colorato, ricco di vitamina C'),
+('Melanzana', 85, 'Ortaggio viola dalla polpa spugnosa');
 
 -- Alberi da frutto
-INSERT INTO coltura (nome_comune, tempo_maturazione, caratteristiche, tipo, albero_disposizione, albero_piantumazione) VALUES
-('Limone', 365, 'Albero da frutto sempreverde, produce limoni tutto l''anno', 'ALBERO', 'ISOLATO', '2024-03-15 10:00:00'),
-('Fico', 180, 'Albero rustico che produce fichi dolci', 'ALBERO', 'FILARE', '2024-02-20 09:30:00');
+INSERT INTO coltura (nome_comune, tempo_maturazione, caratteristiche) VALUES
+('Limone', 365, 'Albero da frutto sempreverde, produce limoni tutto l''anno'),
+('Fico', 180, 'Albero rustico che produce fichi dolci');

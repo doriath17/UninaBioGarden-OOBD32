@@ -6,6 +6,7 @@
 target/
 uninabiogarden/target/
 
+*.bkp
 
 tmp/
 

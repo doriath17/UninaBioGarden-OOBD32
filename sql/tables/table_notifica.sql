@@ -20,19 +20,17 @@ CREATE TABLE notifica (
   tipo tipo_notifica NOT NULL,
   giorni_mancanti INT CHECK (giorni_mancanti IS NULL OR giorni_mancanti > 0),
 
-  id_proprietario INT NOT NULL,
   id_progetto INT NOT NULL,
-  id_attività INT,
+  id_attivita INT,
 
-  FOREIGN KEY (id_proprietario) REFERENCES utente (id),
   FOREIGN KEY (id_progetto) REFERENCES progetto (id) ON DELETE CASCADE,
-  FOREIGN KEY (id_attività) REFERENCES attività (id),
+  FOREIGN KEY (id_attivita) REFERENCES attivita (id) ON DELETE CASCADE,
 
   UNIQUE (id_progetto, data_invio),
   
   CHECK (
-    (tipo = 'NOTIFICA_ATTIVITA_IMMINENTE' AND id_attività IS NOT NULL) OR
-    (tipo = 'NOTIFICA_PROGETTO' AND id_attività IS NULL)
+    (tipo = 'NOTIFICA_ATTIVITA_IMMINENTE' AND id_attivita IS NOT NULL) OR
+    (tipo = 'NOTIFICA_PROGETTO' AND id_attivita IS NULL)
   )
 );
 
@@ -49,5 +47,5 @@ CREATE TABLE riceve (
   data_lettura TIMESTAMP,
 
   FOREIGN KEY (id_notifica) REFERENCES notifica (id) ON DELETE CASCADE,
-  FOREIGN KEY (id_coltivatore) REFERENCES utente (id)
+  FOREIGN KEY (id_coltivatore) REFERENCES utente (id) ON DELETE CASCADE
 );

@@ -1,50 +1,55 @@
 -- ==============================================================================================
--- Tabella transizione_attivita (includes related enum type)
--- ==============================================================================================
-
-DROP TABLE IF EXISTS transizione_attivita CASCADE;
-DROP TYPE IF EXISTS stato_attivita CASCADE;
-
-CREATE TYPE stato_attivita AS ENUM ('PIANIFICATA', 'IN_CORSO', 'COMPLETATA', 'ANNULLATA');
-
-CREATE TABLE transizione_attivita (
-  stato_corrente stato_attivita NOT NULL,
-  stato_successivo stato_attivita NOT NULL,
-  PRIMARY KEY (stato_corrente, stato_successivo)
-);
-
-INSERT INTO transizione_attivita (stato_corrente, stato_successivo)
-VALUES
-  ('PIANIFICATA', 'IN_CORSO'),
-  ('PIANIFICATA', 'ANNULLATA'),
-  ('IN_CORSO', 'COMPLETATA'),
-  ('IN_CORSO', 'ANNULLATA')
-;
-
--- ==============================================================================================
 -- Tabella attivita
 -- ==============================================================================================
 
 DROP TABLE IF EXISTS attivita CASCADE;
+DROP TYPE IF EXISTS stato_attivita CASCADE;
+
+CREATE TYPE stato_attivita AS ENUM ('PIANIFICATA', 'IN_CORSO', 'COMPLETATA');
 
 CREATE TABLE attivita (
   id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-  titolo VARCHAR(100) NOT NULL,
+  nome VARCHAR(100) NOT NULL,
+
+  data_pianificazione TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  data_inizio TIMESTAMP CHECK (data_inizio IS NULL OR data_inizio >= data_pianificazione),
+  data_scadenza TIMESTAMP CHECK (data_scadenza IS NULL OR data_scadenza >= data_pianificazione),
+  data_fine TIMESTAMP CHECK (data_fine IS NULL OR data_fine >= data_inizio),
+  CHECK (data_fine IS NULL OR data_fine >= data_inizio),
 
   stato stato_attivita NOT NULL DEFAULT 'PIANIFICATA', 
   note_tecniche TEXT NOT NULL,
-  data_pianificazione TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  data_scadenza TIMESTAMP CHECK (data_scadenza IS NULL OR data_scadenza >= data_pianificazione),
-  data_inizio TIMESTAMP CHECK (data_inizio IS NULL OR data_inizio >= data_pianificazione),
-  data_fine TIMESTAMP 
-  CHECK (data_fine IS NULL OR
-    (data_fine >= data_pianificazione AND (data_inizio IS NULL OR data_fine >= data_inizio))),
 
   id_coltivazione INT NOT NULL,
+  id_coltivatore INT NOT NULL,
 
-  UNIQUE (id_coltivazione, titolo),
-  FOREIGN KEY (id_coltivazione) REFERENCES coltivazione (id) ON DELETE CASCADE
+  UNIQUE (id_coltivazione, nome),
+  FOREIGN KEY (id_coltivazione) REFERENCES coltivazione (id) ON DELETE CASCADE,
+  FOREIGN KEY (id_coltivatore) REFERENCES utente (id) ON DELETE RESTRICT
 );
+
+CREATE OR REPLACE FUNCTION is_in_scadenza(in_data_inizio TIMESTAMP, in_data_scadenza TIMESTAMP)
+RETURNS BOOLEAN AS $$
+DECLARE 
+  v_total_duration INTERVAL;
+  v_time_left INTERVAL;
+BEGIN
+  v_total_duration := in_data_scadenza - in_data_inizio;
+  v_time_left := in_data_scadenza - CURRENT_TIMESTAMP;
+
+  -- l'attività è considerata "in scadenza" se è rimasto il 20% del tempo totale o meno, ma non più di 5 giorni
+  -- il limite del 20% serve a identificare attività che hanno una durata totale minore dei 5 giorni, mentre il limite di 5 giorni evita di considerare attività con scadenze molto lontane (il cui 20% potrebbe essere un valore molto alto) 
+  IF v_time_left <= (v_total_duration * 0.2) AND v_time_left < INTERVAL '5 days' THEN
+    RETURN TRUE;
+  ELSE
+    RETURN FALSE;
+  END IF;
+END;  
+$$ LANGUAGE plpgsql;
+
+CREATE VIEW view_attivita AS 
+  SELECT *, is_in_scadenza(data_inizio, data_scadenza) AS in_scadenza
+  FROM attivita;
 
 -- ==============================================================================================
 -- Tabella concimazione (includes related enum type)
