@@ -145,3 +145,11 @@ Al contrario della gerarchia di attività, per la gerarchia di utente si è opta
 # gerarchia notifica
 
 Come per utente, il sottotipo di notifica aveva soltanto un campo e dunque la soluzione più naturale è stata quella di utilizzare la strategia "una tabella per gerarchia" e introdurre un campo "tipo" a notifica per distinguere tra le due tipologie di notifica.
+
+# attributi composti
+
+Orto
+L'attributo composto indirizzo, composto da città, via, cap e civico, è stato inserito direttamente nella tabella dell'orto seguendo le regole di ristrutturazione del database.
+
+Utente
+L'attributo composto nominativo, composto da nome e cognome, è stato spostato direttamente in utente seguendo le regole di ristrutturazione dello schema concettuale.
