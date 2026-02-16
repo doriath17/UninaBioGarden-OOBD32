@@ -53,7 +53,10 @@ public class ControllerDettaglioColtivazione {
   private Button editButton;
 
   @FXML
-  private TextField nomeRaccoltaField;
+  private Label dataInizioLabel;
+
+  @FXML
+  private Label nomeRaccoltaField;
 
   @FXML
   private Label nomeColturaLabel1;
@@ -73,6 +76,9 @@ public class ControllerDettaglioColtivazione {
   @FXML
   private Label dataPianificazioneLabel;
 
+  @FXML
+  private Button raccoltaButton;
+
   private Coltivazione coltivazione;
   private Raccolta raccolta;
   private Progetto progetto;
@@ -87,7 +93,13 @@ public class ControllerDettaglioColtivazione {
     this.errorLabelTornaIndietro = errorLabel;
     loadColtivazioneInfo();
     loadRaccoltaInfo();
+    setupRaccoltaButton();
     toggleEditMode(false);
+
+    errorLabel.setText("");
+    nomeRaccoltaField.setText("N/A");
+    dataPianificazioneLabel.setText("N/A");
+    nomeColtivatoreLabel.setText("N/A");
   }
 
   private List<String> getAvailableStatiRaccolta() {
@@ -158,6 +170,8 @@ public class ControllerDettaglioColtivazione {
       tempoMaturazioneLabel.setText(
           coltivazione.getColtura() != null ? coltivazione.getColtura().getTempoMaturazione() + " giorni" : "N/A");
 
+      dataInizioLabel.setText(coltivazione.getDataInizio() != null ? coltivazione.getDataInizio().toString() : "N/A");
+
       if (coltivazione.getDataInizio() != null && coltivazione.getColtura() != null) {
         var finePrevista = coltivazione.getDataInizio()
             .plusDays(coltivazione.getColtura().getTempoMaturazione());
@@ -206,7 +220,7 @@ public class ControllerDettaglioColtivazione {
     statoChoiceBox.setDisable(disable);
     statoRaccoltaChoiceBox.setDisable(disable);
     noteTecnicheField.setEditable(!disable);
-    nomeRaccoltaField.setEditable(!disable);
+    nomeRaccoltaField.setDisable(disable);
     scadenzaField.setDisable(disable);
     qtyPrevistaField.setDisable(disable);
     qtyEffettivaField.setDisable(disable);
@@ -237,5 +251,18 @@ public class ControllerDettaglioColtivazione {
   @FXML
   private void openAttivita() {
     UIController.getInstance().openDettaglioAttivitaView(progetto, coltivazione, errorLabelTornaIndietro);
+  }
+
+  private void setupRaccoltaButton() {
+    if (raccolta == null) {
+      raccoltaButton.setText("Pianifica Raccolta");
+    } else {
+      raccoltaButton.setVisible(false);
+    }
+  }
+
+  @FXML
+  private void raccoltaAction() {
+
   }
 }

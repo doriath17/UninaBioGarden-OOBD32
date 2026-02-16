@@ -27,3 +27,9 @@ run:
 
 psql-run:
 	psql -U ubg_user -d uninabiogarden
+
+latex-compile:
+	cd docs/latex-template && pdflatex main.tex && pdflatex main.tex
+
+latex-clean:
+	cd docs/latex-template && rm -f *.aux *.log *.out *.toc *.lof *.lot *.fls *.fdb_latexmk *.synctex.gz

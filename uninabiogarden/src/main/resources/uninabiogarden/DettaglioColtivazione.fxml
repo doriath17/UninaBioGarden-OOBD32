@@ -139,19 +139,31 @@
                <children>
                   <GridPane prefHeight="45.0" prefWidth="499.0">
                     <columnConstraints>
-                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                      <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="243.0" minWidth="10.0" prefWidth="187.0" />
+                      <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="312.0" minWidth="10.0" prefWidth="312.0" />
                     </columnConstraints>
                     <rowConstraints>
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <Label maxWidth="1.7976931348623157E308" prefHeight="44.0" prefWidth="525.0" text="Informazioni sulla Raccolta">
+                        <Label maxWidth="1.7976931348623157E308" prefHeight="44.0" prefWidth="525.0" text="Info Raccolta">
                            <font>
                               <Font name="System Bold" size="16.0" />
                            </font>
                         </Label>
-                        <Button mnemonicParsing="false" onAction="#openAttivita" prefHeight="35.0" prefWidth="145.0" text="Vedi Altre Attività" GridPane.columnIndex="1" />
+                        <GridPane GridPane.columnIndex="1">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Button mnemonicParsing="false" onAction="#openAttivita" prefHeight="67.0" prefWidth="206.0" text="Vedi Altre Attività" GridPane.columnIndex="1" />
+                              <Button fx:id="raccoltaButton" layoutX="166.0" layoutY="10.0" mnemonicParsing="false" onAction="#raccoltaAction" prefHeight="67.0" prefWidth="206.0" text="Pianifica Raccolta" />
+                           </children>
+                        </GridPane>
                      </children>
                   </GridPane>
                   <GridPane prefHeight="381.0" prefWidth="499.0">
@@ -215,6 +227,11 @@
                               <Font name="System Bold" size="16.0" />
                            </font>
                         </Label>
+                        <Label fx:id="nomeRaccoltaField" maxWidth="1.7976931348623157E308" prefHeight="44.0" prefWidth="266.0" text="Nome attivita raccolta" GridPane.columnIndex="1">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
                         <Label layoutX="10.0" layoutY="293.0" maxWidth="1.7976931348623157E308" prefHeight="44.0" prefWidth="525.0" text="Nome Coltivatore" GridPane.rowIndex="7">
                            <font>
                               <Font name="System Bold" size="16.0" />
@@ -225,7 +242,6 @@
                               <Font size="14.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="nomeRaccoltaField" GridPane.columnIndex="1" />
                      </children>
                   </GridPane>
                </children>

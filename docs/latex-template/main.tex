@@ -1,0 +1,676 @@
+\documentclass[12pt,a4paper]{article}
+
+% ============================================================================
+% PACKAGES
+% ============================================================================
+
+% Language and encoding
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[italian]{babel}
+
+% Page layout
+\usepackage[margin=2.5cm, headheight=15pt]{geometry}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+
+% Graphics and figures
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+
+% Tables
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{tabularx}
+
+% Colors and hyperlinks
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+% Code listings (for SQL)
+\usepackage{listings}
+
+% Math (if needed)
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+% Others
+\usepackage{enumitem}
+\usepackage{parskip}
+
+% ============================================================================
+% CONFIGURATION
+% ============================================================================
+
+% Hyperref settings
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    citecolor=blue,
+    pdftitle={Documentazione BDD - UninaBioGarden},
+    pdfauthor={Your Name},
+    pdfsubject={Database Design Documentation},
+    pdfkeywords={database, UML, ER, schema},
+}
+
+% Header and footer
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\leftmark}
+\fancyhead[R]{UninaBioGarden}
+\fancyfoot[C]{\thepage\ di \pageref{LastPage}}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+% Figure settings
+\graphicspath{{../uninabiogarden/asset/}}
+\setkeys{Gin}{width=\linewidth,height=\textheight,keepaspectratio}
+\floatplacement{figure}{H}
+
+% SQL Listing style
+\definecolor{sqlgreen}{rgb}{0,0.5,0}
+\definecolor{sqlgray}{rgb}{0.5,0.5,0.5}
+\definecolor{sqlpurple}{rgb}{0.58,0,0.82}
+\definecolor{sqlblue}{rgb}{0.13,0.29,0.53}
+
+\lstdefinestyle{sqlstyle}{
+    language=SQL,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{sqlblue}\bfseries,
+    stringstyle=\color{sqlgreen},
+    commentstyle=\color{sqlgray}\itshape,
+    numbers=left,
+    numberstyle=\tiny\color{sqlgray},
+    numbersep=5pt,
+    frame=single,
+    breaklines=true,
+    breakatwhitespace=true,
+    tabsize=2,
+    showstringspaces=false,
+    captionpos=b
+}
+
+% Table style
+\renewcommand{\arraystretch}{1.3}
+
+% ============================================================================
+% TITLE PAGE DATA
+% ============================================================================
+
+\title{
+    \vspace{2cm}
+    \Huge\textbf{Documentazione BDD} \\
+    \vspace{0.5cm}
+    \Large Sistema di Gestione Orti Urbani \\
+    \Large UninaBioGarden \\
+    \vspace{1cm}
+}
+
+\author{
+    \textbf{Autori:} \\
+    Nome Cognome (Matricola) \\
+    Nome Cognome (Matricola)
+}
+
+\date{
+    \vspace{1cm}
+    Anno Accademico 2025/2026 \\
+    \vspace{0.5cm}
+    \today
+}
+
+% ============================================================================
+% DOCUMENT
+% ============================================================================
+
+\begin{document}
+
+% Title page
+\maketitle
+\thispagestyle{empty}
+\newpage
+
+% Table of contents
+\tableofcontents
+\newpage
+
+% ============================================================================
+% CONTENT
+% ============================================================================
+
+\section{Introduzione}
+
+\subsection{Scopo del Documento}
+Questo documento presenta la progettazione completa del database per il sistema UninaBioGarden, un'applicazione per la gestione di orti urbani condivisi.
+
+\subsection{Panoramica del Sistema}
+Il sistema UninaBioGarden consente di gestire:
+\begin{itemize}
+    \item Orti urbani e relativi lotti
+    \item Progetti agricoli e coltivazioni
+    \item Attività di manutenzione e cura
+    \item Sistema di notifiche per i coltivatori
+    \item Utenti (proprietari e coltivatori)
+\end{itemize}
+
+\subsection{Organizzazione del Documento}
+Il documento è strutturato come segue:
+\begin{itemize}
+    \item \textbf{Sezione 2}: Analisi dei requisiti e del dominio
+    \item \textbf{Sezione 3}: Schema concettuale (ER/UML)
+    \item \textbf{Sezione 4}: Schema ristrutturato
+    \item \textbf{Sezione 5}: Schema logico relazionale
+    \item \textbf{Sezione 6}: Dizionario dei dati
+    \item \textbf{Sezione 7}: Vincoli di integrità
+    \item \textbf{Sezione 8}: Query di esempio
+\end{itemize}
+
+\newpage
+
+\section{Analisi del Dominio}
+
+\subsection{Descrizione del Contesto}
+
+La piattaforma UninaBioGarden è un sistema software progettato per la gestione di orti urbani condivisi. Il sistema è utilizzato principalmente da due tipologie di utenti: i \textbf{proprietari} dei lotti su cui si svolgono le coltivazioni e i \textbf{coltivatori} che svolgono le diverse attività necessarie a tali coltivazioni. Lo scopo principale della piattaforma è fornire un ambiente di gestione sia per i proprietari che per i coltivatori, facilitando la collaborazione e il tracciamento delle attività agricole.
+
+\subsection{Attori del Sistema}
+
+\subsubsection{Il Ruolo del Proprietario}
+
+Il proprietario può registrare un orto urbano condiviso ed eventualmente andare a registrare dei lotti, da egli posseduti, al suo interno. La presenza dei lotti è fondamentale alla pianificazione di un progetto in quanto questo prende luogo su un lotto specifico. Il proprietario infatti deve essere in grado di pianificare un progetto specificando su quale lotto questo si svolge. 
+
+Inoltre il proprietario deve essere in grado di notificare i coltivatori del progetto di eventi che riguardano il progetto, come ad esempio un'anomalia o una carestia, o che riguardano attività imminenti, ad esempio un'irrigazione programmata per il giorno dopo.
+
+\subsubsection{Il Ruolo del Coltivatore}
+
+Nel sistema il coltivatore è un'entità abbastanza passiva, in quanto non può pianificare un progetto, una coltivazione, un'attività e non può inviare notifiche. Il coltivatore tuttavia è fondamentale per lo svolgimento generale dei progetti perché è colui che è responsabile delle attività che vi sono assegnate e lui ne può gestire il ciclo di vita.
+
+\subsection{Entità del Dominio}
+
+\subsubsection{L'Orto}
+
+Il sistema prevede la gestione di orti urbani condivisi. Un proprietario è l'utente che può registrare un orto nel sistema ma non ne detiene la proprietà esclusiva: una volta registrato anche altri proprietari potranno registrare i propri lotti nell'orto. Un orto è caratterizzato da un nome, un indirizzo e dalla data in cui esso è registrato.
+
+\subsubsection{Il Lotto}
+
+Un lotto è un'area fisica all'interno di un orto urbano condiviso su cui si svolgono le coltivazioni di un certo progetto. Un lotto è caratterizzato da un'estensione (in metri quadrati) e da un codice identificativo del lotto, internamente all'orto urbano in cui si trova (ad esempio il lotto 017A all'interno di un certo orto). 
+
+Un lotto è associato ad un proprietario, che è colui che lo ha registrato. \textbf{Vincolo importante}: Un lotto può ospitare più progetti del proprietario che lo ha registrato ma soltanto un progetto attivo per volta.
+
+\subsubsection{Il Progetto}
+
+Il progetto è l'entità centrale del sistema. Esso, come anticipato precedentemente, occupa uno dei lotti del proprietario che lo ha pianificato. Un progetto è caratterizzato da un nome, una descrizione, una data di inizio e una data di fine e può trovarsi in due stati differenti a seconda del suo ciclo vita:
+
+\begin{description}
+    \item[Attivo] Il progetto è stato pianificato ma non è ancora concluso. In questa fase è possibile programmare e completare tutte le attività che caratterizzano le coltivazioni associate al progetto.
+    \item[Concluso] Non è più possibile programmare o completare nessuna attività associata al progetto.
+\end{description}
+
+Un progetto infatti non può essere pianificato se non è associato ad un lotto, e questo è necessario per definire lo spazio fisico in cui si svolgeranno le coltivazioni del progetto. Diversi coltivatori possono essere associati ad un progetto e questo definisce l'insieme di persone che potranno essere selezionate per lo svolgimento delle attività. 
+
+Come si vedrà in dettaglio in seguito, ad un progetto si possono associare una o più coltivazioni di colture specifiche e ognuna di queste è a sua volta caratterizzata dall'insieme di attività che ne definiscono il ciclo vita.
+
+\subsubsection{Il Catalogo delle Colture}
+
+Il sistema deve permettere di registrare delle colture che possono essere coltivate nei progetti. Ogni coltura è caratterizzata da un nome, una descrizione, un tempo di maturazione previsto (in giorni). Il catalogo delle colture è fondamentale per la pianificazione di un progetto in quanto quando si pianifica un progetto è necessario specificare quali colture si vogliono coltivare e quindi quali coltivazioni si vogliono creare.
+
+\subsubsection{La Coltivazione}
+
+Un progetto può prevedere una o più coltivazioni, ognuna caratterizzata da una specifica coltura presente nel catalogo delle colture. Una coltivazione è caratterizzata da una data di inizio e di fine, uno stato di salute (ottimo, stabile, sofferente, critico e compromesso) e uno stato che ne descrive il ciclo vita. 
+
+Le coltivazioni infatti, come il progetto, hanno un loro ciclo vita che ruota intorno alle attività che la caratterizzano e in particolare allo svolgimento dell'attività di raccolta che ne sancisce la fine:
+
+\begin{enumerate}
+    \item \textbf{Attiva}: Una coltivazione si può definire attiva se non è ancora iniziata la fase di raccolta. In questa fase è possibile programmare e completare tutte le attività che poi porteranno finalmente alla raccolta.
+    \item \textbf{In Raccolta}: Quando inizia la raccolta, la coltivazione entra in una fase in cui è possibile solo completare l'attività di raccolta.
+    \item \textbf{Conclusa}: Quando la raccolta è completata, la coltivazione è conclusa e non è più possibile programmare o completare nessuna attività.
+\end{enumerate}
+
+\subsubsection{Le Attività}
+
+Quando una coltivazione è attiva è possibile programmare e completare tutte le attività che la caratterizzano. Ci sono diverse tipologie di attività che è possibile programmare:
+
+\begin{description}
+    \item[Semina] Una semina è caratterizzata dalla quantità di semi disponibili e dalla profondità a cui devono essere piantati i semi.
+    
+    \item[Irrigazione] È caratterizzata dalla quantità di acqua da utilizzare e dal metodo da usare per irrigare. I metodi di irrigazione possono essere: a goccia, a pioggia, a scorrimento, manuale e nebulizzazione.
+    
+    \item[Concimazione] È caratterizzata dalla tipologia di concime da usare (organico, minerale o compost) e dalla quantità di concime da utilizzare.
+    
+    \item[Trattamento] È caratterizzato dal nome del prodotto da usare e dal tempo di carenza che deve essere indicativo per il coltivatore a capire quanto tempo deve passare prima di poter svolgere altre attività sulla coltivazione.
+    
+    \item[Raccolta] È caratterizzata da una quantità prevista (in kg) della raccolta e da una quantità effettiva (in kg) della raccolta.
+\end{description}
+
+Un'attività è svolta da uno specifico coltivatore che lavora per il progetto a cui la coltivazione è associata. Anch'essa ha un ciclo vita che si suddivide in tre fasi:
+
+\begin{enumerate}
+    \item Pianificazione
+    \item Svolgimento
+    \item Completamento
+\end{enumerate}
+
+In particolare il proprietario può dare una scadenza ad un'attività che, sebbene non sia obbligatoria e l'attività può essere completata anche se la scadenza è passata, permette di tenere traccia di quando tale attività diventa imminente: il proprietario, usando questo meccanismo può eventualmente notificare i coltivatori.
+
+\subsubsection{Le Notifiche}
+
+Una notifica è un messaggio che il proprietario può inviare ai coltivatori associati ad un progetto. Le notifiche sono caratterizzate da un nome descrittivo dell'evento, una descrizione più o meno dettagliata dell'evento, un'urgenza e una data di invio.
+
+Le notifiche possono essere di due tipi:
+
+\begin{description}
+    \item[Notifiche di Eventi] Sono notifiche che riguardano eventi che possono accadere durante il ciclo vita di un progetto, ad esempio un'anomalia o una carestia, e che quindi possono essere inviate in qualsiasi momento. Questo tipo di notifica può essere inviata ad uno o più coltivatori del progetto, a seconda di chi il proprietario vuole informare dell'evento.
+    
+    \item[Notifiche di Attività Imminenti] Sono notifiche che riguardano attività imminenti e che quindi possono essere inviate solo quando un'attività sta per diventare imminente. Questa tipologia di notifica è diretta al coltivatore che svolge l'attività ed è caratterizzata dai giorni mancanti alla scadenza dell'attività nel momento in cui la notifica viene inviata.
+\end{description}
+
+Il sistema deve tenere traccia dello stato di lettura di una notifica da parte del coltivatore, e questo è fondamentale per assicurarsi che i coltivatori siano informati e permette, a livello applicativo, di distinguere tra notifiche lette e non lette, ad esempio per mostrare un badge di notifica non letta nell'interfaccia utente, nonché per fornire un criterio di urgenza alle notifiche da mostrare.
+
+Riguardo all'urgenza della notifica, il proprietario può assegnare alla notifica un certo livello di urgenza:
+
+\begin{itemize}
+    \item Bassa
+    \item Media
+    \item Alta
+    \item Critica
+\end{itemize}
+
+\subsection{Regole di Business e Vincoli}
+
+\subsubsection{Vincoli sui Lotti}
+\begin{itemize}
+    \item Un lotto può ospitare più progetti del proprietario che lo ha registrato ma \textbf{soltanto un progetto attivo per volta}.
+    \item Il proprietario di un progetto deve possedere il lotto su cui il progetto è pianificato.
+\end{itemize}
+
+\subsubsection{Vincoli sui Progetti}
+\begin{itemize}
+    \item Un progetto non può essere pianificato se non è associato ad un lotto.
+    \item Quando un progetto è concluso, non è più possibile programmare o completare nessuna attività associata.
+\end{itemize}
+
+\subsubsection{Vincoli sulle Coltivazioni}
+\begin{itemize}
+    \item Una coltivazione in stato "Conclusa" è in modalità read-only.
+    \item Una coltivazione può avere una sola attività di raccolta.
+    \item Durante la fase "In Raccolta", è possibile solo completare l'attività di raccolta.
+\end{itemize}
+
+\subsubsection{Vincoli sulle Attività}
+\begin{itemize}
+    \item Un'attività deve essere assegnata ad un coltivatore che lavora per il progetto della coltivazione.
+    \item Le transizioni di stato sono unidirezionali: Pianificata → In Corso → Completata.
+    \item Un'attività completata è in modalità read-only.
+\end{itemize}
+
+\subsection{Glossario dei Termini}
+
+\begin{description}
+    \item[Orto] Spazio fisico urbano condiviso che contiene uno o più lotti. Caratterizzato da nome, indirizzo e data di registrazione.
+    
+    \item[Lotto] Porzione di terreno all'interno di un orto, identificata da un codice e caratterizzata da un'estensione in metri quadrati.
+    
+    \item[Progetto] Piano di coltivazione stagionale associato ad un lotto specifico, contenente una o più coltivazioni.
+    
+    \item[Coltura] Tipo di pianta coltivabile (es. pomodori, insalata), presente nel catalogo del sistema con tempo di maturazione.
+    
+    \item[Coltivazione] Istanza di una coltura specifica all'interno di un progetto, con proprio ciclo vita e stato di salute.
+    
+    \item[Attività] Operazione di manutenzione o cura delle coltivazioni (semina, irrigazione, concimazione, trattamento, raccolta).
+    
+    \item[Notifica] Messaggio informativo inviato dal proprietario ai coltivatori del progetto.
+    
+    \item[Proprietario] Utente che registra orti e lotti, pianifica progetti e coordina i coltivatori.
+    
+    \item[Coltivatore] Utente che esegue le attività assegnate sui progetti.
+\end{description}
+
+\newpage
+
+\section{Schema Concettuale}
+
+\subsection{Diagramma ER Esteso (EER)}
+
+Il modello Entità-Relazione esteso rappresenta le principali entità del dominio e le loro relazioni.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{modelli-concettuali-bdd-EER.drawio.pdf}
+    \caption{Schema Concettuale - Diagramma ER Esteso}
+    \label{fig:eer}
+\end{figure}
+
+\subsection{Diagramma UML}
+
+La versione UML del modello concettuale con classi e associazioni.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{modelli-concettuali-bdd-UML.drawio.pdf}
+    \caption{Schema Concettuale - Diagramma UML}
+    \label{fig:uml}
+\end{figure}
+
+\subsection{Descrizione delle Entità Principali}
+
+% TODO: Descrivere le entità principali
+% Esempio tabella per le entità:
+
+\begin{table}[H]
+\centering
+\caption{Entità: Utente}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome} & Utente \\
+\hline
+\textbf{Descrizione} & Rappresenta un utente del sistema (proprietario o coltivatore) \\
+\hline
+\textbf{Attributi} & 
+\begin{itemize}[nosep]
+    \item email (chiave)
+    \item nome
+    \item cognome
+    \item password
+    \item tipo (proprietario/coltivatore)
+\end{itemize} \\
+\hline
+\textbf{Identificatore} & email \\
+\hline
+\end{tabularx}
+\end{table}
+
+% Ripetere per altre entità...
+
+\subsection{Descrizione delle Relazioni}
+
+\begin{table}[H]
+\centering
+\caption{Relazione: Gestisce}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome} & Gestisce \\
+\hline
+\textbf{Descrizione} & Associa un proprietario agli orti che gestisce \\
+\hline
+\textbf{Entità Coinvolte} & Utente (proprietario), Orto \\
+\hline
+\textbf{Cardinalità} & (1,1) - (0,N) \\
+\hline
+\textbf{Attributi} & Nessuno \\
+\hline
+\end{tabularx}
+\end{table}
+
+% Ripetere per altre relazioni...
+
+\newpage
+
+\section{Schema Ristrutturato}
+
+\subsection{Scelte di Ristrutturazione}
+
+Durante la fase di ristrutturazione sono state effettuate le seguenti modifiche:
+
+\begin{enumerate}
+    \item \textbf{Eliminazione delle gerarchie}: Le specializzazioni sono state gestite tramite...
+    \item \textbf{Risoluzione attributi composti}: L'indirizzo è stato decomposto in...
+    \item \textbf{Risoluzione attributi multivalore}: ...
+    \item \textbf{Scelta identificatori}: ...
+\end{enumerate}
+
+\subsection{Diagramma Ristrutturato}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{modelli-concettuali-bdd-Ristrutturato.drawio.pdf}
+    \caption{Schema Ristrutturato - Diagramma UML}
+    \label{fig:ristrutturato}
+\end{figure}
+
+\subsection{Analisi delle Modifiche}
+
+% Descrivere le modifiche in dettaglio
+
+\newpage
+
+\section{Schema Logico Relazionale}
+
+\subsection{Traduzione in Relazioni}
+
+Lo schema concettuale ristrutturato è stato tradotto nel seguente schema logico relazionale:
+
+\subsubsection{Utente}
+\begin{lstlisting}[style=sqlstyle]
+CREATE TABLE Utente (
+    email VARCHAR(255) PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    cognome VARCHAR(100) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    tipo VARCHAR(20) CHECK (tipo IN ('proprietario', 'coltivatore'))
+);
+\end{lstlisting}
+
+\subsubsection{Orto}
+\begin{lstlisting}[style=sqlstyle]
+CREATE TABLE Orto (
+    id_orto SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    indirizzo VARCHAR(255) NOT NULL,
+    superficie DECIMAL(10,2) NOT NULL,
+    email_proprietario VARCHAR(255) NOT NULL,
+    FOREIGN KEY (email_proprietario) 
+        REFERENCES Utente(email) ON DELETE CASCADE
+);
+\end{lstlisting}
+
+% TODO: Aggiungere altre tabelle...
+
+\subsection{Schema Completo}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{modelli-concettuali-bdd-Logico.drawio.pdf}
+    \caption{Schema Logico Completo}
+    \label{fig:logico}
+\end{figure}
+
+\newpage
+
+\section{Dizionario dei Dati}
+
+\subsection{Tabella: Utente}
+
+\begin{longtable}{|l|l|l|p{6cm}|}
+\hline
+\textbf{Attributo} & \textbf{Tipo} & \textbf{Vincoli} & \textbf{Descrizione} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Attributo} & \textbf{Tipo} & \textbf{Vincoli} & \textbf{Descrizione} \\
+\hline
+\endhead
+\hline
+\endfoot
+
+email & VARCHAR(255) & PK, NOT NULL & Email univoca dell'utente \\
+\hline
+nome & VARCHAR(100) & NOT NULL & Nome dell'utente \\
+\hline
+cognome & VARCHAR(100) & NOT NULL & Cognome dell'utente \\
+\hline
+password & VARCHAR(255) & NOT NULL & Password hash dell'utente \\
+\hline
+tipo & VARCHAR(20) & CHECK & Tipo utente: proprietario o coltivatore \\
+\hline
+
+\caption{Dizionario Dati - Tabella Utente}
+\label{tab:dict-utente}
+\end{longtable}
+
+% TODO: Ripetere per tutte le tabelle...
+
+\newpage
+
+\section{Vincoli di Integrità}
+
+\subsection{Vincoli di Dominio}
+
+\begin{itemize}
+    \item \textbf{Utente.tipo}: Deve essere 'proprietario' o 'coltivatore'
+    \item \textbf{Orto.superficie}: Deve essere maggiore di 0
+    \item \textbf{Lotto.dimensione}: Deve essere maggiore di 0
+\end{itemize}
+
+\subsection{Vincoli di Tupla}
+
+\begin{itemize}
+    \item \textbf{Progetto}: La data di fine deve essere successiva alla data di inizio
+    \item \textbf{Coltivazione}: La data di raccolta prevista deve essere successiva alla semina
+\end{itemize}
+
+\subsection{Vincoli di Integrità Referenziale}
+
+\begin{table}[H]
+\centering
+\caption{Vincoli di Integrità Referenziale}
+\begin{tabularx}{\textwidth}{|l|l|l|X|}
+\hline
+\textbf{Tabella} & \textbf{FK} & \textbf{Riferimento} & \textbf{Azione} \\
+\hline
+Orto & email\_proprietario & Utente(email) & ON DELETE CASCADE \\
+\hline
+Lotto & id\_orto & Orto(id\_orto) & ON DELETE CASCADE \\
+\hline
+Progetto & email\_coltivatore & Utente(email) & ON DELETE CASCADE \\
+\hline
+% Aggiungere altri vincoli...
+\end{tabularx}
+\end{table}
+
+\subsection{Vincoli Personalizzati}
+
+\subsubsection{Vincolo: Superficie Totale Lotti}
+La somma delle superfici dei lotti di un orto non può superare la superficie dell'orto stesso.
+
+\begin{lstlisting}[style=sqlstyle]
+CREATE OR REPLACE FUNCTION check_superficie_lotti()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Implementazione del controllo
+    -- TODO: Inserire il codice del trigger
+END;
+$$ LANGUAGE plpgsql;
+\end{lstlisting}
+
+% TODO: Aggiungere altri vincoli personalizzati...
+
+\newpage
+
+\section{Query di Esempio}
+
+\subsection{Query di Selezione}
+
+\subsubsection{Elenco Orti di un Proprietario}
+
+\begin{lstlisting}[style=sqlstyle]
+SELECT o.id_orto, o.nome, o.indirizzo, o.superficie
+FROM Orto o
+WHERE o.email_proprietario = 'proprietario@example.com'
+ORDER BY o.nome;
+\end{lstlisting}
+
+\subsubsection{Progetti Attivi di un Coltivatore}
+
+\begin{lstlisting}[style=sqlstyle]
+SELECT p.id_progetto, p.nome, p.descrizione, 
+       p.data_inizio, p.data_fine
+FROM Progetto p
+WHERE p.email_coltivatore = 'coltivatore@example.com'
+  AND p.data_fine >= CURRENT_DATE
+ORDER BY p.data_inizio DESC;
+\end{lstlisting}
+
+\subsection{Query di Aggregazione}
+
+\subsubsection{Statistiche per Orto}
+
+\begin{lstlisting}[style=sqlstyle]
+SELECT o.nome AS orto,
+       COUNT(DISTINCT l.id_lotto) AS numero_lotti,
+       COUNT(DISTINCT p.id_progetto) AS numero_progetti,
+       COALESCE(SUM(l.dimensione), 0) AS superficie_utilizzata
+FROM Orto o
+LEFT JOIN Lotto l ON o.id_orto = l.id_orto
+LEFT JOIN Progetto p ON l.id_lotto = p.id_lotto
+WHERE o.email_proprietario = 'proprietario@example.com'
+GROUP BY o.id_orto, o.nome;
+\end{lstlisting}
+
+\subsection{Query Complesse}
+
+\subsubsection{Report Attività per Progetto}
+
+\begin{lstlisting}[style=sqlstyle]
+-- TODO: Inserire query complesse...
+\end{lstlisting}
+
+\newpage
+
+\section{Implementazione}
+
+\subsection{Script di Creazione Database}
+
+Lo schema è stato implementato utilizzando PostgreSQL. Gli script completi sono disponibili nella directory \texttt{sql/}.
+
+\subsection{Procedure e Trigger}
+
+% Documentare le procedure e i trigger implementati
+
+\subsection{Indici}
+
+Sono stati creati i seguenti indici per ottimizzare le query:
+
+\begin{lstlisting}[style=sqlstyle]
+CREATE INDEX idx_orto_proprietario ON Orto(email_proprietario);
+CREATE INDEX idx_lotto_orto ON Lotto(id_orto);
+CREATE INDEX idx_progetto_coltivatore ON Progetto(email_coltivatore);
+-- Aggiungere altri indici...
+\end{lstlisting}
+
+\newpage
+
+\section{Conclusioni}
+
+\subsection{Riepilogo}
+
+% Breve riepilogo del progetto
+
+\subsection{Sviluppi Futuri}
+
+Possibili estensioni del sistema:
+\begin{itemize}
+    \item Gestione avanzata delle risorse (acqua, fertilizzanti)
+    \item Sistema di reportistica avanzato
+    \item Integrazione con sensori IoT
+    \item App mobile per i coltivatori
+\end{itemize}
+
+\newpage
+
+\appendix
+
+\section{Appendice A: Script SQL Completi}
+
+% Includere script SQL completi se necessario
+
+\section{Appendice B: Diagrammi Aggiuntivi}
+
+% Includere diagrammi aggiuntivi se necessario
+
+\end{document}
