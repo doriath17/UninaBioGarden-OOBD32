@@ -104,25 +104,34 @@
 % ============================================================================
 
 \title{
-    \vspace{2cm}
-    \Huge\textbf{Documentazione BDD} \\
+    \vspace{-2cm}
+    \includegraphics[width=0.3\textwidth]{Federico_II_University_Logo.pdf} \\
     \vspace{0.5cm}
-    \Large Sistema di Gestione Orti Urbani \\
-    \Large UninaBioGarden \\
+    \Large Università degli Studi di Napoli Federico II \\
+    \large Dipartimento di Ingegneria Elettrica e delle Tecnologie dell'Informazione \\
+    \vspace{1cm}
+    \Large Corso di Basi Di Dati \\
+    \large Prof.ssa Mara Sangiovanni \\
+    \vspace{1.5cm}
+    \Large\textbf{Progettazione e sviluppo di una base di dati relazionale} \\
+    \Large\textbf{per il sistema di gestione di orti urbani condivisi} \\
+    \Large\textbf{UninaBioGarden} \\
+    \vspace{0.5cm}
+    \large Gruppo OOBD32 \\
     \vspace{1cm}
 }
 
 \author{
-    \textbf{Autori:} \\
-    Nome Cognome (Matricola) \\
-    Nome Cognome (Matricola)
+    Alessandro Fusco - Matr. N86004947 \\
+    \small alessandro.fusco3@studenti.unina.it \\
+    \vspace{0.3cm}
+    Daniele Caimano - Matr. N86004547 \\
+    \small dan.caimano@studenti.unina.it
 }
 
 \date{
     \vspace{1cm}
-    Anno Accademico 2025/2026 \\
-    \vspace{0.5cm}
-    \today
+    Anno Accademico 2024/2025
 }
 
 % ============================================================================
@@ -148,28 +157,6 @@
 
 \subsection{Scopo del Documento}
 Questo documento presenta la progettazione completa del database per il sistema UninaBioGarden, un'applicazione per la gestione di orti urbani condivisi.
-
-\subsection{Panoramica del Sistema}
-Il sistema UninaBioGarden consente di gestire:
-\begin{itemize}
-    \item Orti urbani e relativi lotti
-    \item Progetti agricoli e coltivazioni
-    \item Attività di manutenzione e cura
-    \item Sistema di notifiche per i coltivatori
-    \item Utenti (proprietari e coltivatori)
-\end{itemize}
-
-\subsection{Organizzazione del Documento}
-Il documento è strutturato come segue:
-\begin{itemize}
-    \item \textbf{Sezione 2}: Analisi dei requisiti e del dominio
-    \item \textbf{Sezione 3}: Schema concettuale (ER/UML)
-    \item \textbf{Sezione 4}: Schema ristrutturato
-    \item \textbf{Sezione 5}: Schema logico relazionale
-    \item \textbf{Sezione 6}: Dizionario dei dati
-    \item \textbf{Sezione 7}: Vincoli di integrità
-    \item \textbf{Sezione 8}: Query di esempio
-\end{itemize}
 
 \newpage
 
@@ -280,56 +267,6 @@ Riguardo all'urgenza della notifica, il proprietario può assegnare alla notific
     \item Alta
     \item Critica
 \end{itemize}
-
-\subsection{Regole di Business e Vincoli}
-
-\subsubsection{Vincoli sui Lotti}
-\begin{itemize}
-    \item Un lotto può ospitare più progetti del proprietario che lo ha registrato ma \textbf{soltanto un progetto attivo per volta}.
-    \item Il proprietario di un progetto deve possedere il lotto su cui il progetto è pianificato.
-\end{itemize}
-
-\subsubsection{Vincoli sui Progetti}
-\begin{itemize}
-    \item Un progetto non può essere pianificato se non è associato ad un lotto.
-    \item Quando un progetto è concluso, non è più possibile programmare o completare nessuna attività associata.
-\end{itemize}
-
-\subsubsection{Vincoli sulle Coltivazioni}
-\begin{itemize}
-    \item Una coltivazione in stato "Conclusa" è in modalità read-only.
-    \item Una coltivazione può avere una sola attività di raccolta.
-    \item Durante la fase "In Raccolta", è possibile solo completare l'attività di raccolta.
-\end{itemize}
-
-\subsubsection{Vincoli sulle Attività}
-\begin{itemize}
-    \item Un'attività deve essere assegnata ad un coltivatore che lavora per il progetto della coltivazione.
-    \item Le transizioni di stato sono unidirezionali: Pianificata → In Corso → Completata.
-    \item Un'attività completata è in modalità read-only.
-\end{itemize}
-
-\subsection{Glossario dei Termini}
-
-\begin{description}
-    \item[Orto] Spazio fisico urbano condiviso che contiene uno o più lotti. Caratterizzato da nome, indirizzo e data di registrazione.
-    
-    \item[Lotto] Porzione di terreno all'interno di un orto, identificata da un codice e caratterizzata da un'estensione in metri quadrati.
-    
-    \item[Progetto] Piano di coltivazione stagionale associato ad un lotto specifico, contenente una o più coltivazioni.
-    
-    \item[Coltura] Tipo di pianta coltivabile (es. pomodori, insalata), presente nel catalogo del sistema con tempo di maturazione.
-    
-    \item[Coltivazione] Istanza di una coltura specifica all'interno di un progetto, con proprio ciclo vita e stato di salute.
-    
-    \item[Attività] Operazione di manutenzione o cura delle coltivazioni (semina, irrigazione, concimazione, trattamento, raccolta).
-    
-    \item[Notifica] Messaggio informativo inviato dal proprietario ai coltivatori del progetto.
-    
-    \item[Proprietario] Utente che registra orti e lotti, pianifica progetti e coordina i coltivatori.
-    
-    \item[Coltivatore] Utente che esegue le attività assegnate sui progetti.
-\end{description}
 
 \newpage
 
@@ -1773,6 +1710,17 @@ CREATE TABLE utente (
   bio TEXT,
   tipo tipo_utente NOT NULL
 );
+
+CREATE OR REPLACE FUNCTION is_proprietario(id_utente INT)
+RETURNS BOOLEAN AS $$
+BEGIN 
+  RETURN EXISTS (
+    SELECT 1
+    FROM utente
+    WHERE id = id_utente AND tipo = 'PROPRIETARIO'
+  );
+END;
+$$ LANGUAGE plpgsql;
 \end{lstlisting}
 
 \subsubsection{Tabella Orto}
@@ -1783,16 +1731,14 @@ La tabella \texttt{Orto} rappresenta gli orti gestiti dai proprietari.
 CREATE TABLE orto (
   id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   data_registrazione TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  nome_orto VARCHAR(50) NOT NULL UNIQUE 
-    CHECK (length(nome_orto) >= 2),
+  nome_orto VARCHAR(50) NOT NULL UNIQUE CHECK (length(nome_orto) >= 2),
   citta VARCHAR(50) NOT NULL,
   cap CHAR(5) NOT NULL,
   via VARCHAR(100) NOT NULL,
   civico VARCHAR(10),
   id_proprietario INT NOT NULL,
   
-  FOREIGN KEY (id_proprietario) REFERENCES utente (id) 
-    ON DELETE CASCADE
+  FOREIGN KEY (id_proprietario) REFERENCES utente (id) ON DELETE CASCADE
 );
 \end{lstlisting}
 
@@ -1814,8 +1760,7 @@ CREATE TABLE lotto (
   id_orto INT NOT NULL,
   
   FOREIGN KEY (id_orto) REFERENCES orto (id) ON DELETE CASCADE,
-  FOREIGN KEY (id_proprietario) REFERENCES utente (id) 
-    ON DELETE CASCADE,
+  FOREIGN KEY (id_proprietario) REFERENCES utente (id) ON DELETE CASCADE,
   UNIQUE (id_orto, codice_lotto)
 );
 \end{lstlisting}
@@ -1831,17 +1776,14 @@ CREATE TABLE progetto (
   id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   nome VARCHAR(100) NOT NULL UNIQUE,
   data_inizio TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  data_fine TIMESTAMP CHECK (data_fine IS NULL OR 
-    data_fine >= data_inizio),
+  data_fine TIMESTAMP CHECK (data_fine IS NULL OR data_fine >= data_inizio),
   stato stato_progetto NOT NULL DEFAULT 'ATTIVO',
   descrizione TEXT,
   id_proprietario INT NOT NULL,
   id_lotto INT NOT NULL,
   
-  FOREIGN KEY (id_proprietario) REFERENCES utente (id) 
-    ON DELETE RESTRICT,
-  FOREIGN KEY (id_lotto) REFERENCES lotto (id) 
-    ON DELETE RESTRICT
+  FOREIGN KEY (id_proprietario) REFERENCES utente (id) ON DELETE RESTRICT,
+  FOREIGN KEY (id_lotto) REFERENCES lotto (id) ON DELETE RESTRICT
 );
 \end{lstlisting}
 
@@ -1856,8 +1798,7 @@ CREATE TABLE lavora_per (
   id_progetto INT NOT NULL,
   id_coltivatore INT NOT NULL,
   PRIMARY KEY (id_progetto, id_coltivatore),
-  FOREIGN KEY (id_progetto) REFERENCES progetto (id) 
-    ON DELETE CASCADE,
+  FOREIGN KEY (id_progetto) REFERENCES progetto (id) ON DELETE CASCADE,
   FOREIGN KEY (id_coltivatore) REFERENCES utente (id)
 );
 \end{lstlisting}
@@ -1869,8 +1810,7 @@ La tabella \texttt{Coltura} contiene le informazioni sulle colture disponibili.
 \begin{lstlisting}[style=sqlstyle]
 CREATE TABLE coltura (
   id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-  nome_comune VARCHAR(100) NOT NULL UNIQUE 
-    CHECK (length(nome_comune) > 2),
+  nome_comune VARCHAR(100) NOT NULL UNIQUE CHECK (length(nome_comune) > 2),
   tempo_maturazione INT NOT NULL CHECK (tempo_maturazione > 0),
   caratteristiche TEXT
 );
@@ -1895,10 +1835,10 @@ CREATE TABLE coltivazione (
   id_coltura INT NOT NULL,
   id_progetto INT NOT NULL,
   
-  FOREIGN KEY (id_coltura) REFERENCES coltura (id) 
-    ON DELETE RESTRICT,
-  FOREIGN KEY (id_progetto) REFERENCES progetto (id) 
-    ON DELETE CASCADE
+  UNIQUE (id_progetto, id_coltura, data_inizio),
+  
+  FOREIGN KEY (id_coltura) REFERENCES coltura (id) ON DELETE RESTRICT,
+  FOREIGN KEY (id_progetto) REFERENCES progetto (id) ON DELETE CASCADE
 );
 \end{lstlisting}
 
@@ -1911,6 +1851,8 @@ La tabella \texttt{Attivita} rappresenta le attività agricole pianificate ed es
 \begin{lstlisting}[style=sqlstyle]
 CREATE TYPE stato_attivita AS ENUM 
   ('PIANIFICATA', 'IN_CORSO', 'COMPLETATA');
+CREATE TYPE tipo_attivita AS ENUM 
+  ('SEMINA', 'IRRIGAZIONE', 'CONCIMAZIONE', 'TRATTAMENTO', 'RACCOLTA');
 
 CREATE TABLE attivita (
   id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -1920,18 +1862,16 @@ CREATE TABLE attivita (
     data_inizio >= data_pianificazione),
   data_scadenza TIMESTAMP CHECK (data_scadenza IS NULL OR 
     data_scadenza >= data_pianificazione),
-  data_fine TIMESTAMP CHECK (data_fine IS NULL OR 
-    data_fine >= data_inizio),
+  data_fine TIMESTAMP CHECK (data_fine IS NULL OR data_fine >= data_inizio),
   stato stato_attivita NOT NULL DEFAULT 'PIANIFICATA', 
+  tipo tipo_attivita NOT NULL,
   note_tecniche TEXT NOT NULL,
   id_coltivazione INT NOT NULL,
   id_coltivatore INT NOT NULL,
   
   UNIQUE (id_coltivazione, nome),
-  FOREIGN KEY (id_coltivazione) REFERENCES coltivazione (id) 
-    ON DELETE CASCADE,
-  FOREIGN KEY (id_coltivatore) REFERENCES utente (id) 
-    ON DELETE RESTRICT
+  FOREIGN KEY (id_coltivazione) REFERENCES coltivazione (id) ON DELETE CASCADE,
+  FOREIGN KEY (id_coltivatore) REFERENCES utente (id) ON DELETE RESTRICT
 );
 \end{lstlisting}
 
@@ -2020,15 +1960,12 @@ CREATE TABLE notifica (
   urgenza urgenza_notifica NOT NULL,
   descrizione TEXT,
   tipo tipo_notifica NOT NULL,
-  giorni_mancanti INT CHECK (
-    giorni_mancanti IS NULL OR giorni_mancanti > 0),
+  giorni_mancanti INT CHECK (giorni_mancanti IS NULL OR giorni_mancanti > 0),
   id_progetto INT NOT NULL,
   id_attivita INT,
   
-  FOREIGN KEY (id_progetto) REFERENCES progetto (id) 
-    ON DELETE CASCADE,
-  FOREIGN KEY (id_attivita) REFERENCES attivita (id) 
-    ON DELETE CASCADE,
+  FOREIGN KEY (id_progetto) REFERENCES progetto (id) ON DELETE CASCADE,
+  FOREIGN KEY (id_attivita) REFERENCES attivita (id) ON DELETE CASCADE,
   UNIQUE (id_progetto, data_invio),
   CHECK (
     (tipo = 'NOTIFICA_ATTIVITA_IMMINENTE' AND id_attivita IS NOT NULL) OR
@@ -2039,8 +1976,6 @@ CREATE TABLE notifica (
 
 \subsubsection{Tabella Riceve (Classe Associativa LetturaNotifica)}
 
-La tabella \texttt{riceve} implementa la classe associativa \texttt{LetturaNotifica}.
-
 \begin{lstlisting}[style=sqlstyle]
 CREATE TABLE riceve (
   id_notifica INT NOT NULL PRIMARY KEY,
@@ -2048,10 +1983,8 @@ CREATE TABLE riceve (
   is_letta BOOLEAN NOT NULL,
   data_lettura TIMESTAMP,
   
-  FOREIGN KEY (id_notifica) REFERENCES notifica (id) 
-    ON DELETE CASCADE,
-  FOREIGN KEY (id_coltivatore) REFERENCES utente (id) 
-    ON DELETE CASCADE
+  FOREIGN KEY (id_notifica) REFERENCES notifica (id) ON DELETE CASCADE,
+  FOREIGN KEY (id_coltivatore) REFERENCES utente (id) ON DELETE CASCADE
 );
 \end{lstlisting}
 

@@ -10,5 +10,7 @@ uninabiogarden/target/
 
 tmp/
 
+consegna/
+
 # generated pdfs
 *.pdf

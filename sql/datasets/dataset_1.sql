@@ -51,13 +51,39 @@ INSERT INTO coltivazione (stato, stato_salute, note_tecniche, id_coltura, id_pro
 ('ATTIVA', 'STABILE', 'Coltivazione Zucchine', 2, 1), -- Zucchina
 ('ATTIVA', 'OTTIMO', 'Coltivazione Lattuga', 3, 1); -- Lattuga
 
-INSERT INTO attivita (nome, note_tecniche, id_coltivazione, id_coltivatore) VALUES
-('Irrigazione', 'Irrigare i Pomodori', 1, 4), -- Attività per Pomodoro
-('Concimazione', 'Concimare i Pomodori', 1, 5), -- Attività per Pomodoro
-('Raccolta', 'Raccogliere quando i frutti sono maturi', 1, 4), -- Attività per Pomodoro
-('Irrigazione', 'Irrigare le Zucchine', 2, 5), -- Attività per Zucchina
-('Controllo parassiti', 'Controllare settimanalmente la presenza di parassiti', 2, 4), -- Attività per Zucchina
-('Raccolta', 'Raccogliere quando i frutti sono maturi', 2, 5), -- Attività per Zucchina
-('Irrigazione', 'Irrigare le Lattughe', 3, 4), -- Attività per Lattuga
-('Concimazione', 'Concimare le Lattughe', 3, 5), -- Attività per Lattuga
-('Raccolta', 'Raccogliere quando le foglie sono grandi e croccanti', 3, 4); -- Attività per Lattuga
+INSERT INTO attivita (nome, note_tecniche, tipo, id_coltivazione, id_coltivatore) VALUES
+('Semina', 'Seminare i Pomodori', 'SEMINA', 1, 4), -- Attività per Pomodoro
+('Concimazione', 'Concimare i Pomodori', 'CONCIMAZIONE', 1, 5), -- Attività per Pomodoro
+('Raccolta', 'Raccogliere quando i frutti sono maturi', 'RACCOLTA', 1, 4), -- Attività per Pomodoro
+('Irrigazione', 'Irrigare le Zucchine', 'IRRIGAZIONE', 2, 5), -- Attività per Zucchina
+('Trattamento', 'Controllare settimanalmente la presenza di parassiti', 'TRATTAMENTO', 2, 4), -- Attività per Zucchina
+('Raccolta', 'Raccogliere quando i frutti sono maturi', 'RACCOLTA', 2, 5), -- Attività per Zucchina
+('Irrigazione', 'Irrigare le Lattughe', 'IRRIGAZIONE', 3, 4), -- Attività per Lattuga
+('Concimazione', 'Concimare le Lattughe', 'CONCIMAZIONE', 3, 5), -- Attività per Lattuga
+('Raccolta', 'Raccogliere quando le foglie sono grandi e croccanti', 'RACCOLTA', 3, 4); -- Attività per Lattuga
+
+INSERT INTO semina (id, quantita_sementi, profondita_semina_cm) VALUES
+(1, 20, 2); -- Dettagli per l'attività di semina dei Pomodori
+
+INSERT INTO concimazione (id, tipo_concime, quantita_kg) VALUES
+(2, 'ORGANICO', 5), -- Dettagli per l'attività di concimazione dei Pomodori
+(8, 'MINERALE', 3); -- Dettagli per l'attività di concimazione delle Lattughe
+
+INSERT INTO irrigazione (id, metodo, volume_acqua_l) VALUES
+(4, 'PIOGGIA', 2), -- Dettagli per l'attività di irrigazione delle Zucchine
+(7, 'GOCCIA', 3); -- Dettagli per l'attività di irrigazione delle Lattughe
+
+INSERT INTO trattamento (id, nome_prodotto, tempo_carenza) VALUES
+(5, 'Verderame Bio', 7); -- Dettagli per l'attività di trattamento delle Zucchine
+
+INSERT INTO raccolta (id, quantita_prevista_kg, quantita_effettiva_kg) VALUES
+(3, 10, NULL), -- Dettagli per l'attività di raccolta dei Pomodori
+(6, 15, NULL), -- Dettagli per l'attività di raccolta delle Zucchine
+(9, 5, NULL); -- Dettagli per l'attività di raccolta delle Lattughe
+
+INSERT INTO notifica (nome_evento, urgenza, descrizione, tipo, data_invio, id_progetto) VALUES
+('Controllo Parassiti', 'ALTA', 'Controllare la presenza di parassiti sulle Zucchine', 'NOTIFICA_PROGETTO', '2026-02-15 08:00:00', 1),
+('Irrigazione Pomodori', 'MEDIA', 'Irrigare i Pomodori domani alle 8:00', 'NOTIFICA_PROGETTO', '2026-02-15 09:00:00', 1);
+
+INSERT INTO notifica (nome_evento, urgenza, descrizione, tipo, data_invio, giorni_mancanti, id_progetto, id_attivita) VALUES
+('Irrigazione Pomodori Imminente', 'ALTA', 'Irrigazione dei Pomodori prevista domani alle 8:00', 'NOTIFICA_ATTIVITA_IMMINENTE', '2026-02-15 10:00:00', 1, 1, 4);

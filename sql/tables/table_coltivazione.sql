@@ -24,6 +24,8 @@ CREATE TABLE coltivazione (
   id_coltura INT NOT NULL,
   id_progetto INT NOT NULL,
 
+  UNIQUE (id_progetto, id_coltura, data_inizio),
+
   FOREIGN KEY (id_coltura) REFERENCES coltura (id) ON DELETE RESTRICT,
   FOREIGN KEY (id_progetto) REFERENCES progetto (id) ON DELETE CASCADE
 );
