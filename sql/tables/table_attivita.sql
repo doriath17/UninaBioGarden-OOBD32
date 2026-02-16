@@ -4,8 +4,10 @@
 
 DROP TABLE IF EXISTS attivita CASCADE;
 DROP TYPE IF EXISTS stato_attivita CASCADE;
+DROP TYPE IF EXISTS tipo_attivita CASCADE;
 
 CREATE TYPE stato_attivita AS ENUM ('PIANIFICATA', 'IN_CORSO', 'COMPLETATA');
+CREATE TYPE tipo_attivita AS ENUM ('SEMINA', 'IRRIGAZIONE', 'CONCIMAZIONE', 'TRATTAMENTO', 'RACCOLTA');
 
 CREATE TABLE attivita (
   id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -18,6 +20,7 @@ CREATE TABLE attivita (
   CHECK (data_fine IS NULL OR data_fine >= data_inizio),
 
   stato stato_attivita NOT NULL DEFAULT 'PIANIFICATA', 
+  tipo tipo_attivita NOT NULL,
   note_tecniche TEXT NOT NULL,
 
   id_coltivazione INT NOT NULL,
@@ -69,6 +72,34 @@ CREATE TABLE concimazione (
   FOREIGN KEY (id) REFERENCES attivita (id) ON DELETE CASCADE 
 );
 
+CREATE OR REPLACE FUNCTION check_concimazione_tipo()
+RETURNS TRIGGER AS $$
+DECLARE
+  v_tipo tipo_attivita;
+BEGIN
+  -- Check tipo matches
+  SELECT tipo INTO v_tipo FROM attivita WHERE id = NEW.id;
+  IF v_tipo <> 'CONCIMAZIONE' THEN
+    RAISE EXCEPTION 'Il tipo dell''attivita con ID = % deve essere CONCIMAZIONE, ma e'' %', NEW.id, v_tipo;
+  END IF;
+  
+  -- Check no other specializations exist
+  IF EXISTS (SELECT 1 FROM semina WHERE id = NEW.id)
+     OR EXISTS (SELECT 1 FROM irrigazione WHERE id = NEW.id)
+     OR EXISTS (SELECT 1 FROM trattamento WHERE id = NEW.id)
+     OR EXISTS (SELECT 1 FROM raccolta WHERE id = NEW.id) THEN
+    RAISE EXCEPTION 'L''attivita con ID = % ha gia una specializzazione', NEW.id;
+  END IF;
+  
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER check_concimazione_constraints
+BEFORE INSERT ON concimazione
+FOR EACH ROW
+EXECUTE FUNCTION check_concimazione_tipo();
+
 -- ==============================================================================================
 -- Tabella irrigazione (includes related enum type)
 -- ==============================================================================================
@@ -87,6 +118,34 @@ CREATE TABLE irrigazione (
   FOREIGN KEY (id) REFERENCES attivita (id) ON DELETE CASCADE 
 );
 
+CREATE OR REPLACE FUNCTION check_irrigazione_tipo()
+RETURNS TRIGGER AS $$
+DECLARE
+  v_tipo tipo_attivita;
+BEGIN
+  -- Check tipo matches
+  SELECT tipo INTO v_tipo FROM attivita WHERE id = NEW.id;
+  IF v_tipo <> 'IRRIGAZIONE' THEN
+    RAISE EXCEPTION 'Il tipo dell''attivita con ID = % deve essere IRRIGAZIONE, ma e'' %', NEW.id, v_tipo;
+  END IF;
+  
+  -- Check no other specializations exist
+  IF EXISTS (SELECT 1 FROM semina WHERE id = NEW.id)
+     OR EXISTS (SELECT 1 FROM concimazione WHERE id = NEW.id)
+     OR EXISTS (SELECT 1 FROM trattamento WHERE id = NEW.id)
+     OR EXISTS (SELECT 1 FROM raccolta WHERE id = NEW.id) THEN
+    RAISE EXCEPTION 'L''attivita con ID = % ha gia una specializzazione', NEW.id;
+  END IF;
+  
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER check_irrigazione_constraints
+BEFORE INSERT ON irrigazione
+FOR EACH ROW
+EXECUTE FUNCTION check_irrigazione_tipo();
+
 -- ==============================================================================================
 -- Tabella raccolta
 -- ==============================================================================================
@@ -101,6 +160,34 @@ CREATE TABLE raccolta (
 
   FOREIGN KEY (id) REFERENCES attivita (id) ON DELETE CASCADE 
 );
+
+CREATE OR REPLACE FUNCTION check_raccolta_tipo()
+RETURNS TRIGGER AS $$
+DECLARE
+  v_tipo tipo_attivita;
+BEGIN
+  -- Check tipo matches
+  SELECT tipo INTO v_tipo FROM attivita WHERE id = NEW.id;
+  IF v_tipo <> 'RACCOLTA' THEN
+    RAISE EXCEPTION 'Il tipo dell''attivita con ID = % deve essere RACCOLTA, ma e'' %', NEW.id, v_tipo;
+  END IF;
+  
+  -- Check no other specializations exist
+  IF EXISTS (SELECT 1 FROM semina WHERE id = NEW.id)
+     OR EXISTS (SELECT 1 FROM irrigazione WHERE id = NEW.id)
+     OR EXISTS (SELECT 1 FROM concimazione WHERE id = NEW.id)
+     OR EXISTS (SELECT 1 FROM trattamento WHERE id = NEW.id) THEN
+    RAISE EXCEPTION 'L''attivita con ID = % ha gia una specializzazione', NEW.id;
+  END IF;
+  
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER check_raccolta_constraints
+BEFORE INSERT ON raccolta
+FOR EACH ROW
+EXECUTE FUNCTION check_raccolta_tipo();
 
 -- ==============================================================================================
 -- Tabella semina
@@ -117,6 +204,34 @@ CREATE TABLE semina (
   FOREIGN KEY (id) REFERENCES attivita (id) ON DELETE CASCADE 
 );
 
+CREATE OR REPLACE FUNCTION check_semina_tipo()
+RETURNS TRIGGER AS $$
+DECLARE
+  v_tipo tipo_attivita;
+BEGIN
+  -- Check tipo matches
+  SELECT tipo INTO v_tipo FROM attivita WHERE id = NEW.id;
+  IF v_tipo <> 'SEMINA' THEN
+    RAISE EXCEPTION 'Il tipo dell''attivita con ID = % deve essere SEMINA, ma e'' %', NEW.id, v_tipo;
+  END IF;
+  
+  -- Check no other specializations exist
+  IF EXISTS (SELECT 1 FROM irrigazione WHERE id = NEW.id)
+     OR EXISTS (SELECT 1 FROM concimazione WHERE id = NEW.id)
+     OR EXISTS (SELECT 1 FROM trattamento WHERE id = NEW.id)
+     OR EXISTS (SELECT 1 FROM raccolta WHERE id = NEW.id) THEN
+    RAISE EXCEPTION 'L''attivita con ID = % ha gia una specializzazione', NEW.id;
+  END IF;
+  
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER check_semina_constraints
+BEFORE INSERT ON semina
+FOR EACH ROW
+EXECUTE FUNCTION check_semina_tipo();
+
 -- ==============================================================================================
 -- Tabella trattamento
 -- ==============================================================================================
@@ -131,4 +246,32 @@ CREATE TABLE trattamento (
 
   FOREIGN KEY (id) REFERENCES attivita (id) ON DELETE CASCADE 
 );
+
+CREATE OR REPLACE FUNCTION check_trattamento_tipo()
+RETURNS TRIGGER AS $$
+DECLARE
+  v_tipo tipo_attivita;
+BEGIN
+  -- Check tipo matches
+  SELECT tipo INTO v_tipo FROM attivita WHERE id = NEW.id;
+  IF v_tipo <> 'TRATTAMENTO' THEN
+    RAISE EXCEPTION 'Il tipo dell''attivita con ID = % deve essere TRATTAMENTO, ma e'' %', NEW.id, v_tipo;
+  END IF;
+  
+  -- Check no other specializations exist
+  IF EXISTS (SELECT 1 FROM semina WHERE id = NEW.id)
+     OR EXISTS (SELECT 1 FROM irrigazione WHERE id = NEW.id)
+     OR EXISTS (SELECT 1 FROM concimazione WHERE id = NEW.id)
+     OR EXISTS (SELECT 1 FROM raccolta WHERE id = NEW.id) THEN
+    RAISE EXCEPTION 'L''attivita con ID = % ha gia una specializzazione', NEW.id;
+  END IF;
+  
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER check_trattamento_constraints
+BEFORE INSERT ON trattamento
+FOR EACH ROW
+EXECUTE FUNCTION check_trattamento_tipo();
 

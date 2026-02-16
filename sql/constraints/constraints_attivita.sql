@@ -155,3 +155,7 @@ CREATE TRIGGER updates_attivita_raccolta
 BEFORE UPDATE ON attivita
 FOR EACH ROW
 EXECUTE FUNCTION check_update_attivita_raccolta();  
+
+
+
+
