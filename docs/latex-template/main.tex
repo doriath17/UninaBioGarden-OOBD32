@@ -394,322 +394,6 @@ Inoltre questo permette di modellare in modo più elegante l'indirizzo di un lot
 
 Siccome i lotti sono caratterizzati da un'estensione, un orto può essere caratterizzato da una \textbf{estensione totale} che è data dalla somma delle estensioni dei lotti che lo compongono, per questo si è scelto di aggiungere l'attributo derivato ``estensione totale'' all'orto.
 
-\subsection{Descrizione delle Relazioni}
-
-Le relazioni del modello definiscono le associazioni tra le entità e le loro cardinalità. Di seguito sono descritte tutte le relazioni del modello concettuale, organizzate per area funzionale.
-
-\subsubsection{Relazioni del Proprietario}
-
-\begin{table}[H]
-\centering
-\caption{Relazione: Gestisce (Proprietario-Orto)}
-\begin{tabularx}{\textwidth}{|l|X|}
-\hline
-\textbf{Nome} & Gestisce \\
-\hline
-\textbf{Descrizione} & Associa un proprietario agli orti che ha registrato nel sistema \\
-\hline
-\textbf{Entità Coinvolte} & Proprietario, Orto \\
-\hline
-\textbf{Cardinalità} & (1,1) - (0,N): Un orto è gestito da esattamente un proprietario, un proprietario può gestire zero o più orti \\
-\hline
-\textbf{Attributi} & Nessuno \\
-\hline
-\end{tabularx}
-\end{table}
-
-\begin{table}[H]
-\centering
-\caption{Relazione: Possiede (Proprietario-Lotto)}
-\begin{tabularx}{\textwidth}{|l|X|}
-\hline
-\textbf{Nome} & Possiede \\
-\hline
-\textbf{Descrizione} & Associa un proprietario ai lotti che ha registrato nel sistema \\
-\hline
-\textbf{Entità Coinvolte} & Proprietario, Lotto \\
-\hline
-\textbf{Cardinalità} & (1,1) - (0,N): Un lotto è posseduto da esattamente un proprietario, un proprietario può possedere zero o più lotti \\
-\hline
-\textbf{Attributi} & Nessuno \\
-\hline
-\end{tabularx}
-\end{table}
-
-\begin{table}[H]
-\centering
-\caption{Relazione: Pianifica (Proprietario-Progetto)}
-\begin{tabularx}{\textwidth}{|l|X|}
-\hline
-\textbf{Nome} & Pianifica \\
-\hline
-\textbf{Descrizione} & Associa un proprietario ai progetti che ha pianificato \\
-\hline
-\textbf{Entità Coinvolte} & Proprietario, Progetto \\
-\hline
-\textbf{Cardinalità} & (1,1) - (0,N): Un progetto è pianificato da esattamente un proprietario, un proprietario può pianificare zero o più progetti \\
-\hline
-\textbf{Attributi} & Nessuno \\
-\hline
-\end{tabularx}
-\end{table}
-
-\begin{table}[H]
-\centering
-\caption{Relazione: Invia (Proprietario-Notifica)}
-\begin{tabularx}{\textwidth}{|l|X|}
-\hline
-\textbf{Nome} & Invia \\
-\hline
-\textbf{Descrizione} & Associa un proprietario alle notifiche che ha inviato ai coltivatori \\
-\hline
-\textbf{Entità Coinvolte} & Proprietario, Notifica \\
-\hline
-\textbf{Cardinalità} & (1,1) - (0,N): Una notifica è inviata da esattamente un proprietario, un proprietario può inviare zero o più notifiche \\
-\hline
-\textbf{Attributi} & Nessuno \\
-\hline
-\end{tabularx}
-\end{table}
-
-\subsubsection{Relazioni del Coltivatore}
-
-\begin{table}[H]
-\centering
-\caption{Relazione: Lavora Per (Coltivatore-Progetto)}
-\begin{tabularx}{\textwidth}{|l|X|}
-\hline
-\textbf{Nome} & Lavora Per \\
-\hline
-\textbf{Descrizione} & Associa i coltivatori ai progetti a cui sono assegnati. Definisce l'insieme di coltivatori che possono svolgere attività sul progetto \\
-\hline
-\textbf{Entità Coinvolte} & Coltivatore, Progetto \\
-\hline
-\textbf{Cardinalità} & (0,N) - (1,N): Un coltivatore può lavorare per zero o più progetti, un progetto deve avere almeno un coltivatore assegnato \\
-\hline
-\textbf{Attributi} & Nessuno \\
-\hline
-\end{tabularx}
-\end{table}
-
-\begin{table}[H]
-\centering
-\caption{Relazione: Svolge (Coltivatore-Attività)}
-\begin{tabularx}{\textwidth}{|l|X|}
-\hline
-\textbf{Nome} & Svolge \\
-\hline
-\textbf{Descrizione} & Associa un coltivatore alle attività che gli sono state assegnate e che deve svolgere \\
-\hline
-\textbf{Entità Coinvolte} & Coltivatore, Attività \\
-\hline
-\textbf{Cardinalità} & (1,1) - (0,N): Un'attività è svolta da esattamente un coltivatore, un coltivatore può svolgere zero o più attività \\
-\hline
-\textbf{Attributi} & Nessuno \\
-\hline
-\end{tabularx}
-\end{table}
-
-\begin{table}[H]
-\centering
-\caption{Relazione: Riceve (Coltivatore-Notifica)}
-\begin{tabularx}{\textwidth}{|l|X|}
-\hline
-\textbf{Nome} & Riceve \\
-\hline
-\textbf{Descrizione} & Associa un coltivatore alle notifiche che ha ricevuto. Tiene traccia dello stato di lettura \\
-\hline
-\textbf{Entità Coinvolte} & Coltivatore, Notifica \\
-\hline
-\textbf{Cardinalità} & (0,N) - (1,N): Un coltivatore può ricevere zero o più notifiche, una notifica è ricevuta da uno o più coltivatori \\
-\hline
-\textbf{Attributi} & 
-\begin{itemize}[nosep]
-    \item letta: BOOLEAN (indica se la notifica è stata letta)
-    \item data\_lettura: DATE (data in cui la notifica è stata letta, NULL se non letta)
-\end{itemize} \\
-\hline
-\end{tabularx}
-\end{table}
-
-\subsubsection{Relazioni del Progetto}
-
-\begin{table}[H]
-\centering
-\caption{Relazione: Occupa (Progetto-Lotto)}
-\begin{tabularx}{\textwidth}{|l|X|}
-\hline
-\textbf{Nome} & Occupa \\
-\hline
-\textbf{Descrizione} & Associa un progetto al lotto su cui si svolge. Vincolo: un lotto può avere un solo progetto attivo alla volta \\
-\hline
-\textbf{Entità Coinvolte} & Progetto, Lotto \\
-\hline
-\textbf{Cardinalità} & (1,1) - (0,N): Un progetto occupa esattamente un lotto, un lotto può ospitare zero o più progetti (ma uno solo attivo) \\
-\hline
-\textbf{Attributi} & Nessuno \\
-\hline
-\end{tabularx}
-\end{table}
-
-\begin{table}[H]
-\centering
-\caption{Relazione: Comprende (Progetto-Coltivazione)}
-\begin{tabularx}{\textwidth}{|l|X|}
-\hline
-\textbf{Nome} & Comprende \\
-\hline
-\textbf{Descrizione} & Relazione identificante tra progetto e coltivazione. Una coltivazione esiste solo nell'ambito di un progetto \\
-\hline
-\textbf{Entità Coinvolte} & Progetto, Coltivazione (entità debole) \\
-\hline
-\textbf{Cardinalità} & (1,1) - (1,N): Una coltivazione appartiene a esattamente un progetto, un progetto comprende una o più coltivazioni \\
-\hline
-\textbf{Attributi} & Nessuno \\
-\hline
-\end{tabularx}
-\end{table}
-
-\begin{table}[H]
-\centering
-\caption{Relazione: Prevede (Progetto-Attività)}
-\begin{tabularx}{\textwidth}{|l|X|}
-\hline
-\textbf{Nome} & Prevede \\
-\hline
-\textbf{Descrizione} & Relazione derivata che associa un progetto a tutte le attività previste dalle sue coltivazioni. Derivabile da: Progetto → Comprende → Coltivazione → Eseguita Su → Attività \\
-\hline
-\textbf{Entità Coinvolte} & Progetto, Attività \\
-\hline
-\textbf{Cardinalità} & (1,1) - (0,N): Un'attività appartiene a un progetto, un progetto prevede zero o più attività \\
-\hline
-\textbf{Attributi} & Nessuno \\
-\hline
-\textbf{Note} & Relazione ridondante, derivabile dalla composizione di altre relazioni \\
-\hline
-\end{tabularx}
-\end{table}
-
-\subsubsection{Relazioni di Orto e Lotto}
-
-\begin{table}[H]
-\centering
-\caption{Relazione: Composto Da (Orto-Lotto)}
-\begin{tabularx}{\textwidth}{|l|X|}
-\hline
-\textbf{Nome} & Composto Da (Composizione) \\
-\hline
-\textbf{Descrizione} & Relazione di composizione che vincola un lotto ad un orto. Un lotto non può esistere senza l'orto che lo contiene. Relazione identificante per l'entità debole Lotto \\
-\hline
-\textbf{Entità Coinvolte} & Orto (tutto), Lotto (parte, entità debole) \\
-\hline
-\textbf{Cardinalità} & (1,1) - (0,N): Un lotto deve far parte di esattamente un orto, un orto può essere composto da zero o più lotti \\
-\hline
-\textbf{Attributi} & Nessuno \\
-\hline
-\end{tabularx}
-\end{table}
-
-\begin{table}[H]
-\centering
-\caption{Relazione: Si Svolge Su (Coltivazione-Lotto)}
-\begin{tabularx}{\textwidth}{|l|X|}
-\hline
-\textbf{Nome} & Si Svolge Su \\
-\hline
-\textbf{Descrizione} & Relazione derivata che associa una coltivazione al lotto su cui si svolge. Derivabile da: Coltivazione → Comprende → Progetto → Occupa → Lotto \\
-\hline
-\textbf{Entità Coinvolte} & Coltivazione, Lotto \\
-\hline
-\textbf{Cardinalità} & (1,1) - (0,N): Una coltivazione si svolge su esattamente un lotto, un lotto può ospitare zero o più coltivazioni \\
-\hline
-\textbf{Attributi} & Nessuno \\
-\hline
-\textbf{Note} & Relazione ridondante, derivabile dalla composizione di altre relazioni \\
-\hline
-\end{tabularx}
-\end{table}
-
-\subsubsection{Relazioni della Coltivazione}
-
-\begin{table}[H]
-\centering
-\caption{Relazione: Basata Su (Coltivazione-Coltura)}
-\begin{tabularx}{\textwidth}{|l|X|}
-\hline
-\textbf{Nome} & Basata Su \\
-\hline
-\textbf{Descrizione} & Associa una coltivazione alla coltura specifica che viene coltivata (es. pomodori, insalata). Parte della chiave identificante dell'entità debole Coltivazione \\
-\hline
-\textbf{Entità Coinvolte} & Coltivazione (entità debole), Coltura \\
-\hline
-\textbf{Cardinalità} & (1,1) - (0,N): Una coltivazione è basata su esattamente una coltura, una coltura può essere utilizzata in zero o più coltivazioni \\
-\hline
-\textbf{Attributi} & Nessuno \\
-\hline
-\end{tabularx}
-\end{table}
-
-\begin{table}[H]
-\centering
-\caption{Relazione: Eseguita Su (Attività-Coltivazione)}
-\begin{tabularx}{\textwidth}{|l|X|}
-\hline
-\textbf{Nome} & Eseguita Su \\
-\hline
-\textbf{Descrizione} & Relazione identificante che associa un'attività alla coltivazione su cui viene eseguita. Un'attività non può esistere senza la coltivazione di riferimento \\
-\hline
-\textbf{Entità Coinvolte} & Attività (entità debole), Coltivazione \\
-\hline
-\textbf{Cardinalità} & (1,1) - (0,N): Un'attività è eseguita su esattamente una coltivazione, una coltivazione può avere zero o più attività \\
-\hline
-\textbf{Attributi} & Nessuno \\
-\hline
-\end{tabularx}
-\end{table}
-
-\subsubsection{Relazioni dell'Attività}
-
-\begin{table}[H]
-\centering
-\caption{Relazione: Si Occupa (Attività-Coltura)}
-\begin{tabularx}{\textwidth}{|l|X|}
-\hline
-\textbf{Nome} & Si Occupa \\
-\hline
-\textbf{Descrizione} & Relazione derivata che associa un'attività alla coltura su cui opera. Introdotta per chiarezza nel diagramma EER. Derivabile da: Attività → Eseguita Su → Coltivazione → Basata Su → Coltura \\
-\hline
-\textbf{Entità Coinvolte} & Attività, Coltura \\
-\hline
-\textbf{Cardinalità} & (1,1) - (0,N): Un'attività si occupa di esattamente una coltura, una coltura può avere zero o più attività \\
-\hline
-\textbf{Attributi} & Nessuno \\
-\hline
-\textbf{Note} & Relazione ridondante, aggiunta per chiarezza del modello EER \\
-\hline
-\end{tabularx}
-\end{table}
-
-\subsubsection{Relazioni della Notifica}
-
-\begin{table}[H]
-\centering
-\caption{Relazione: Segnala (NotificaAttività-Attività)}
-\begin{tabularx}{\textwidth}{|l|X|}
-\hline
-\textbf{Nome} & Segnala \\
-\hline
-\textbf{Descrizione} & Associa una notifica di tipo ``Attività Imminente'' all'attività specifica che sta per scadere \\
-\hline
-\textbf{Entità Coinvolte} & NotificaAttività (sottotipo di Notifica), Attività \\
-\hline
-\textbf{Cardinalità} & (1,1) - (0,N): Una notifica di attività imminente segnala esattamente un'attività, un'attività può essere segnalata da zero o più notifiche \\
-\hline
-\textbf{Attributi} & Nessuno \\
-\hline
-\end{tabularx}
-\end{table}
-
 \newpage
 
 \section{Schema Ristrutturato}
@@ -1039,6 +723,276 @@ Questa sezione fornisce una descrizione dettagliata di tutte le classi (entità)
     \item \textbf{is\_letta} (boolean): Indica se la notifica è stata letta dal coltivatore
     \item \textbf{data\_lettura} (date): Data e ora di lettura della notifica
 \end{itemize}
+
+\newpage
+
+\section{Dizionario delle Associazioni}
+
+Questa sezione descrive tutte le associazioni presenti nello schema ristrutturato, specificando le entità coinvolte, le cardinalità e gli attributi.
+
+\subsection{Gestisce (Proprietario-Orto)}
+
+\begin{table}[H]
+\centering
+\caption{Associazione: Gestisce}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome} & Gestisce \\
+\hline
+\textbf{Descrizione} & Associa un proprietario agli orti che ha registrato nel sistema \\
+\hline
+\textbf{Entità Coinvolte} & Proprietario, Orto \\
+\hline
+\textbf{Cardinalità} & (1,1) - (0,N): Un orto è gestito da esattamente un proprietario, un proprietario può gestire zero o più orti \\
+\hline
+\textbf{Attributi} & Nessuno \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsection{Possiede (Proprietario-Lotto)}
+
+\begin{table}[H]
+\centering
+\caption{Associazione: Possiede}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome} & Possiede \\
+\hline
+\textbf{Descrizione} & Associa un proprietario ai lotti che ha registrato nel sistema \\
+\hline
+\textbf{Entità Coinvolte} & Proprietario, Lotto \\
+\hline
+\textbf{Cardinalità} & (1,1) - (0,N): Un lotto è posseduto da esattamente un proprietario, un proprietario può possedere zero o più lotti \\
+\hline
+\textbf{Attributi} & Nessuno \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsection{Composto Da (Orto-Lotto)}
+
+\begin{table}[H]
+\centering
+\caption{Associazione: Composto Da}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome} & Composto Da (Composizione) \\
+\hline
+\textbf{Descrizione} & Relazione di composizione che vincola un lotto ad un orto. Un lotto non può esistere senza l'orto che lo contiene. Relazione identificante per l'entità debole Lotto \\
+\hline
+\textbf{Entità Coinvolte} & Orto (tutto), Lotto (parte, entità debole) \\
+\hline
+\textbf{Cardinalità} & (1,1) - (0,N): Un lotto deve far parte di esattamente un orto, un orto può essere composto da zero o più lotti \\
+\hline
+\textbf{Attributi} & Nessuno \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsection{Pianifica (Proprietario-Progetto)}
+
+\begin{table}[H]
+\centering
+\caption{Associazione: Pianifica}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome} & Pianifica \\
+\hline
+\textbf{Descrizione} & Associa un proprietario ai progetti che ha pianificato \\
+\hline
+\textbf{Entità Coinvolte} & Proprietario, Progetto \\
+\hline
+\textbf{Cardinalità} & (1,1) - (0,N): Un progetto è pianificato da esattamente un proprietario, un proprietario può pianificare zero o più progetti \\
+\hline
+\textbf{Attributi} & Nessuno \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsection{Occupa (Progetto-Lotto)}
+
+\begin{table}[H]
+\centering
+\caption{Associazione: Occupa}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome} & Occupa \\
+\hline
+\textbf{Descrizione} & Associa un progetto al lotto su cui si svolge. Vincolo: un lotto può avere un solo progetto attivo alla volta \\
+\hline
+\textbf{Entità Coinvolte} & Progetto, Lotto \\
+\hline
+\textbf{Cardinalità} & (1,1) - (0,N): Un progetto occupa esattamente un lotto, un lotto può ospitare zero o più progetti (ma uno solo attivo) \\
+\hline
+\textbf{Attributi} & Nessuno \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsection{Lavora Per (Coltivatore-Progetto)}
+
+\begin{table}[H]
+\centering
+\caption{Associazione: Lavora Per}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome} & Lavora Per \\
+\hline
+\textbf{Descrizione} & Associa i coltivatori ai progetti a cui sono assegnati. Definisce l'insieme di coltivatori che possono svolgere attività sul progetto \\
+\hline
+\textbf{Entità Coinvolte} & Coltivatore, Progetto \\
+\hline
+\textbf{Cardinalità} & (0,N) - (1,N): Un coltivatore può lavorare per zero o più progetti, un progetto deve avere almeno un coltivatore assegnato \\
+\hline
+\textbf{Attributi} & Nessuno \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsection{Comprende (Progetto-Coltivazione)}
+
+\begin{table}[H]
+\centering
+\caption{Associazione: Comprende}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome} & Comprende \\
+\hline
+\textbf{Descrizione} & Relazione identificante tra progetto e coltivazione. Una coltivazione esiste solo nell'ambito di un progetto \\
+\hline
+\textbf{Entità Coinvolte} & Progetto, Coltivazione (entità debole) \\
+\hline
+\textbf{Cardinalità} & (1,1) - (1,N): Una coltivazione appartiene a esattamente un progetto, un progetto comprende una o più coltivazioni \\
+\hline
+\textbf{Attributi} & Nessuno \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsection{Basata Su (Coltivazione-Coltura)}
+
+\begin{table}[H]
+\centering
+\caption{Associazione: Basata Su}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome} & Basata Su \\
+\hline
+\textbf{Descrizione} & Associa una coltivazione alla coltura specifica che viene coltivata (es. pomodori, insalata). Parte della chiave identificante dell'entità debole Coltivazione \\
+\hline
+\textbf{Entità Coinvolte} & Coltivazione (entità debole), Coltura \\
+\hline
+\textbf{Cardinalità} & (1,1) - (0,N): Una coltivazione è basata su esattamente una coltura, una coltura può essere utilizzata in zero o più coltivazioni \\
+\hline
+\textbf{Attributi} & Nessuno \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsection{Eseguita Su (Attività-Coltivazione)}
+
+\begin{table}[H]
+\centering
+\caption{Associazione: Eseguita Su}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome} & Eseguita Su \\
+\hline
+\textbf{Descrizione} & Relazione identificante che associa un'attività alla coltivazione su cui viene eseguita. Un'attività non può esistere senza la coltivazione di riferimento \\
+\hline
+\textbf{Entità Coinvolte} & Attività (entità debole), Coltivazione \\
+\hline
+\textbf{Cardinalità} & (1,1) - (0,N): Un'attività è eseguita su esattamente una coltivazione, una coltivazione può avere zero o più attività \\
+\hline
+\textbf{Attributi} & Nessuno \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsection{Svolge (Coltivatore-Attività)}
+
+\begin{table}[H]
+\centering
+\caption{Associazione: Svolge}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome} & Svolge \\
+\hline
+\textbf{Descrizione} & Associa un coltivatore alle attività che gli sono state assegnate e che deve svolgere \\
+\hline
+\textbf{Entità Coinvolte} & Coltivatore, Attività \\
+\hline
+\textbf{Cardinalità} & (1,1) - (0,N): Un'attività è svolta da esattamente un coltivatore, un coltivatore può svolgere zero o più attività \\
+\hline
+\textbf{Attributi} & Nessuno \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsection{Riceve (Coltivatore-Notifica)}
+
+\begin{table}[H]
+\centering
+\caption{Associazione: Riceve}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome} & Riceve \\
+\hline
+\textbf{Descrizione} & Associa un coltivatore alle notifiche che ha ricevuto. Tiene traccia dello stato di lettura \\
+\hline
+\textbf{Entità Coinvolte} & Coltivatore, Notifica \\
+\hline
+\textbf{Cardinalità} & (0,N) - (1,N): Un coltivatore può ricevere zero o più notifiche, una notifica è ricevuta da uno o più coltivatori \\
+\hline
+\textbf{Attributi} & 
+\begin{itemize}[nosep]
+    \item letta: BOOLEAN (indica se la notifica è stata letta)
+    \item data\_lettura: DATE (data in cui la notifica è stata letta, NULL se non letta)
+\end{itemize} \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsection{Segnala (Notifica-Progetto)}
+
+\begin{table}[H]
+\centering
+\caption{Associazione: Segnala (Notifica-Progetto)}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome} & Segnala \\
+\hline
+\textbf{Descrizione} & Associa una notifica al progetto a cui si riferisce \\
+\hline
+\textbf{Entità Coinvolte} & Notifica, Progetto \\
+\hline
+\textbf{Cardinalità} & (1,1) - (0,N): Una notifica segnala esattamente un progetto, un progetto può essere segnalato da zero o più notifiche \\
+\hline
+\textbf{Attributi} & Nessuno \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsection{Segnala (NotificaAttività-Attività)}
+
+\begin{table}[H]
+\centering
+\caption{Associazione: Segnala (NotificaAttività-Attività)}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome} & Segnala \\
+\hline
+\textbf{Descrizione} & Associa una notifica di tipo ``Attività Imminente'' all'attività specifica che sta per scadere \\
+\hline
+\textbf{Entità Coinvolte} & NotificaAttività (sottotipo di Notifica), Attività \\
+\hline
+\textbf{Cardinalità} & (1,1) - (0,N): Una notifica di attività imminente segnala esattamente un'attività, un'attività può essere segnalata da zero o più notifiche \\
+\hline
+\textbf{Attributi} & Nessuno \\
+\hline
+\end{tabularx}
+\end{table}
 
 \newpage
 
@@ -1685,36 +1639,6 @@ I vincoli sono classificati secondo le seguenti categorie:
 
 \section{Schema Logico Relazionale}
 
-\subsection{Traduzione in Relazioni}
-
-Lo schema concettuale ristrutturato è stato tradotto nel seguente schema logico relazionale:
-
-\subsubsection{Utente}
-\begin{lstlisting}[style=sqlstyle]
-CREATE TABLE Utente (
-    email VARCHAR(255) PRIMARY KEY,
-    nome VARCHAR(100) NOT NULL,
-    cognome VARCHAR(100) NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    tipo VARCHAR(20) CHECK (tipo IN ('proprietario', 'coltivatore'))
-);
-\end{lstlisting}
-
-\subsubsection{Orto}
-\begin{lstlisting}[style=sqlstyle]
-CREATE TABLE Orto (
-    id_orto SERIAL PRIMARY KEY,
-    nome VARCHAR(100) NOT NULL,
-    indirizzo VARCHAR(255) NOT NULL,
-    superficie DECIMAL(10,2) NOT NULL,
-    email_proprietario VARCHAR(255) NOT NULL,
-    FOREIGN KEY (email_proprietario) 
-        REFERENCES Utente(email) ON DELETE CASCADE
-);
-\end{lstlisting}
-
-% TODO: Aggiungere altre tabelle...
-
 \subsection{Schema Completo}
 
 \begin{figure}[H]
@@ -1805,6 +1729,20 @@ Questa sezione descrive come le associazioni dello schema concettuale sono state
 \textbf{Traduzione}: Nuova tabella \texttt{LetturaNotifica} (o \texttt{Riceve}) con chiavi esterne \texttt{id\_notifica} e \texttt{id\_coltivatore}, più attributi \texttt{is\_letta} e \texttt{data\_lettura}
 
 \textbf{Motivazione}: Relazione molti-a-molti (N:M) tra Coltivatore e Notifica, con attributi propri della relazione (stato di lettura e data di lettura). Richiede una tabella di associazione separata che funge da classe associativa per tracciare quale coltivatore ha ricevuto e letto quale notifica.
+
+\subsubsection{Sottotipi di Attività}
+
+Le specializzazioni dell'entità Attività (Semina, Irrigazione, Concimazione, Trattamento, Raccolta) sono state tradotte utilizzando la strategia ``Table per Entity''. Ogni sottotipo è implementato come una tabella separata che contiene solo gli attributi specifici del sottotipo.
+
+\textbf{Traduzione}: Per ciascun sottotipo di attività è stata creata una tabella separata (\texttt{semina}, \texttt{irrigazione}, \texttt{concimazione}, \texttt{trattamento}, \texttt{raccolta}) con una chiave esterna \texttt{id} che referenzia la tabella \texttt{Attività}.
+
+\textbf{Motivazione}: Questa strategia permette di:
+\begin{itemize}
+    \item Mantenere una tabella base \texttt{Attività} con tutti gli attributi comuni, facilitando le query che interessano tutte le attività indipendentemente dal tipo
+    \item Evitare valori NULL che sarebbero presenti con la strategia ``table per hierarchy''
+    \item Garantire l'integrità referenziale tra la tabella base e le specializzazioni attraverso chiavi esterne con \texttt{ON DELETE CASCADE}
+    \item Utilizzare il campo \texttt{tipo} nella tabella \texttt{Attività} per identificare il sottotipo specifico e garantire la corrispondenza con la specializzazione tramite trigger
+\end{itemize}
 
 \newpage
 
@@ -2743,164 +2681,6 @@ CREATE TRIGGER insert_riceve
 BEFORE INSERT ON riceve
 FOR EACH ROW
 EXECUTE FUNCTION check_insert_riceve();
-\end{lstlisting}
-
-\newpage
-
-\section{Query di Esempio}
-
-Questa sezione presenta alcune query SQL rappresentative che dimostrano l'utilizzo pratico del database per operazioni comuni.
-
-\subsection{Query di Selezione}
-
-\subsubsection{Elenco Progetti Attivi di un Coltivatore}
-
-\textbf{Descrizione}: Questa query recupera tutti i progetti attivi a cui un coltivatore partecipa, mostrando le informazioni principali del progetto.
-
-\begin{lstlisting}[style=sqlstyle]
-SELECT p.id, p.nome, p.descrizione, 
-       p.data_inizio, p.stato,
-       u.nome || ' ' || u.cognome AS proprietario
-FROM progetto p
-JOIN lavora_per lp ON lp.id_progetto = p.id
-JOIN utente u ON u.id = p.id_proprietario
-WHERE lp.id_coltivatore = 42
-  AND p.stato = 'ATTIVO'
-ORDER BY p.data_inizio DESC;
-\end{lstlisting}
-
-\subsubsection{Attività in Scadenza}
-
-\textbf{Descrizione}: Utilizza la vista \texttt{view\_attivita} per identificare tutte le attività in scadenza di un coltivatore, ordinate per data di scadenza.
-
-\begin{lstlisting}[style=sqlstyle]
-SELECT va.id, va.nome, va.data_scadenza,
-       c.id AS id_coltivazione,
-       col.nome_comune AS coltura
-FROM view_attivita va
-JOIN coltivazione c ON c.id = va.id_coltivazione
-JOIN coltura col ON col.id = c.id_coltura
-WHERE va.id_coltivatore = 42
-  AND va.in_scadenza = TRUE
-  AND va.stato <> 'COMPLETATA'
-ORDER BY va.data_scadenza ASC;
-\end{lstlisting}
-
-\subsubsection{Lotti Disponibili per Nuovo Progetto}
-
-\textbf{Descrizione}: Identifica tutti i lotti disponibili (non occupati) di un proprietario, utilizzando la vista \texttt{view\_lotti\_disponibili}.
-
-\begin{lstlisting}[style=sqlstyle]
-SELECT l.id, l.codice_lotto, l.estensione_mq,
-       l.tipologia_terreno, o.nome_orto
-FROM view_lotti_disponibili l
-JOIN orto o ON o.id = l.id_orto
-WHERE l.id_proprietario = 15
-ORDER BY o.nome_orto, l.codice_lotto;
-\end{lstlisting}
-
-\subsection{Query di Aggregazione}
-
-\subsubsection{Statistiche per Orto}
-
-\textbf{Descrizione}: Calcola statistiche aggregate per ogni orto di un proprietario, inclusi il numero di lotti, l'estensione totale e il numero di progetti attivi.
-
-\begin{lstlisting}[style=sqlstyle]
-SELECT o.nome_orto,
-       COUNT(DISTINCT l.id) AS numero_lotti,
-       COALESCE(SUM(l.estensione_mq), 0) AS estensione_totale_mq,
-       COUNT(DISTINCT p.id) FILTER (WHERE p.stato = 'ATTIVO') 
-         AS progetti_attivi
-FROM orto o
-LEFT JOIN lotto l ON l.id_orto = o.id
-LEFT JOIN progetto p ON p.id_lotto = l.id
-WHERE o.id_proprietario = 15
-GROUP BY o.id, o.nome_orto
-ORDER BY o.nome_orto;
-\end{lstlisting}
-
-\subsubsection{Produttività per Coltura}
-
-\textbf{Descrizione}: Analizza la produttività storica di ogni coltura, calcolando la quantità media raccolta e il numero di coltivazioni concluse.
-
-\begin{lstlisting}[style=sqlstyle]
-SELECT col.nome_comune,
-       COUNT(c.id) AS numero_coltivazioni,
-       AVG(r.quantita_effettiva_kg) AS media_raccolto_kg,
-       SUM(r.quantita_effettiva_kg) AS totale_raccolto_kg
-FROM coltura col
-JOIN coltivazione c ON c.id_coltura = col.id
-JOIN attivita a ON a.id_coltivazione = c.id
-JOIN raccolta r ON r.id = a.id
-WHERE c.stato = 'CONCLUSA'
-  AND r.quantita_effettiva_kg IS NOT NULL
-GROUP BY col.id, col.nome_comune
-HAVING COUNT(c.id) > 0
-ORDER BY totale_raccolto_kg DESC;
-\end{lstlisting}
-
-\subsection{Query Complesse}
-
-\subsubsection{Report Completo Progetto}
-
-\textbf{Descrizione}: Genera un report dettagliato di un progetto, includendo informazioni sul lotto, coltivazioni, attività e coltivatori assegnati.
-
-\begin{lstlisting}[style=sqlstyle]
-WITH coltivazioni_progetto AS (
-  SELECT c.id, c.stato, col.nome_comune,
-         COUNT(a.id) AS num_attivita,
-         COUNT(a.id) FILTER (WHERE a.stato = 'COMPLETATA') 
-           AS attivita_completate
-  FROM coltivazione c
-  JOIN coltura col ON col.id = c.id_coltura
-  LEFT JOIN attivita a ON a.id_coltivazione = c.id
-  WHERE c.id_progetto = 10
-  GROUP BY c.id, c.stato, col.nome_comune
-),
-coltivatori_progetto AS (
-  SELECT u.nome || ' ' || u.cognome AS nome_completo
-  FROM lavora_per lp
-  JOIN utente u ON u.id = lp.id_coltivatore
-  WHERE lp.id_progetto = 10
-)
-SELECT 
-  p.nome AS progetto,
-  p.stato AS stato_progetto,
-  l.codice_lotto,
-  l.estensione_mq,
-  STRING_AGG(DISTINCT cp.nome_comune, ', ') AS colture,
-  SUM(cp.num_attivita) AS totale_attivita,
-  SUM(cp.attivita_completate) AS attivita_completate,
-  STRING_AGG(DISTINCT colt.nome_completo, ', ') AS coltivatori
-FROM progetto p
-JOIN lotto l ON l.id = p.id_lotto
-LEFT JOIN coltivazioni_progetto cp ON TRUE
-LEFT JOIN coltivatori_progetto colt ON TRUE
-WHERE p.id = 10
-GROUP BY p.id, p.nome, p.stato, l.codice_lotto, l.estensione_mq;
-\end{lstlisting}
-
-\subsubsection{Notifiche Non Lette per Coltivatore}
-
-\textbf{Descrizione}: Recupera tutte le notifiche non ancora lette da un coltivatore, con informazioni sul progetto e il livello di urgenza.
-
-\begin{lstlisting}[style=sqlstyle]
-SELECT n.id, n.nome_evento, n.descrizione,
-       n.urgenza, n.data_invio,
-       p.nome AS progetto
-FROM notifica n
-JOIN riceve r ON r.id_notifica = n.id
-JOIN progetto p ON p.id = n.id_progetto
-WHERE r.id_coltivatore = 42
-  AND r.is_letta = FALSE
-ORDER BY 
-  CASE n.urgenza
-    WHEN 'CRITICA' THEN 1
-    WHEN 'ALTA' THEN 2
-    WHEN 'MEDIA' THEN 3
-    WHEN 'BASSA' THEN 4
-  END,
-  n.data_invio DESC;
 \end{lstlisting}
 
 \newpage
