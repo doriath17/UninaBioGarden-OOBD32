@@ -112,8 +112,36 @@ Per la notifica invece si è scelto di optare per una specializzazione parziale 
 
 # decisioni sul ristrutturato
 
+# chiavi surrogate
+
+si è scelto di introdurre delle chiavi surrogate (id) per tutte le entità del sistema, anche per quelle che avevano già una chiave naturale. Questo è stato fatto per semplificare la gestione delle chiavi primarie e delle chiavi esterne, evitando di dover gestire chiavi primarie composte e chiavi esterne che fanno riferimento a più campi. Inoltre, l'introduzione di chiavi surrogate permette di avere un identificatore univoco per ogni entità, indipendentemente dagli attributi che la caratterizzano, e questo è particolarmente utile in caso di modifiche future al modello dei dati.
+
 # ridondanze
 
-si svolge su (coltivazione e lotto)
+- si svolge su (coltivazione e lotto)
+  Questa relazione è stata rimossa siccome si è ritenuta ridondante: è possibile risalire al lotto su cui si svolge una coltivazione tramite il progetto a cui la coltivazione è associata.
 
-si occupa di (attivita e )
+- si occupa di (attivita e coltura)
+  Questa relazione è stata rimossa siccome si è ritenuta ridondante: è possibile risalire alla coltura relativa all'attività tramite la coltivazione a cui l'attività è associata.
+
+- lavora su (coltivatore e lotto)
+  Questa relazione è stata rimossa siccome si è ritenuta ridondante: è possibile risalire al lotto su cui lavora un coltivatore tramite la relazione "lavora_per" che un coltivatore ha con progetto.
+
+# eliminazione gerarchie
+
+# gerarchia attivita
+
+Si è optato per la strategia "una tabella per entità". Di seguito i motivi di questa scelta:
+
+- siccome ci sono molte sottoclassi di attività e ognuna di queste ha diversi attributi, si evita di avere una tabella con molti campi nulli, con conseguente utilizzo più efficiente della memoria. Di conseguenza la strategia "una tabella per gerarchia" è stata scartata.
+- si è ritenuto che fosse necessario una maniera veloce per poter fare delle query e recuperare tutte le informazioni generali di entità anche senza le informazioni specifiche dei sottotipi. Di conseguenza la strategia "una tabella per sottotipo" è stata scartata.
+
+# gerarchia utente
+
+Al contrario della gerarchia di attività, per la gerarchia di utente si è optato per la strategia "una tabella per gerarchia". Di seguito i motivi di questa scelta:
+
+- in questo caso le sottoclassi di utente sono prive di attributi specifici e quindi è risultato naturale utilizzare questa gerarchia e introdurre un campo "tipo" ad utente per distinguere tra le due tipologie di utenti.
+
+# gerarchia notifica
+
+Come per utente, il sottotipo di notifica aveva soltanto un campo e dunque la soluzione più naturale è stata quella di utilizzare la strategia "una tabella per gerarchia" e introdurre un campo "tipo" a notifica per distinguere tra le due tipologie di notifica.

@@ -714,16 +714,7 @@ Le relazioni del modello definiscono le associazioni tra le entità e le loro ca
 
 \section{Schema Ristrutturato}
 
-\subsection{Scelte di Ristrutturazione}
-
-Durante la fase di ristrutturazione sono state effettuate le seguenti modifiche:
-
-\begin{enumerate}
-    \item \textbf{Eliminazione delle gerarchie}: Le specializzazioni sono state gestite tramite...
-    \item \textbf{Risoluzione attributi composti}: L'indirizzo è stato decomposto in...
-    \item \textbf{Risoluzione attributi multivalore}: ...
-    \item \textbf{Scelta identificatori}: ...
-\end{enumerate}
+Questa sezione descrive le modifiche apportate allo schema concettuale EER per prepararlo alla traduzione nello schema logico. Le principali operazioni di ristrutturazione includono l'introduzione di chiavi surrogate, l'eliminazione di ridondanze e la risoluzione delle gerarchie.
 
 \subsection{Diagramma Ristrutturato}
 
@@ -734,9 +725,700 @@ Durante la fase di ristrutturazione sono state effettuate le seguenti modifiche:
     \label{fig:ristrutturato}
 \end{figure}
 
-\subsection{Analisi delle Modifiche}
+\subsection{Introduzione di Chiavi Surrogate}
 
-% Descrivere le modifiche in dettaglio
+Si è scelto di introdurre delle \textbf{chiavi surrogate} (id) per tutte le entità del sistema, anche per quelle che avevano già una chiave naturale. Questa decisione è stata motivata da diverse considerazioni:
+
+\begin{itemize}
+    \item \textbf{Semplificazione della gestione}: Evitare di dover gestire chiavi primarie composte e chiavi esterne che fanno riferimento a più campi, semplificando notevolmente le operazioni di join e le query
+    \item \textbf{Identificatore univoco indipendente}: Avere un identificatore univoco per ogni entità, indipendentemente dagli attributi che la caratterizzano
+    \item \textbf{Flessibilità futura}: Facilitare modifiche future al modello dei dati senza dover riprogettare le relazioni e le chiavi esterne
+    \item \textbf{Performance}: Migliorare le prestazioni delle query, specialmente per le entità deboli che avevano chiavi primarie complesse
+\end{itemize}
+
+Questa scelta si applica a tutte le entità del sistema, incluse quelle che erano modellate come entità deboli nello schema concettuale (Lotto, Coltivazione, Attività, Notifica).
+
+\subsection{Eliminazione di Ridondanze}
+
+Durante la fase di ristrutturazione sono state identificate ed eliminate diverse relazioni ridondanti che erano state inserite nello schema EER per chiarezza concettuale ma che risultavano derivabili da altre relazioni:
+
+\subsubsection{Relazione ``Si Svolge Su'' (Coltivazione-Lotto)}
+
+Questa relazione è stata rimossa in quanto ritenuta ridondante. È possibile risalire al lotto su cui si svolge una coltivazione attraverso il seguente percorso derivativo:
+
+$$\text{Coltivazione} \xrightarrow{\text{Comprende}} \text{Progetto} \xrightarrow{\text{Occupa}} \text{Lotto}$$
+
+La rimozione di questa ridondanza elimina la necessità di mantenere la coerenza tra dati duplicati e semplifica le operazioni di aggiornamento.
+
+\subsubsection{Relazione ``Si Occupa'' (Attività-Coltura)}
+
+Questa relazione è stata rimossa in quanto ritenuta ridondante. È possibile risalire alla coltura relativa a un'attività attraverso il seguente percorso derivativo:
+
+$$\text{Attività} \xrightarrow{\text{Eseguita Su}} \text{Coltivazione} \xrightarrow{\text{Basata Su}} \text{Coltura}$$
+
+Come per la ridondanza precedente, questa eliminazione migliora la coerenza dei dati e riduce il rischio di anomalie di aggiornamento.
+
+\subsubsection{Relazione ``Lavora Su'' (Coltivatore-Lotto)}
+
+Questa relazione è stata rimossa in quanto ritenuta ridondante. È possibile risalire al lotto su cui lavora un coltivatore attraverso la relazione ``Lavora Per'' che un coltivatore ha con il progetto:
+
+$$\text{Coltivatore} \xrightarrow{\text{Lavora Per}} \text{Progetto} \xrightarrow{\text{Occupa}} \text{Lotto}$$
+
+L'eliminazione di questa ridondanza mantiene il modello più snello e facilita la gestione dei dati.
+
+\subsection{Eliminazione delle Gerarchie}
+
+Per la traduzione nello schema logico relazionale, le tre gerarchie presenti nello schema EER sono state risolte utilizzando strategie diverse in base alle caratteristiche specifiche di ciascuna gerarchia.
+
+\subsubsection{Gerarchia Attività: Strategia ``Table per Entity''}
+
+Per la gerarchia delle attività si è optato per la strategia \textbf{``una tabella per entità''}. Questa scelta è motivata dai seguenti fattori:
+
+\begin{itemize}
+    \item \textbf{Molti sottotipi con attributi specifici}: Ci sono cinque sottoclassi di attività (Semina, Irrigazione, Concimazione, Trattamento, Raccolta) e ognuna ha attributi specifici diversi
+    \item \textbf{Evitare valori NULL}: La strategia ``una tabella per gerarchia'' avrebbe portato a una tabella con molti campi, la maggior parte dei quali sarebbero NULL per ogni record, con conseguente spreco di memoria
+    \item \textbf{Query su attributi generali}: È necessario poter recuperare velocemente tutte le informazioni generali delle attività (nome, data pianificazione, data scadenza, stato, coltivatore assegnato) senza dover unire tabelle
+    \item \textbf{Flessibilità}: Mantenere una tabella base ``Attività'' permette di gestire facilmente query che interessano tutte le attività indipendentemente dal tipo specifico
+\end{itemize}
+
+\textbf{Implementazione}: Una tabella \texttt{Attività} contiene tutti gli attributi comuni e un campo \texttt{tipo} per identificare il sottotipo. Ogni sottotipo ha poi la propria tabella (es. \texttt{Semina}, \texttt{Irrigazione}, ecc.) che contiene solo gli attributi specifici e fa riferimento alla tabella \texttt{Attività} tramite chiave esterna con lo stesso \texttt{id}.
+
+\subsubsection{Gerarchia Utente: Strategia ``Table per Hierarchy''}
+
+Per la gerarchia di utente si è optato per la strategia \textbf{``una tabella per gerarchia''}. Questa scelta è giustificata da:
+
+\begin{itemize}
+    \item \textbf{Sottotipi senza attributi specifici}: Le sottoclassi Proprietario e Coltivatore non hanno attributi specifici propri
+    \item \textbf{Gerarchia totale e disgiunta}: Ogni utente è obbligatoriamente o un proprietario o un coltivatore
+    \item \textbf{Semplicità}: Non ci sono campi NULL inutili da gestire
+\end{itemize}
+
+\textbf{Implementazione}: Una singola tabella \texttt{Utente} con tutti gli attributi comuni e un campo \texttt{tipo} che distingue tra ``proprietario'' e ``coltivatore''.
+
+\subsubsection{Gerarchia Notifica: Strategia ``Table per Hierarchy''}
+
+Anche per la gerarchia di notifica si è optato per la strategia \textbf{``una tabella per gerarchia''}:
+
+\begin{itemize}
+    \item \textbf{Un solo sottotipo con pochi attributi}: Il sottotipo NotificaAttività ha solo un attributo specifico (giorni\_mancanti)
+    \item \textbf{Gerarchia parziale}: Una notifica può essere generica (evento sul progetto) o specializzata (attività imminente)
+    \item \textbf{Efficienza}: Gestire un singolo campo aggiuntivo (potenzialmente NULL per notifiche generiche) è accettabile e più efficiente rispetto alla creazione di tabelle separate
+\end{itemize}
+
+\textbf{Implementazione}: Una singola tabella \texttt{Notifica} con tutti gli attributi comuni, un campo \texttt{tipo} che distingue tra ``evento'' e ``attività\_imminente'', e i campi specifici del sottotipo (es. \texttt{giorni\_mancanti} e riferimento all'\texttt{Attività.id}) che possono essere NULL per le notifiche di tipo evento.
+
+\newpage
+
+\section{Dizionario dei Vincoli}
+
+Questa sezione descrive tutti i vincoli di integrità del sistema, classificati per tipologia. I vincoli garantiscono la coerenza e la validità dei dati nel database.
+
+\subsection{Classificazione dei Vincoli}
+
+I vincoli sono classificati secondo le seguenti categorie:
+
+\begin{description}
+    \item[Dominio] Vincoli sui valori ammissibili per un singolo attributo (es. CHECK su valori numerici, ENUM per valori categorici)
+    \item[N-upla] Vincoli che coinvolgono più attributi dello stesso record (es. data\_inizio < data\_fine)
+    \item[Intrarelazionale] Vincoli tra record diversi della stessa tabella (es. un solo progetto attivo per lotto)
+    \item[Interrelazionale] Vincoli tra record di tabelle diverse (es. chiavi esterne con regole specifiche)
+\end{description}
+
+\subsection{Vincoli su Utente}
+
+\subsubsection{Vincoli di Dominio}
+
+\begin{table}[H]
+\centering
+\caption{Vincoli di Dominio - Utente (Campi Obbligatori)}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome Vincolo} & \texttt{campi\_utente\_not\_null} \\
+\hline
+\textbf{Tipo} & Dominio \\
+\hline
+\textbf{Descrizione} & I campi \texttt{username}, \texttt{password}, \texttt{email}, \texttt{nome}, \texttt{cognome}, \texttt{codice\_fiscale} devono essere NOT NULL. Username, email e codice fiscale devono essere UNIQUE \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsection{Vincoli su Orto}
+
+\subsubsection{Vincoli Interrelazionali}
+
+\begin{table}[H]
+\centering
+\caption{Vincoli Interrelazionali - Orto}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome Vincolo} & \texttt{orto\_proprietario\_valido} \\
+\hline
+\textbf{Tipo} & Interrelazionale \\
+\hline
+\textbf{Descrizione} & L'utente che registra un orto (chiave esterna verso \texttt{Utente.id}) deve essere di tipo \texttt{'PROPRIETARIO'} \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsection{Vincoli su Lotto}
+
+\subsubsection{Vincoli di Dominio}
+
+\begin{table}[H]
+\centering
+\caption{Vincoli di Dominio - Lotto}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome Vincolo} & \texttt{estensione\_positiva} \\
+\hline
+\textbf{Tipo} & Dominio \\
+\hline
+\textbf{Descrizione} & Il campo \texttt{estensione\_mq} deve essere maggiore di zero \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsubsection{Vincoli Interrelazionali}
+
+\begin{table}[H]
+\centering
+\caption{Vincoli Interrelazionali - Lotto}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome Vincolo} & \texttt{lotto\_proprietario\_valido} \\
+\hline
+\textbf{Tipo} & Interrelazionale \\
+\hline
+\textbf{Descrizione} & L'utente proprietario di un lotto deve essere di tipo \texttt{'PROPRIETARIO'} \\
+\hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Vincoli Interrelazionali - Lotto (Immutabilità)}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome Vincolo} & \texttt{lotto\_campi\_immutabili} \\
+\hline
+\textbf{Tipo} & Interrelazionale \\
+\hline
+\textbf{Descrizione} & I campi \texttt{id\_proprietario}, \texttt{id\_orto} e \texttt{data\_registrazione} non possono essere modificati dopo l'inserimento \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsubsection{Vincoli Intrarelazionali}
+
+\begin{table}[H]
+\centering
+\caption{Vincoli Intrarelazionali - Lotto}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome Vincolo} & \texttt{un\_progetto\_attivo\_per\_lotto} \\
+\hline
+\textbf{Tipo} & Intrarelazionale (via Progetto) \\
+\hline
+\textbf{Descrizione} & Un lotto può ospitare più progetti ma un solo progetto con \texttt{stato = 'ATTIVO'} alla volta \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsection{Vincoli su Progetto}
+
+\subsubsection{Vincoli di N-upla}
+
+\begin{table}[H]
+\centering
+\caption{Vincoli di N-upla - Progetto}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome Vincolo} & \texttt{progetto\_nuovo\_attivo} \\
+\hline
+\textbf{Tipo} & N-upla \\
+\hline
+\textbf{Descrizione} & Un progetto appena creato deve avere \texttt{stato = 'ATTIVO'} e \texttt{data\_fine = NULL} \\
+\hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Vincoli di N-upla - Progetto (Data Fine)}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome Vincolo} & \texttt{progetto\_data\_fine\_concluso} \\
+\hline
+\textbf{Tipo} & N-upla \\
+\hline
+\textbf{Descrizione} & La \texttt{data\_fine} deve essere NULL finché il progetto non viene concluso. Quando \texttt{stato} diventa \texttt{'CONCLUSO'}, la data di fine viene impostata automaticamente \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsubsection{Vincoli Interrelazionali}
+
+\begin{table}[H]
+\centering
+\caption{Vincoli Interrelazionali - Progetto}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome Vincolo} & \texttt{progetto\_proprietario\_valido} \\
+\hline
+\textbf{Tipo} & Interrelazionale \\
+\hline
+\textbf{Descrizione} & L'utente che pianifica un progetto deve essere di tipo \texttt{'PROPRIETARIO'} \\
+\hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Vincoli Interrelazionali - Progetto (Lotto Posseduto)}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome Vincolo} & \texttt{progetto\_lotto\_posseduto} \\
+\hline
+\textbf{Tipo} & Interrelazionale \\
+\hline
+\textbf{Descrizione} & Il lotto che il progetto occupa deve essere uno dei lotti posseduti dall'utente proprietario del progetto: \texttt{Lotto.id\_proprietario = Progetto.id\_proprietario} \\
+\hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Vincoli Interrelazionali - Progetto (Immutabilità)}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome Vincolo} & \texttt{progetto\_campi\_immutabili} \\
+\hline
+\textbf{Tipo} & Interrelazionale \\
+\hline
+\textbf{Descrizione} & I campi \texttt{id\_proprietario} e \texttt{id\_lotto} non possono essere modificati dopo l'inserimento \\
+\hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Vincoli Interrelazionali - Progetto (Conclusione)}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome Vincolo} & \texttt{progetto\_concluso\_coltivazioni\_concluse} \\
+\hline
+\textbf{Tipo} & Interrelazionale \\
+\hline
+\textbf{Descrizione} & Un progetto può essere concluso solo se tutte le coltivazioni associate hanno \texttt{stato = 'CONCLUSA'}. Verificato in aggiornamento dello stato \\
+\hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Vincoli Interrelazionali - Progetto (Read-Only)}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome Vincolo} & \texttt{progetto\_concluso\_readonly} \\
+\hline
+\textbf{Tipo} & Interrelazionale \\
+\hline
+\textbf{Descrizione} & Se un progetto è concluso non è possibile: creare nuove coltivazioni, associare nuovi coltivatori, modificare ulteriormente il progetto \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsection{Vincoli su Coltivazione}
+
+\subsubsection{Vincoli di N-upla}
+
+\begin{table}[H]
+\centering
+\caption{Vincoli di N-upla - Coltivazione}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome Vincolo} & \texttt{coltivazione\_nuova\_attiva} \\
+\hline
+\textbf{Tipo} & N-upla \\
+\hline
+\textbf{Descrizione} & Una coltivazione appena creata deve avere \texttt{stato = 'ATTIVA'} \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsubsection{Vincoli Interrelazionali}
+
+\begin{table}[H]
+\centering
+\caption{Vincoli Interrelazionali - Coltivazione}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome Vincolo} & \texttt{coltivazione\_progetto\_attivo} \\
+\hline
+\textbf{Tipo} & Interrelazionale \\
+\hline
+\textbf{Descrizione} & Una coltivazione può essere creata solo per un progetto con \texttt{stato = 'ATTIVO'} \\
+\hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Vincoli Interrelazionali - Coltivazione (Data Inizio)}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome Vincolo} & \texttt{coltivazione\_data\_inizio\_progetto} \\
+\hline
+\textbf{Tipo} & Interrelazionale \\
+\hline
+\textbf{Descrizione} & La \texttt{data\_inizio} di una coltivazione deve essere maggiore o uguale alla \texttt{data\_inizio} del progetto associato: \texttt{Coltivazione.data\_inizio >= Progetto.data\_inizio} \\
+\hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Vincoli Interrelazionali - Coltivazione (Immutabilità)}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome Vincolo} & \texttt{coltivazione\_campi\_immutabili} \\
+\hline
+\textbf{Tipo} & Interrelazionale \\
+\hline
+\textbf{Descrizione} & I campi \texttt{data\_inizio}, \texttt{id\_progetto} e \texttt{id\_coltura} non possono essere modificati dopo l'inserimento \\
+\hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Vincoli Interrelazionali - Coltivazione (Transizioni di Stato)}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome Vincolo} & \texttt{coltivazione\_transizione\_raccolta} \\
+\hline
+\textbf{Tipo} & Interrelazionale \\
+\hline
+\textbf{Descrizione} & Una coltivazione può passare da \texttt{'ATTIVA'} a \texttt{'IN\_RACCOLTA'} solo se non ci sono attività associate non terminate, ad eccezione dell'attività di raccolta che deve essere in corso \\
+\hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Vincoli Interrelazionali - Coltivazione (Pianificazione Attività)}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome Vincolo} & \texttt{coltivazione\_pianificazione\_attivita} \\
+\hline
+\textbf{Tipo} & Interrelazionale \\
+\hline
+\textbf{Descrizione} & Se \texttt{stato = 'IN\_RACCOLTA'} o \texttt{'CONCLUSA'} non è più possibile pianificare nuove attività sulla coltivazione. Se \texttt{stato = 'CONCLUSA'} la coltivazione è in modalità read-only \\
+\hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Vincoli Interrelazionali - Coltivazione (Unica Raccolta)}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome Vincolo} & \texttt{coltivazione\_unica\_raccolta} \\
+\hline
+\textbf{Tipo} & Interrelazionale \\
+\hline
+\textbf{Descrizione} & Ad una coltivazione può essere associata solo una attività di tipo \texttt{Raccolta} \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsection{Vincoli su Attività}
+
+\subsubsection{Vincoli di N-upla}
+
+\begin{table}[H]
+\centering
+\caption{Vincoli di N-upla - Attività}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome Vincolo} & \texttt{attivita\_date\_coerenti} \\
+\hline
+\textbf{Tipo} & N-upla \\
+\hline
+\textbf{Descrizione} & Devono valere le seguenti relazioni: \texttt{data\_inizio >= data\_pianificazione}, \texttt{data\_scadenza >= data\_pianificazione}, \texttt{data\_fine >= data\_inizio} \\
+\hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Vincoli di N-upla - Attività (Nuova Pianificata)}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome Vincolo} & \texttt{attivita\_nuova\_pianificata} \\
+\hline
+\textbf{Tipo} & N-upla \\
+\hline
+\textbf{Descrizione} & Un'attività appena creata deve avere \texttt{stato = 'PIANIFICATA'} e \texttt{data\_fine = NULL} \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsubsection{Vincoli Interrelazionali}
+
+\begin{table}[H]
+\centering
+\caption{Vincoli Interrelazionali - Attività}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome Vincolo} & \texttt{attivita\_coltivatore\_valido} \\
+\hline
+\textbf{Tipo} & Interrelazionale \\
+\hline
+\textbf{Descrizione} & L'utente che svolge un'attività deve essere di tipo \texttt{'COLTIVATORE'} e deve essere associato al progetto tramite la relazione \texttt{lavora\_per} \\
+\hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Vincoli Interrelazionali - Attività (Coltivazione Terminale)}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome Vincolo} & \texttt{attivita\_coltivazione\_non\_terminale} \\
+\hline
+\textbf{Tipo} & Interrelazionale \\
+\hline
+\textbf{Descrizione} & Non è possibile inserire una nuova attività su una coltivazione con \texttt{stato = 'CONCLUSA'} o \texttt{'IN\_RACCOLTA'} \\
+\hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Vincoli Interrelazionali - Attività (Immutabilità)}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome Vincolo} & \texttt{attivita\_campi\_immutabili} \\
+\hline
+\textbf{Tipo} & Interrelazionale \\
+\hline
+\textbf{Descrizione} & I campi \texttt{data\_pianificazione} e \texttt{id\_coltivazione} non possono essere modificati dopo l'inserimento \\
+\hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Vincoli Interrelazionali - Attività (Read-Only)}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome Vincolo} & \texttt{attivita\_completata\_readonly} \\
+\hline
+\textbf{Tipo} & Interrelazionale \\
+\hline
+\textbf{Descrizione} & Se \texttt{stato = 'COMPLETATA'} non è più possibile modificare l'attività che entra in modalità read-only \\
+\hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Vincoli Interrelazionali - Attività (Transizioni di Stato)}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome Vincolo} & \texttt{attivita\_transizioni\_stato} \\
+\hline
+\textbf{Tipo} & Interrelazionale \\
+\hline
+\textbf{Descrizione} & Le uniche transizioni valide sono: \texttt{PIANIFICATA} $\rightarrow$ \texttt{IN\_CORSO} $\rightarrow$ \texttt{COMPLETATA}. Non è possibile tornare allo stato precedente \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsubsection{Vincoli per Sottotipi di Attività}
+
+\begin{table}[H]
+\centering
+\caption{Vincoli di Dominio - Semina}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome Vincolo} & \texttt{semina\_quantita\_positiva} \\
+\hline
+\textbf{Tipo} & Dominio \\
+\hline
+\textbf{Descrizione} & I campi \texttt{quantita\_semi} e \texttt{profondita\_cm} devono essere maggiori di zero \\
+\hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Vincoli di Dominio - Irrigazione}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome Vincolo} & \texttt{irrigazione\_quantita\_positiva} \\
+\hline
+\textbf{Tipo} & Dominio \\
+\hline
+\textbf{Descrizione} & Il campo \texttt{quantita\_acqua} deve essere maggiore di zero \\
+\hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Vincoli di Dominio - Concimazione}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome Vincolo} & \texttt{concimazione\_quantita\_positiva} \\
+\hline
+\textbf{Tipo} & Dominio \\
+\hline
+\textbf{Descrizione} & Il campo \texttt{quantita\_kg} deve essere maggiore di zero \\
+\hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Vincoli di Dominio - Trattamento}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome Vincolo} & \texttt{trattamento\_tempo\_carenza\_positivo} \\
+\hline
+\textbf{Tipo} & Dominio \\
+\hline
+\textbf{Descrizione} & Il campo \texttt{tempo\_carenza\_giorni} deve essere maggiore o uguale a zero \\
+\hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Vincoli di Dominio - Raccolta}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome Vincolo} & \texttt{raccolta\_quantita\_positiva} \\
+\hline
+\textbf{Tipo} & Dominio \\
+\hline
+\textbf{Descrizione} & I campi \texttt{quantita\_prevista\_kg} e \texttt{quantita\_effettiva\_kg} devono essere maggiori di zero (se non NULL) \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsection{Vincoli su Notifica}
+
+\subsubsection{Vincoli di N-upla}
+
+\begin{table}[H]
+\centering
+\caption{Vincoli di N-upla - Notifica}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome Vincolo} & \texttt{notifica\_tipo\_attivita\_coerenza} \\
+\hline
+\textbf{Tipo} & N-upla \\
+\hline
+\textbf{Descrizione} & Se \texttt{tipo = 'NOTIFICA\_PROGETTO'} allora il riferimento ad \texttt{Attività.id} deve essere NULL. Se \texttt{tipo = 'NOTIFICA\_ATTIVITA\_IMMINENTE'} allora il riferimento ad \texttt{Attività.id} deve essere NOT NULL \\
+\hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Vincoli di N-upla - Notifica (Giorni Mancanti)}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome Vincolo} & \texttt{notifica\_giorni\_mancanti\_positivo} \\
+\hline
+\textbf{Tipo} & N-upla \\
+\hline
+\textbf{Descrizione} & Se specificato, il campo \texttt{giorni\_mancanti} deve essere maggiore di zero \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsubsection{Vincoli Interrelazionali}
+
+\begin{table}[H]
+\centering
+\caption{Vincoli Interrelazionali - Notifica}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome Vincolo} & \texttt{notifica\_attivita\_stesso\_progetto} \\
+\hline
+\textbf{Tipo} & Interrelazionale \\
+\hline
+\textbf{Descrizione} & Se \texttt{tipo = 'NOTIFICA\_ATTIVITA\_IMMINENTE'}, l'attività associata deve appartenere allo stesso progetto della notifica: \texttt{Attività.Coltivazione.id\_progetto = Notifica.id\_progetto} \\
+\hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Vincoli Interrelazionali - Notifica (Attività Imminente in Riceve)}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome Vincolo} & \texttt{notifica\_attivita\_imminente\_riceve\_coltivatore} \\
+\hline
+\textbf{Tipo} & Interrelazionale \\
+\hline
+\textbf{Descrizione} & Una notifica di \texttt{tipo = 'NOTIFICA\_ATTIVITA\_IMMINENTE'} può essere associata ad un coltivatore tramite la relazione \texttt{riceve}, ma può esistere al massimo una singola istanza di questa relazione e il coltivatore deve essere lo stesso coltivatore assegnato all'attività referenziata dalla notifica \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsection{Vincoli sulla Relazione Lavora\_Per}
+
+\subsubsection{Vincoli Interrelazionali}
+
+\begin{table}[H]
+\centering
+\caption{Vincoli Interrelazionali - Lavora\_Per}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome Vincolo} & \texttt{lavora\_per\_coltivatore\_valido} \\
+\hline
+\textbf{Tipo} & Interrelazionale \\
+\hline
+\textbf{Descrizione} & L'utente associato al progetto tramite \texttt{lavora\_per} deve essere di tipo \texttt{'COLTIVATORE'} \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsection{Vincoli sulla Relazione Riceve}
+
+\subsubsection{Vincoli Interrelazionali}
+
+\begin{table}[H]
+\centering
+\caption{Vincoli Interrelazionali - Riceve}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome Vincolo} & \texttt{riceve\_coltivatore\_progetto} \\
+\hline
+\textbf{Tipo} & Interrelazionale \\
+\hline
+\textbf{Descrizione} & Una notifica può essere inviata (tramite \texttt{riceve}) solo ai coltivatori associati al progetto della notifica tramite la relazione \texttt{lavora\_per}: \texttt{Coltivatore} $\in$ \texttt{lavora\_per(Progetto)} \\
+\hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Vincoli Interrelazionali - Riceve (Notifiche Progetto)}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome Vincolo} & \texttt{riceve\_notifica\_progetto\_multipla} \\
+\hline
+\textbf{Tipo} & Interrelazionale \\
+\hline
+\textbf{Descrizione} & Le notifiche di \texttt{tipo = 'NOTIFICA\_PROGETTO'} possono essere associate a più coltivatori tramite la relazione \texttt{riceve}, mentre le notifiche di tipo \texttt{'NOTIFICA\_ATTIVITA\_IMMINENTE'} possono avere al massimo un'associazione (con il coltivatore dell'attività) \\
+\hline
+\end{tabularx}
+\end{table}
 
 \newpage
 
