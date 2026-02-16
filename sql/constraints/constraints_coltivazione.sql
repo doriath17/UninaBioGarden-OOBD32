@@ -15,7 +15,7 @@ RETURNS TRIGGER AS $$
 DECLARE
   v_progetto progetto%ROWTYPE;
 BEGIN
-
+  -- Vincolo: coltivazione_nuova_attiva
   IF NEW.stato IS NOT NULL AND NEW.stato <> 'ATTIVA' THEN
     RAISE EXCEPTION 'Una nuova coltivazione deve avere ''stato = ATTIVA''';
   END IF;
@@ -24,10 +24,12 @@ BEGIN
   FROM progetto
   WHERE id = NEW.id_progetto;
 
+  -- Vincolo: coltivazione_progetto_attivo
   IF v_progetto.stato <> 'ATTIVO' THEN 
     RAISE EXCEPTION 'Impossibile creare una coltivazione per un progetto non attivo';
   END IF;
 
+  -- Vincolo: coltivazione_data_inizio_progetto
   IF NEW.data_inizio IS NOT NULL AND NEW.data_inizio < v_progetto.data_inizio THEN 
     RAISE EXCEPTION 'La data di inizio di una coltivazione non può essere precedente alla data di inizio del progetto';
   END IF;
@@ -49,19 +51,22 @@ CREATE OR REPLACE FUNCTION
 check_update_coltivazione()
 RETURNS TRIGGER AS $$
 BEGIN
-
+  -- Vincolo: coltivazione_pianificazione_attivita
   IF OLD.stato = 'CONCLUSA' THEN 
     RAISE EXCEPTION 'Impossibile modificare una coltivazione terminata';
   END IF;
 
+  -- Vincolo: coltivazione_campi_immutabili
   IF NEW.data_inizio <> OLD.data_inizio THEN 
     RAISE EXCEPTION 'Impossibile modificare la data di inizio della coltivazione';
   END IF;
 
+  -- Vincolo: coltivazione_campi_immutabili
   IF NEW.id_progetto <> OLD.id_progetto THEN 
     RAISE EXCEPTION 'Impossibile modificare il progetto della coltivazione';
   END IF;
 
+  -- Vincolo: coltivazione_campi_immutabili
   IF NEW.id_coltura <> OLD.id_coltura THEN 
     RAISE EXCEPTION 'Impossibile modificare la coltura della coltivazione';
   END IF;

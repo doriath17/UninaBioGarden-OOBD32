@@ -11,12 +11,14 @@ CREATE OR REPLACE FUNCTION
 check_insert_notifica()
 RETURNS TRIGGER AS $$
 BEGIN
+  -- Vincolo: notifica_tipo_attivita_coerenza
   IF NEW.tipo = 'NOTIFICA_ATTIVITA_IMMINENTE' AND NEW.id_attivita IS NULL THEN
     RAISE EXCEPTION 'Una notifica di tipo ''NOTIFICA_ATTIVITA_IMMINENTE'' deve essere associata a un''attività';
   ELSIF NEW.tipo = 'NOTIFICA_PROGETTO' AND NEW.id_attivita IS NOT NULL THEN
     RAISE EXCEPTION 'Una notifica di tipo ''NOTIFICA_PROGETTO'' non può essere associata a un''attività';
   END IF;
 
+  -- Vincolo: notifica_attivita_stesso_progetto
   IF NEW.tipo = 'NOTIFICA_ATTIVITA_IMMINENTE' THEN
     IF NOT EXISTS (
       SELECT 1
@@ -56,10 +58,12 @@ BEGIN
     RAISE EXCEPTION 'Notifica % inesistente', NEW.id_notifica;
   END IF;
 
+  -- Vincolo: riceve_notifica_progetto_multipla / notifica_attivita_imminente_riceve_coltivatore
   IF v_notifica.tipo = 'NOTIFICA_ATTIVITA_IMMINENTE' THEN 
     RAISE EXCEPTION 'Non è possibile inserire una notifica di tipo ''NOTIFICA_ATTIVITA_IMMINENTE'' nella tabella riceve';
   END IF;
 
+  -- Vincolo: riceve_coltivatore_progetto
   IF NOT EXISTS (
     SELECT 1
     FROM lavora_per lp

@@ -11,18 +11,22 @@ DROP FUNCTION IF EXISTS check_update_progetto() CASCADE;
 CREATE OR REPLACE FUNCTION check_insert_progetto()
 RETURNS TRIGGER AS $$
 BEGIN
+  -- Vincolo: progetto_nuovo_attivo
   IF NEW.data_fine IS NOT NULL THEN
     RAISE EXCEPTION 'Un progetto appena creato deve avere ''data_fine = NULL''';
   END IF;
 
+  -- Vincolo: progetto_nuovo_attivo
   IF NEW.stato IS NOT NULL AND NEW.stato <> 'ATTIVO' THEN
     RAISE EXCEPTION 'Un nuovo progetto deve avere ''stato = ATTIVO''';
   END IF;
 
+  -- Vincolo: progetto_proprietario_valido
   IF NOT is_proprietario(NEW.id_proprietario) THEN
     RAISE EXCEPTION 'L''utente con ID = % non è un proprietario', NEW.id_proprietario;
   END IF;
 
+  -- Vincolo: progetto_lotto_posseduto
   IF NOT EXISTS (
     SELECT 1
     FROM lotto l
@@ -32,6 +36,7 @@ BEGIN
     RAISE EXCEPTION 'Il lotto % non appartiene all''utente %', NEW.id_lotto, NEW.id_proprietario;
   END IF;
 
+  -- Vincolo: un_progetto_attivo_per_lotto
   IF EXISTS (
     SELECT 1
     FROM progetto p
@@ -57,22 +62,27 @@ EXECUTE FUNCTION check_insert_progetto();
 CREATE OR REPLACE FUNCTION check_update_progetto()
 RETURNS TRIGGER AS $$
 BEGIN
+  -- Vincolo: progetto_concluso_readonly
   IF OLD.stato = 'CONCLUSO' THEN 
     RAISE EXCEPTION 'Impossibile modificare un progetto concluso';
   END IF;
 
+  -- Vincolo: progetto_campi_immutabili
   IF NEW.id_proprietario <> OLD.id_proprietario THEN 
     RAISE EXCEPTION 'Impossibile modificare il proprietario del progetto';
   END IF;
 
+  -- Vincolo: progetto_campi_immutabili
   IF NEW.id_lotto <> OLD.id_lotto THEN 
     RAISE EXCEPTION 'Impossibile modificare il lotto del progetto';
   END IF;
 
+  -- Vincolo: progetto_data_fine_concluso
   IF NEW.stato = 'CONCLUSO' AND NEW.data_fine IS NULL THEN 
     NEW.data_fine := CURRENT_TIMESTAMP;
   END IF;
 
+  -- Vincolo: progetto_concluso_coltivazioni_concluse
   IF NEW.stato = 'CONCLUSO' AND OLD.stato <> 'CONCLUSO' THEN 
     IF EXISTS (
       SELECT 1

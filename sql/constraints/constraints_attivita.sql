@@ -18,14 +18,17 @@ DECLARE
   v_stato_coltivazione coltivazione.stato%TYPE;
   v_coltivatore utente%ROWTYPE;
 BEGIN
+  -- Vincolo: attivita_nuova_pianificata
   IF NEW.stato <> 'PIANIFICATA' THEN 
     RAISE EXCEPTION 'Un attività appena creata deve avere stato ''PIANIFICATA''';
   END IF;
 
+  -- Vincolo: attivita_nuova_pianificata
   IF NEW.data_fine IS NOT NULL THEN 
     RAISE EXCEPTION 'Un attività appena creata deve avere ''data_fine = NULL''';
   END IF;
 
+  -- Vincolo: attivita_coltivazione_non_terminale
   -- blocco sulle coltivazioni in stato terminale
   SELECT stato INTO v_stato_coltivazione 
   FROM coltivazione
@@ -35,6 +38,7 @@ BEGIN
     RAISE EXCEPTION 'Impossibile inserire una nuova attività ad una coltivazione conclusa o in raccolta';
   END IF;
 
+  -- Vincolo: attivita_coltivatore_valido
   -- check sul coltivatore
   SELECT * INTO v_coltivatore
   FROM utente
@@ -44,6 +48,7 @@ BEGIN
     RAISE EXCEPTION 'L''utente con ID = % non è un coltivatore', NEW.id_coltivatore;
   END IF;
 
+  -- Vincolo: attivita_coltivatore_valido
   IF NOT EXISTS (
     SELECT 1
     FROM lavora_per lp
@@ -52,6 +57,18 @@ BEGIN
     AND c.id = NEW.id_coltivazione
   ) THEN
     RAISE EXCEPTION 'Il coltivatore con ID = % non è assegnato al progetto della coltivazione %', NEW.id_coltivatore, NEW.id_coltivazione;
+  END IF;
+
+  -- Vincolo: coltivazione_unica_raccolta
+  IF NEW.tipo = 'RACCOLTA' THEN
+    IF EXISTS (
+      SELECT 1
+      FROM attivita a
+      WHERE a.id_coltivazione = NEW.id_coltivazione
+      AND a.tipo = 'RACCOLTA'
+    ) THEN
+      RAISE EXCEPTION 'Una coltivazione può avere una sola attività di tipo Raccolta';
+    END IF;
   END IF;
 
   RETURN NEW;
@@ -72,26 +89,32 @@ EXECUTE FUNCTION check_insert_attivita();
 CREATE FUNCTION check_update_attivita() 
 RETURNS TRIGGER AS $$ 
 BEGIN 
+  -- Vincolo: attivita_completata_readonly
   IF OLD.stato = 'COMPLETATA' THEN 
     RAISE EXCEPTION 'Non è possibile modificare un''attività terminata';
   END IF;
 
+  -- Vincolo: attivita_campi_immutabili
   IF NEW.data_pianificazione <> OLD.data_pianificazione THEN 
     RAISE EXCEPTION '''data_pianificazione'' non può essere modificata dopo la creazine dell''attività';
   END IF;
 
+  -- Vincolo: attivita_campi_immutabili
   IF NEW.id_coltivazione <> OLD.id_coltivazione THEN 
     RAISE EXCEPTION 'Non è possibile modificare a quale coltivazione un''attività è associata';
   END IF;
 
+  -- Vincolo: attivita_transizioni_stato
   IF OLD.stato = 'PIANIFICATA' AND NEW.stato = 'IN_CORSO' AND NEW.data_inizio IS NULL THEN 
     NEW.data_inizio := CURRENT_TIMESTAMP;
   END IF;
 
+  -- Vincolo: attivita_transizioni_stato
   IF NEW.stato = 'PIANIFICATA' AND OLD.stato = 'IN_CORSO' THEN 
     RAISE EXCEPTION 'Non è possibile riportare un''attività in stato ''PIANIFICATA''';
   END IF;
 
+  -- Vincolo: attivita_transizioni_stato
   IF NEW.stato = 'COMPLETATA' AND NEW.data_fine IS NULL THEN 
     NEW.data_fine := CURRENT_TIMESTAMP;
   END IF;
@@ -112,7 +135,7 @@ EXECUTE FUNCTION check_update_attivita();
 CREATE FUNCTION check_update_attivita_raccolta()
 RETURNS TRIGGER AS $$
 BEGIN
-
+  -- Vincolo: coltivazione_transizione_raccolta
   -- vedi se esiste un attivita di raccolta e se questa sta passando allo stato IN_CORSO
   IF EXISTS (
     SELECT 1 

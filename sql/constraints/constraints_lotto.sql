@@ -14,6 +14,7 @@ DROP FUNCTION IF EXISTS check_immutables_lotto() CASCADE;
 CREATE OR REPLACE FUNCTION check_proprietario_lotto()
 RETURNS TRIGGER AS $$ 
 BEGIN
+  -- Vincolo: lotto_proprietario_valido
   IF NOT is_proprietario(NEW.id_proprietario) THEN
     RAISE EXCEPTION 'L''utente con ID = % non è un proprietario', NEW.id_proprietario;
   END IF;
@@ -34,7 +35,7 @@ CREATE TRIGGER insert_lotto BEFORE INSERT ON lotto
 CREATE OR REPLACE FUNCTION check_immutables_lotto()
 RETURNS TRIGGER AS $$
 BEGIN
-
+  -- Vincolo: lotto_campi_immutabili
   IF NEW.id_proprietario <> OLD.id_proprietario THEN 
     RAISE EXCEPTION 'Il proprietario di un lotto non può essere modificato';
   ELSIF NEW.id_orto <> OLD.id_orto THEN 

@@ -16,6 +16,7 @@ BEGIN
   FROM utente AS u 
   WHERE u.id = NEW.id_proprietario;
 
+  -- Vincolo: orto_proprietario_valido
   IF v_utente.tipo <> 'PROPRIETARIO' THEN 
     RAISE EXCEPTION 'L''utente % non è un proprietario e non può gestire un orto', utente.username;
   END IF;

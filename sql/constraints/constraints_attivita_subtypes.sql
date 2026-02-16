@@ -12,12 +12,14 @@ RETURNS TRIGGER AS $$
 DECLARE
   v_tipo tipo_attivita;
 BEGIN
+  -- Vincolo: attivita_sottotipo_corrispondenza
   -- Verifica che il tipo dell'attività corrisponda
   SELECT tipo INTO v_tipo FROM attivita WHERE id = NEW.id;
   IF v_tipo <> 'SEMINA' THEN
     RAISE EXCEPTION 'Il tipo dell''attivita con ID = % deve essere SEMINA, ma e'' %', NEW.id, v_tipo;
   END IF;
   
+  -- Vincolo: attivita_sottotipo_unicita
   -- Verifica che non esistano altre specializzazioni
   IF EXISTS (SELECT 1 FROM irrigazione WHERE id = NEW.id)
      OR EXISTS (SELECT 1 FROM concimazione WHERE id = NEW.id)
@@ -47,12 +49,14 @@ RETURNS TRIGGER AS $$
 DECLARE
   v_tipo tipo_attivita;
 BEGIN
+  -- Vincolo: attivita_sottotipo_corrispondenza
   -- Verifica che il tipo dell'attività corrisponda
   SELECT tipo INTO v_tipo FROM attivita WHERE id = NEW.id;
   IF v_tipo <> 'IRRIGAZIONE' THEN
     RAISE EXCEPTION 'Il tipo dell''attivita con ID = % deve essere IRRIGAZIONE, ma e'' %', NEW.id, v_tipo;
   END IF;
   
+  -- Vincolo: attivita_sottotipo_unicita
   -- Verifica che non esistano altre specializzazioni
   IF EXISTS (SELECT 1 FROM semina WHERE id = NEW.id)
      OR EXISTS (SELECT 1 FROM concimazione WHERE id = NEW.id)
@@ -82,12 +86,14 @@ RETURNS TRIGGER AS $$
 DECLARE
   v_tipo tipo_attivita;
 BEGIN
+  -- Vincolo: attivita_sottotipo_corrispondenza
   -- Verifica che il tipo dell'attività corrisponda
   SELECT tipo INTO v_tipo FROM attivita WHERE id = NEW.id;
   IF v_tipo <> 'CONCIMAZIONE' THEN
     RAISE EXCEPTION 'Il tipo dell''attivita con ID = % deve essere CONCIMAZIONE, ma e'' %', NEW.id, v_tipo;
   END IF;
   
+  -- Vincolo: attivita_sottotipo_unicita
   -- Verifica che non esistano altre specializzazioni
   IF EXISTS (SELECT 1 FROM semina WHERE id = NEW.id)
      OR EXISTS (SELECT 1 FROM irrigazione WHERE id = NEW.id)
@@ -117,12 +123,14 @@ RETURNS TRIGGER AS $$
 DECLARE
   v_tipo tipo_attivita;
 BEGIN
+  -- Vincolo: attivita_sottotipo_corrispondenza
   -- Verifica che il tipo dell'attività corrisponda
   SELECT tipo INTO v_tipo FROM attivita WHERE id = NEW.id;
   IF v_tipo <> 'TRATTAMENTO' THEN
     RAISE EXCEPTION 'Il tipo dell''attivita con ID = % deve essere TRATTAMENTO, ma e'' %', NEW.id, v_tipo;
   END IF;
   
+  -- Vincolo: attivita_sottotipo_unicita
   -- Verifica che non esistano altre specializzazioni
   IF EXISTS (SELECT 1 FROM semina WHERE id = NEW.id)
      OR EXISTS (SELECT 1 FROM irrigazione WHERE id = NEW.id)
@@ -152,12 +160,14 @@ RETURNS TRIGGER AS $$
 DECLARE
   v_tipo tipo_attivita;
 BEGIN
+  -- Vincolo: attivita_sottotipo_corrispondenza
   -- Verifica che il tipo dell'attività corrisponda
   SELECT tipo INTO v_tipo FROM attivita WHERE id = NEW.id;
   IF v_tipo <> 'RACCOLTA' THEN
     RAISE EXCEPTION 'Il tipo dell''attivita con ID = % deve essere RACCOLTA, ma e'' %', NEW.id, v_tipo;
   END IF;
   
+  -- Vincolo: attivita_sottotipo_unicita
   -- Verifica che non esistano altre specializzazioni
   IF EXISTS (SELECT 1 FROM semina WHERE id = NEW.id)
      OR EXISTS (SELECT 1 FROM irrigazione WHERE id = NEW.id)
