@@ -766,6 +766,14 @@ $$\text{Coltivatore} \xrightarrow{\text{Lavora Per}} \text{Progetto} \xrightarro
 
 L'eliminazione di questa ridondanza mantiene il modello più snello e facilita la gestione dei dati.
 
+\subsubsection{Relazione ``Invia'' (Proprietario-Notifica)}
+
+Questa relazione è stata rimossa in quanto ritenuta ridondante. Poiché le notifiche possono essere inviate esclusivamente dal proprietario del progetto a cui la notifica si riferisce, è possibile risalire al mittente attraverso il seguente percorso derivativo:
+
+$$\text{Notifica} \xrightarrow{\text{Segnala}} \text{Progetto} \xrightarrow{\text{Pianifica}} \text{Proprietario}$$
+
+Mantere un riferimento esplicito al proprietario nella tabella \texttt{Notifica} sarebbe ridondante poiché tale informazione è già implicitamente determinata dal progetto associato. L'eliminazione di questa associazione semplifica il modello e previene possibili inconsistenze.
+
 \subsection{Eliminazione delle Gerarchie}
 
 Per la traduzione nello schema logico relazionale, le tre gerarchie presenti nello schema EER sono state risolte utilizzando strategie diverse in base alle caratteristiche specifiche di ciascuna gerarchia.
@@ -1533,6 +1541,34 @@ I vincoli sono classificati secondo le seguenti categorie:
 \end{tabularx}
 \end{table}
 
+\begin{table}[H]
+\centering
+\caption{Vincoli Interrelazionali - Sottotipi di Attività (Corrispondenza Tipo)}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome Vincolo} & \texttt{attivita\_sottotipo\_corrispondenza} \\
+\hline
+\textbf{Tipo} & Interrelazionale \\
+\hline
+\textbf{Descrizione} & Il campo \texttt{tipo} dell'attività deve corrispondere alla specializzazione inserita. Ad esempio, quando si inserisce un record nella tabella \texttt{semina}, il campo \texttt{tipo} dell'attività referenziata deve essere \texttt{'SEMINA'}. Lo stesso vale per \texttt{irrigazione}, \texttt{concimazione}, \texttt{trattamento} e \texttt{raccolta} \\
+\hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Vincoli Interrelazionali - Sottotipi di Attività (Unicità Specializzazione)}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome Vincolo} & \texttt{attivita\_sottotipo\_unicita} \\
+\hline
+\textbf{Tipo} & Interrelazionale \\
+\hline
+\textbf{Descrizione} & Ogni attività può avere una sola specializzazione tra \texttt{semina}, \texttt{irrigazione}, \texttt{concimazione}, \texttt{trattamento} e \texttt{raccolta}. Quando si inserisce un record in una tabella di specializzazione, il sistema verifica che l'attività referenziata non sia già associata ad altre specializzazioni \\
+\hline
+\end{tabularx}
+\end{table}
+
 \subsection{Vincoli su Notifica}
 
 \subsubsection{Vincoli di N-upla}
@@ -1751,12 +1787,6 @@ Questa sezione descrive come le associazioni dello schema concettuale sono state
 \textbf{Traduzione}: Chiave esterna \texttt{id\_coltivatore} nella tabella \texttt{Attività}
 
 \textbf{Motivazione}: Relazione uno-a-molti (1:N) tra Coltivatore e Attività. Un coltivatore può svolgere più attività, ma ogni attività è assegnata a un solo coltivatore.
-
-\subsubsection{Invia (Proprietario-Notifica)}
-
-\textbf{Traduzione}: Chiave esterna \texttt{id\_proprietario} nella tabella \texttt{Notifica}
-
-\textbf{Motivazione}: Relazione uno-a-molti (1:N) tra Proprietario e Notifica. Un proprietario può inviare più notifiche, ma ogni notifica è inviata da un solo proprietario (implicito nel modello del dominio).
 
 \subsubsection{Segnala (Notifica-Progetto)}
 

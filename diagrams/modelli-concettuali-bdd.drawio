@@ -2739,7 +2739,7 @@
     </mxGraphModel>
   </diagram>
   <diagram id="lJq7tjoZWuFABMHhOD2g" name="Logico">
-    <mxGraphModel dx="1360" dy="862" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="777" dy="493" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -2867,7 +2867,7 @@
           <mxGeometry x="556.19" y="600" width="92.5" height="40" as="geometry" />
         </mxCell>
         <mxCell id="1bAst47n0RC77hwo1lNY-54" value="" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="279.98999999999995" y="680" width="790.97" height="40" as="geometry" />
+          <mxGeometry x="279.99" y="680" width="850.01" height="40" as="geometry" />
         </mxCell>
         <mxCell id="1bAst47n0RC77hwo1lNY-55" value="attivita" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
           <mxGeometry x="279.98999999999927" y="650" width="60" height="30" as="geometry" />
@@ -2927,7 +2927,7 @@
           <mxGeometry x="386.18999999999994" y="680" width="114.97" height="40" as="geometry" />
         </mxCell>
         <mxCell id="1bAst47n0RC77hwo1lNY-76" value="&lt;span style=&quot;border-bottom: 3px double;&quot;&gt;id_coltivazione&lt;/span&gt;" style="shape=partialRectangle;whiteSpace=wrap;html=1;top=0;bottom=0;fillColor=none;" parent="1" vertex="1">
-          <mxGeometry x="960.96" y="680" width="110" height="40" as="geometry" />
+          <mxGeometry x="1022" y="680" width="108" height="40" as="geometry" />
         </mxCell>
         <mxCell id="1bAst47n0RC77hwo1lNY-77" value="quantita_sementi" style="shape=partialRectangle;whiteSpace=wrap;html=1;top=0;bottom=0;fillColor=none;" parent="1" vertex="1">
           <mxGeometry x="460.20000000000005" y="760" width="110" height="40" as="geometry" />
@@ -3108,6 +3108,9 @@
         </mxCell>
         <mxCell id="_Rjob-6GE5u_5-mpyJBx-18" value="data_lettura" style="shape=partialRectangle;whiteSpace=wrap;html=1;top=0;bottom=0;fillColor=none;" parent="1" vertex="1">
           <mxGeometry x="509.5300000000004" y="1240" width="81.15" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="5kzyUcWiGH0QGcY2sv9u-1" value="tipo" style="shape=partialRectangle;whiteSpace=wrap;html=1;top=0;bottom=0;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="960.96" y="680" width="61.04" height="40" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>

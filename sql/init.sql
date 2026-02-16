@@ -13,6 +13,7 @@
 \i ./constraints/constraints_orto.sql
 \i ./constraints/constraints_lotto.sql
 \i ./constraints/constraints_attivita.sql
+\i ./constraints/constraints_attivita_subtypes.sql
 \i ./constraints/constraints_coltivazione.sql
 \i ./constraints/constraints_progetto.sql
 \i ./constraints/constraints_notifica.sql
