@@ -69,3 +69,51 @@ Riguardo appunto all'urgenza della notifica, il proprietario può assegnare alla
 # Il ruolo del coltivatore
 
 Nel sistema il coltivatore è un entità abbastanza passiva, in quanto non può pianificare un progetto, una coltivazione, un'attività e non può inviare notifiche. Il coltivatore tuttavia è fondamentale per lo svolgimento generale dei progetti perché è colui che è responsabile delle attività che vi sono assegnate e lui ne può gestire il ciclo di vita.
+
+# Sezione 3: Appunti sulle scelte di modellazione EER
+
+# Orto come composizione di lotti
+
+Si è deciso di modellare l'orto come una composizione di lotti: un lotto non ha senso di esistere nella piattaforma che si sta definendo se non è associato ad un orto. Nel sistema infatti vengono rappresentati degli orti urbani al cui interno un proprietario può avere dei lotti e sui quali può pianificare progetti. Per tanto il legame che vincola un lotto ad un orto è quello della composizione in cui un lotto non può esistere senza orto ma è vero il contrario.
+
+Inoltre questo permette di modellare in modo più elegante l'indirizzo di un lotto: siccome tutti i lotti fanno parte di un orto essi automaticamente ereditano l'indirizzo dell'orto a cui appartengono, e questo è più realistico in quanto un lotto non ha un indirizzo proprio ma è identificato all'interno di un orto.
+
+Siccome i lotti sono caratterizzati da una estensione, un orto può essere caratterizzato da una estensione totale che è data dalla somma delle estensioni dei lotti che lo compongono, per questo si è scelto di aggiungere l'attributo derivato "estensione totale" all'orto.
+
+# Lotto come entita debole
+
+Si è scelto di modellare il lotto come entità debole siccome questo non possiede un identificatore proprio. Un lotto ha un codice lotto che lo identifica all'interno di un orto ma nulla di più. Si è ritenuto pertanto che fosse naturale che un lotto come entità debole avesse il codice lotto come chiave parziale ma fosse identificato completamente tramite la relazione identificante con l'orto di cui fa parte.
+
+# Coltivazione come entità debole
+
+Si è scelto di modellare la coltivazione come entità debole siccome non è caratterizzata da alcun attributo che la identifichi univocamente: una coltivazione, per sua natura, è identificata univocamente dal progetto a cui è associata e dalla coltura che rappresenta. Tra le coltivazioni associate allo stesso progetto è la data di inizio tra queste che permette di distinguerle e quindi funge da chiave parziale: ad esempio un progetto può avere due coltivazioni di pomodori ma che iniziano in due date diverse.
+
+# Attività come entità debole
+
+Si è scelto di modellare l'attività come entità debole siccome questa non è caratterizzata da alcun attributo che la identifichi univocamente: un attività, per sua natura, è identificata univocamente dalla coltivazione a cui è associata e dal nome dell'attività. Tra le attività associate alla stessa coltivazione è il nome dell'attività che permette di distinguerle e quindi funge da chiave parziale: ad esempio una coltivazione può avere due attività di irrigazione ma che hanno nomi diversi (ad esempio "irrigazione 1" e "irrigazione 2").
+
+# Notifica come entità debole
+
+Si è scelto di modellare la notifica come entità debole siccome questa non è caratterizzata da alcun attributo che la identifichi univocamente: una notifica, per sua natura, è identificata univocamente dal progetto a cui è associata e dalla data di invio. Tra le notifiche associate allo stesso progetto la data di invio funge da chiave parziale che permette di distinguerle: ad esempio un progetto può avere due notifiche inviate in due date diverse.
+
+# Gerarchie
+
+# utente gerarchia totale
+
+Si è scelto di rendere la specializzazione di utente totale e disgiunta, non permettendo dunque che vi siano utenti generici nel sistema. Questo deriva dal modo stesso in cui il dominio è stato compreso: si sono soltanto due tipologie di utenti che sono il proprietario e il coltivatore, qualsiasi altro utente non avrebbe senso in tale schema.
+
+# attivita gerarchia totale
+
+Si è scelto di rendere la specializzazione di attività totale e disgiunta, non permettendo dunque che vi siano attività generiche nel sistema. Si è scelto di evitare di permettere delle attività generiche e di restringere le possibilit attività che possono essere pianificate su una coltivazione. Il motivo è puramente una questione di complessità in quanto si è ritenuto non necessario gestire la presenza di attività generiche.
+
+# notifica gerarchia parziale
+
+Per la notifica invece si è scelto di optare per una specializzazione parziale siccome una notifica in se rappresenta un evento sul progetto come previsto dal dominio, ma può specializzarsi in una notifica di un attività imminente.
+
+# decisioni sul ristrutturato
+
+# ridondanze
+
+si svolge su (coltivazione e lotto)
+
+si occupa di (attivita e )

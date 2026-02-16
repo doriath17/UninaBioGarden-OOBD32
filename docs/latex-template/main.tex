@@ -346,6 +346,35 @@ Il modello Entità-Relazione esteso rappresenta le principali entità del domini
     \label{fig:eer}
 \end{figure}
 
+\subsubsection{Entità Deboli}
+
+Nel modello sono state identificate diverse entità deboli, ovvero entità che non possiedono un identificatore univoco proprio e che dipendono da altre entità per la loro identificazione completa.
+
+\paragraph{Lotto come Entità Debole}
+Si è scelto di modellare il lotto come entità debole siccome questo non possiede un identificatore proprio. Un lotto ha un codice che lo identifica all'interno di un orto ma nulla di più. Si è ritenuto pertanto che fosse naturale che un lotto come entità debole avesse il \textbf{codice lotto come chiave parziale} ma fosse identificato completamente tramite la relazione identificante con l'orto di cui fa parte.
+
+\paragraph{Coltivazione come Entità Debole}
+Si è scelto di modellare la coltivazione come entità debole siccome non è caratterizzata da alcun attributo che la identifichi univocamente: una coltivazione, per sua natura, è identificata univocamente dal progetto a cui è associata e dalla coltura che rappresenta. Tra le coltivazioni associate allo stesso progetto è la \textbf{data di inizio} che permette di distinguerle e quindi funge da chiave parziale: ad esempio un progetto può avere due coltivazioni di pomodori ma che iniziano in due date diverse.
+
+\paragraph{Attività come Entità Debole}
+Si è scelto di modellare l'attività come entità debole siccome questa non è caratterizzata da alcun attributo che la identifichi univocamente: un'attività, per sua natura, è identificata univocamente dalla coltivazione a cui è associata e dal nome dell'attività. Tra le attività associate alla stessa coltivazione è il \textbf{nome dell'attività} che permette di distinguerle e quindi funge da chiave parziale: ad esempio una coltivazione può avere due attività di irrigazione ma che hanno nomi diversi (ad esempio ``irrigazione 1'' e ``irrigazione 2'').
+
+\paragraph{Notifica come Entità Debole}
+Si è scelto di modellare la notifica come entità debole siccome questa non è caratterizzata da alcun attributo che la identifichi univocamente: una notifica, per sua natura, è identificata univocamente dal progetto a cui è associata e dalla data di invio. Tra le notifiche associate allo stesso progetto la \textbf{data di invio} funge da chiave parziale che permette di distinguerle: ad esempio un progetto può avere due notifiche inviate in due date diverse.
+
+\subsubsection{Gerarchie di Generalizzazione/Specializzazione}
+
+Nel modello sono state definite tre gerarchie di generalizzazione/specializzazione, ciascuna con caratteristiche specifiche relative alla completezza (totale o parziale) e alla disgiunzione.
+
+\paragraph{Gerarchia Utente (Totale e Disgiunta)}
+Si è scelto di rendere la specializzazione di utente \textbf{totale e disgiunta}, non permettendo dunque che vi siano utenti generici nel sistema. Questo deriva dal modo stesso in cui il dominio è stato compreso: ci sono soltanto due tipologie di utenti che sono il proprietario e il coltivatore, qualsiasi altro utente non avrebbe senso in tale schema.
+
+\paragraph{Gerarchia Attività (Totale e Disgiunta)}
+Si è scelto di rendere la specializzazione di attività \textbf{totale e disgiunta}, non permettendo dunque che vi siano attività generiche nel sistema. Si è scelto di evitare di permettere delle attività generiche e di restringere le possibili attività che possono essere pianificate su una coltivazione. Il motivo è puramente una questione di complessità in quanto si è ritenuto non necessario gestire la presenza di attività generiche.
+
+\paragraph{Gerarchia Notifica (Parziale e Disgiunta)}
+Per la notifica invece si è scelto di optare per una specializzazione \textbf{parziale} siccome una notifica in sé rappresenta un evento sul progetto come previsto dal dominio, ma può specializzarsi in una notifica di un'attività imminente. Questa scelta permette maggiore flessibilità consentendo l'esistenza di notifiche generiche non specializzate.
+
 \subsection{Diagramma UML}
 
 La versione UML del modello concettuale con classi e associazioni.
@@ -357,57 +386,329 @@ La versione UML del modello concettuale con classi e associazioni.
     \label{fig:uml}
 \end{figure}
 
-\subsection{Descrizione delle Entità Principali}
+\subsubsection{Orto come Composizione di Lotti}
 
-% TODO: Descrivere le entità principali
-% Esempio tabella per le entità:
+Si è deciso di modellare l'orto come una composizione di lotti: un lotto non ha senso di esistere nella piattaforma che si sta definendo se non è associato ad un orto. Nel sistema infatti vengono rappresentati degli orti urbani al cui interno un proprietario può avere dei lotti e sui quali può pianificare progetti. Pertanto il legame che vincola un lotto ad un orto è quello della \textbf{composizione} in cui un lotto non può esistere senza orto ma è vero il contrario.
 
-\begin{table}[H]
-\centering
-\caption{Entità: Utente}
-\begin{tabularx}{\textwidth}{|l|X|}
-\hline
-\textbf{Nome} & Utente \\
-\hline
-\textbf{Descrizione} & Rappresenta un utente del sistema (proprietario o coltivatore) \\
-\hline
-\textbf{Attributi} & 
-\begin{itemize}[nosep]
-    \item email (chiave)
-    \item nome
-    \item cognome
-    \item password
-    \item tipo (proprietario/coltivatore)
-\end{itemize} \\
-\hline
-\textbf{Identificatore} & email \\
-\hline
-\end{tabularx}
-\end{table}
+Inoltre questo permette di modellare in modo più elegante l'indirizzo di un lotto: siccome tutti i lotti fanno parte di un orto essi automaticamente ereditano l'indirizzo dell'orto a cui appartengono, e questo è più realistico in quanto un lotto non ha un indirizzo proprio ma è identificato all'interno di un orto.
 
-% Ripetere per altre entità...
+Siccome i lotti sono caratterizzati da un'estensione, un orto può essere caratterizzato da una \textbf{estensione totale} che è data dalla somma delle estensioni dei lotti che lo compongono, per questo si è scelto di aggiungere l'attributo derivato ``estensione totale'' all'orto.
 
 \subsection{Descrizione delle Relazioni}
 
+Le relazioni del modello definiscono le associazioni tra le entità e le loro cardinalità. Di seguito sono descritte tutte le relazioni del modello concettuale, organizzate per area funzionale.
+
+\subsubsection{Relazioni del Proprietario}
+
 \begin{table}[H]
 \centering
-\caption{Relazione: Gestisce}
+\caption{Relazione: Gestisce (Proprietario-Orto)}
 \begin{tabularx}{\textwidth}{|l|X|}
 \hline
 \textbf{Nome} & Gestisce \\
 \hline
-\textbf{Descrizione} & Associa un proprietario agli orti che gestisce \\
+\textbf{Descrizione} & Associa un proprietario agli orti che ha registrato nel sistema \\
 \hline
-\textbf{Entità Coinvolte} & Utente (proprietario), Orto \\
+\textbf{Entità Coinvolte} & Proprietario, Orto \\
 \hline
-\textbf{Cardinalità} & (1,1) - (0,N) \\
+\textbf{Cardinalità} & (1,1) - (0,N): Un orto è gestito da esattamente un proprietario, un proprietario può gestire zero o più orti \\
 \hline
 \textbf{Attributi} & Nessuno \\
 \hline
 \end{tabularx}
 \end{table}
 
-% Ripetere per altre relazioni...
+\begin{table}[H]
+\centering
+\caption{Relazione: Possiede (Proprietario-Lotto)}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome} & Possiede \\
+\hline
+\textbf{Descrizione} & Associa un proprietario ai lotti che ha registrato nel sistema \\
+\hline
+\textbf{Entità Coinvolte} & Proprietario, Lotto \\
+\hline
+\textbf{Cardinalità} & (1,1) - (0,N): Un lotto è posseduto da esattamente un proprietario, un proprietario può possedere zero o più lotti \\
+\hline
+\textbf{Attributi} & Nessuno \\
+\hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Relazione: Pianifica (Proprietario-Progetto)}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome} & Pianifica \\
+\hline
+\textbf{Descrizione} & Associa un proprietario ai progetti che ha pianificato \\
+\hline
+\textbf{Entità Coinvolte} & Proprietario, Progetto \\
+\hline
+\textbf{Cardinalità} & (1,1) - (0,N): Un progetto è pianificato da esattamente un proprietario, un proprietario può pianificare zero o più progetti \\
+\hline
+\textbf{Attributi} & Nessuno \\
+\hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Relazione: Invia (Proprietario-Notifica)}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome} & Invia \\
+\hline
+\textbf{Descrizione} & Associa un proprietario alle notifiche che ha inviato ai coltivatori \\
+\hline
+\textbf{Entità Coinvolte} & Proprietario, Notifica \\
+\hline
+\textbf{Cardinalità} & (1,1) - (0,N): Una notifica è inviata da esattamente un proprietario, un proprietario può inviare zero o più notifiche \\
+\hline
+\textbf{Attributi} & Nessuno \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsubsection{Relazioni del Coltivatore}
+
+\begin{table}[H]
+\centering
+\caption{Relazione: Lavora Per (Coltivatore-Progetto)}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome} & Lavora Per \\
+\hline
+\textbf{Descrizione} & Associa i coltivatori ai progetti a cui sono assegnati. Definisce l'insieme di coltivatori che possono svolgere attività sul progetto \\
+\hline
+\textbf{Entità Coinvolte} & Coltivatore, Progetto \\
+\hline
+\textbf{Cardinalità} & (0,N) - (1,N): Un coltivatore può lavorare per zero o più progetti, un progetto deve avere almeno un coltivatore assegnato \\
+\hline
+\textbf{Attributi} & Nessuno \\
+\hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Relazione: Svolge (Coltivatore-Attività)}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome} & Svolge \\
+\hline
+\textbf{Descrizione} & Associa un coltivatore alle attività che gli sono state assegnate e che deve svolgere \\
+\hline
+\textbf{Entità Coinvolte} & Coltivatore, Attività \\
+\hline
+\textbf{Cardinalità} & (1,1) - (0,N): Un'attività è svolta da esattamente un coltivatore, un coltivatore può svolgere zero o più attività \\
+\hline
+\textbf{Attributi} & Nessuno \\
+\hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Relazione: Riceve (Coltivatore-Notifica)}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome} & Riceve \\
+\hline
+\textbf{Descrizione} & Associa un coltivatore alle notifiche che ha ricevuto. Tiene traccia dello stato di lettura \\
+\hline
+\textbf{Entità Coinvolte} & Coltivatore, Notifica \\
+\hline
+\textbf{Cardinalità} & (0,N) - (1,N): Un coltivatore può ricevere zero o più notifiche, una notifica è ricevuta da uno o più coltivatori \\
+\hline
+\textbf{Attributi} & 
+\begin{itemize}[nosep]
+    \item letta: BOOLEAN (indica se la notifica è stata letta)
+    \item data\_lettura: DATE (data in cui la notifica è stata letta, NULL se non letta)
+\end{itemize} \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsubsection{Relazioni del Progetto}
+
+\begin{table}[H]
+\centering
+\caption{Relazione: Occupa (Progetto-Lotto)}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome} & Occupa \\
+\hline
+\textbf{Descrizione} & Associa un progetto al lotto su cui si svolge. Vincolo: un lotto può avere un solo progetto attivo alla volta \\
+\hline
+\textbf{Entità Coinvolte} & Progetto, Lotto \\
+\hline
+\textbf{Cardinalità} & (1,1) - (0,N): Un progetto occupa esattamente un lotto, un lotto può ospitare zero o più progetti (ma uno solo attivo) \\
+\hline
+\textbf{Attributi} & Nessuno \\
+\hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Relazione: Comprende (Progetto-Coltivazione)}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome} & Comprende \\
+\hline
+\textbf{Descrizione} & Relazione identificante tra progetto e coltivazione. Una coltivazione esiste solo nell'ambito di un progetto \\
+\hline
+\textbf{Entità Coinvolte} & Progetto, Coltivazione (entità debole) \\
+\hline
+\textbf{Cardinalità} & (1,1) - (1,N): Una coltivazione appartiene a esattamente un progetto, un progetto comprende una o più coltivazioni \\
+\hline
+\textbf{Attributi} & Nessuno \\
+\hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Relazione: Prevede (Progetto-Attività)}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome} & Prevede \\
+\hline
+\textbf{Descrizione} & Relazione derivata che associa un progetto a tutte le attività previste dalle sue coltivazioni. Derivabile da: Progetto → Comprende → Coltivazione → Eseguita Su → Attività \\
+\hline
+\textbf{Entità Coinvolte} & Progetto, Attività \\
+\hline
+\textbf{Cardinalità} & (1,1) - (0,N): Un'attività appartiene a un progetto, un progetto prevede zero o più attività \\
+\hline
+\textbf{Attributi} & Nessuno \\
+\hline
+\textbf{Note} & Relazione ridondante, derivabile dalla composizione di altre relazioni \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsubsection{Relazioni di Orto e Lotto}
+
+\begin{table}[H]
+\centering
+\caption{Relazione: Composto Da (Orto-Lotto)}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome} & Composto Da (Composizione) \\
+\hline
+\textbf{Descrizione} & Relazione di composizione che vincola un lotto ad un orto. Un lotto non può esistere senza l'orto che lo contiene. Relazione identificante per l'entità debole Lotto \\
+\hline
+\textbf{Entità Coinvolte} & Orto (tutto), Lotto (parte, entità debole) \\
+\hline
+\textbf{Cardinalità} & (1,1) - (0,N): Un lotto deve far parte di esattamente un orto, un orto può essere composto da zero o più lotti \\
+\hline
+\textbf{Attributi} & Nessuno \\
+\hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Relazione: Si Svolge Su (Coltivazione-Lotto)}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome} & Si Svolge Su \\
+\hline
+\textbf{Descrizione} & Relazione derivata che associa una coltivazione al lotto su cui si svolge. Derivabile da: Coltivazione → Comprende → Progetto → Occupa → Lotto \\
+\hline
+\textbf{Entità Coinvolte} & Coltivazione, Lotto \\
+\hline
+\textbf{Cardinalità} & (1,1) - (0,N): Una coltivazione si svolge su esattamente un lotto, un lotto può ospitare zero o più coltivazioni \\
+\hline
+\textbf{Attributi} & Nessuno \\
+\hline
+\textbf{Note} & Relazione ridondante, derivabile dalla composizione di altre relazioni \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsubsection{Relazioni della Coltivazione}
+
+\begin{table}[H]
+\centering
+\caption{Relazione: Basata Su (Coltivazione-Coltura)}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome} & Basata Su \\
+\hline
+\textbf{Descrizione} & Associa una coltivazione alla coltura specifica che viene coltivata (es. pomodori, insalata). Parte della chiave identificante dell'entità debole Coltivazione \\
+\hline
+\textbf{Entità Coinvolte} & Coltivazione (entità debole), Coltura \\
+\hline
+\textbf{Cardinalità} & (1,1) - (0,N): Una coltivazione è basata su esattamente una coltura, una coltura può essere utilizzata in zero o più coltivazioni \\
+\hline
+\textbf{Attributi} & Nessuno \\
+\hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Relazione: Eseguita Su (Attività-Coltivazione)}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome} & Eseguita Su \\
+\hline
+\textbf{Descrizione} & Relazione identificante che associa un'attività alla coltivazione su cui viene eseguita. Un'attività non può esistere senza la coltivazione di riferimento \\
+\hline
+\textbf{Entità Coinvolte} & Attività (entità debole), Coltivazione \\
+\hline
+\textbf{Cardinalità} & (1,1) - (0,N): Un'attività è eseguita su esattamente una coltivazione, una coltivazione può avere zero o più attività \\
+\hline
+\textbf{Attributi} & Nessuno \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsubsection{Relazioni dell'Attività}
+
+\begin{table}[H]
+\centering
+\caption{Relazione: Si Occupa (Attività-Coltura)}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome} & Si Occupa \\
+\hline
+\textbf{Descrizione} & Relazione derivata che associa un'attività alla coltura su cui opera. Introdotta per chiarezza nel diagramma EER. Derivabile da: Attività → Eseguita Su → Coltivazione → Basata Su → Coltura \\
+\hline
+\textbf{Entità Coinvolte} & Attività, Coltura \\
+\hline
+\textbf{Cardinalità} & (1,1) - (0,N): Un'attività si occupa di esattamente una coltura, una coltura può avere zero o più attività \\
+\hline
+\textbf{Attributi} & Nessuno \\
+\hline
+\textbf{Note} & Relazione ridondante, aggiunta per chiarezza del modello EER \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsubsection{Relazioni della Notifica}
+
+\begin{table}[H]
+\centering
+\caption{Relazione: Segnala (NotificaAttività-Attività)}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome} & Segnala \\
+\hline
+\textbf{Descrizione} & Associa una notifica di tipo ``Attività Imminente'' all'attività specifica che sta per scadere \\
+\hline
+\textbf{Entità Coinvolte} & NotificaAttività (sottotipo di Notifica), Attività \\
+\hline
+\textbf{Cardinalità} & (1,1) - (0,N): Una notifica di attività imminente segnala esattamente un'attività, un'attività può essere segnalata da zero o più notifiche \\
+\hline
+\textbf{Attributi} & Nessuno \\
+\hline
+\end{tabularx}
+\end{table}
 
 \newpage
 

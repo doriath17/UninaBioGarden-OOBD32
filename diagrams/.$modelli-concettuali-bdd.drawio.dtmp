@@ -1052,7 +1052,7 @@
         <mxCell id="3UNTYh2H8Rvt8NILQjxS-293" value="eseguita_su" style="shape=rhombus;double=1;perimeter=rhombusPerimeter;whiteSpace=wrap;html=1;align=center;" parent="1" vertex="1">
           <mxGeometry x="2073.75" y="1115.5" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="3UNTYh2H8Rvt8NILQjxS-294" value="basata_su" style="shape=rhombus;perimeter=rhombusPerimeter;whiteSpace=wrap;html=1;align=center;" parent="1" vertex="1">
+        <mxCell id="3UNTYh2H8Rvt8NILQjxS-294" value="basata_su" style="shape=rhombus;double=1;perimeter=rhombusPerimeter;whiteSpace=wrap;html=1;align=center;" parent="1" vertex="1">
           <mxGeometry x="2368" y="1070" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="3UNTYh2H8Rvt8NILQjxS-295" value="riceve" style="shape=rhombus;perimeter=rhombusPerimeter;whiteSpace=wrap;html=1;align=center;" parent="1" vertex="1">
@@ -1268,7 +1268,7 @@
             <mxPoint x="2260" y="920" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="7T1P9w2oUqnl6Cm6q_CR-4" value="si_occupa" style="shape=rhombus;perimeter=rhombusPerimeter;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+        <mxCell id="7T1P9w2oUqnl6Cm6q_CR-4" value="si_occupa_di" style="shape=rhombus;perimeter=rhombusPerimeter;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
           <mxGeometry x="2231.4199999999996" y="887.75" width="95" height="55" as="geometry" />
         </mxCell>
         <mxCell id="7T1P9w2oUqnl6Cm6q_CR-5" value="1" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
