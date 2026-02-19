@@ -2,6 +2,7 @@ package uninabiogarden.entities;
 
 import java.security.Timestamp;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class Notifica {
@@ -16,7 +17,7 @@ public class Notifica {
     
     private Long id;
 
-    private Timestamp dataInvio;
+    private LocalDate dataInvio;
 
     private String nome;
     private String descrizione;
@@ -27,9 +28,11 @@ public class Notifica {
 
     private Proprietario mittente;
     private Progetto progetto;
+    private Attivita attivita;
+
     private ArrayList<Coltivatore> destinatari = new ArrayList<>();
 
-    public Notifica(Long id, Timestamp dataInvio, String nome, String descrizione, Urgenza urgenza, Tipo tipo, Integer giorniMancanti, Proprietario mittente, Progetto progetto) {
+    public Notifica(Long id, LocalDate dataInvio, String nome, String descrizione, Urgenza urgenza, Tipo tipo, Integer giorniMancanti, Proprietario mittente, Progetto progetto, Attivita attivita) {
         this.id = id;
         this.dataInvio = dataInvio;
         this.nome = nome;
@@ -39,6 +42,7 @@ public class Notifica {
         this.giorniMancanti = giorniMancanti;
         this.mittente = mittente;
         this.progetto = progetto;
+        this.attivita = attivita;
         
     }
 
@@ -52,11 +56,11 @@ public class Notifica {
         this.id = id;
     }
 
-    public Timestamp getDataInvio() {
+    public LocalDate getDataInvio() {
         return dataInvio;
     }
 
-    public void setDataInvio(Timestamp dataInvio) {
+    public void setDataInvio(LocalDate dataInvio) {
         this.dataInvio = dataInvio;
     }
 
@@ -115,6 +119,15 @@ public class Notifica {
     public void setProgetto(Progetto progetto) {
         this.progetto = progetto;
     }
+
+    public Attivita getAttivita() {
+        return attivita;
+    }
+
+    public void setAttivita(Attivita attivita) {
+        this.attivita = attivita;
+    }
+    
 
 }
 

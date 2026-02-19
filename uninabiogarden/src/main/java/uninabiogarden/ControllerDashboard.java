@@ -26,6 +26,8 @@ public class ControllerDashboard {
   @FXML
   private void initialize() {
     // initialization logic if needed
+    messaggiobenvenuto.setText("Benvenuto " + MainController.getInstance().getUtenteLoggato().getNome() + "!");
+
   }
 
 }

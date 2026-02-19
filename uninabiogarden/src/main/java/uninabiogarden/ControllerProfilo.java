@@ -5,7 +5,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
@@ -14,49 +13,43 @@ import uninabiogarden.entities.Coltivatore;
 
 public class ControllerProfilo {
 
-    @FXML
-    private VBox mainContent;
+    @FXML private VBox mainContent;
 
-    @FXML
-    private DatePicker bdayField;
+    @FXML private DatePicker bdayField;
 
-    @FXML
-    private TextArea bioField;
+    @FXML private TextArea bioField;
 
-    @FXML
-    private TextField codiceFiscaleField;
+    @FXML private TextField codiceFiscaleField;
 
-    @FXML
-    private TextField cognomeField;
+    @FXML private TextField cognomeField;
 
-    @FXML
-    private TextField emailField;
+    @FXML private TextField emailField;
 
-    @FXML
-    private Label errorLabel;
+    @FXML private Label errorLabel;
 
-    @FXML
-    private TextField genderField;
+    @FXML private TextField genderField;
 
-    @FXML
-    private TextField nomeField;
+    @FXML private TextField nomeField;
 
-    @FXML
-    private PasswordField passwordField;
+    @FXML private TextField passwordField;
 
-    @FXML
-    private ChoiceBox<String> tipoUtenteField;
+    @FXML private ChoiceBox<String> tipoUtenteField;
 
-    @FXML
-    private TextField usernameField;
+    @FXML private TextField usernameField;
+
 
     @FXML
     public void initialize() {
+
+        clearFields();
+
+        errorLabel.setText("");
         
         tipoUtenteField.getItems().addAll("COLTIVATORE", "PROPRIETARIO");
 
         usernameField.setText(MainController.getInstance().getUtenteLoggato().getUsername());
         emailField.setText(MainController.getInstance().getUtenteLoggato().getEmail());
+        passwordField.setText(MainController.getInstance().getUtenteLoggato().getPassword());
         nomeField.setText(MainController.getInstance().getUtenteLoggato().getNome());
         cognomeField.setText(MainController.getInstance().getUtenteLoggato().getCognome());
         genderField.setText(MainController.getInstance().getUtenteLoggato().getGender());
@@ -73,6 +66,18 @@ public class ControllerProfilo {
             tipoUtenteField.setValue("PROPRIETARIO");
         }
 
+    }
+
+    public void clearFields() {
+        usernameField.clear();
+        emailField.clear();
+        passwordField.clear();
+        nomeField.clear();
+        cognomeField.clear();
+        genderField.clear();
+        bdayField.setValue(null);
+        bioField.clear();
+        codiceFiscaleField.clear();
     }
 
     @FXML
