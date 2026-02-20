@@ -47,11 +47,12 @@ public class NotificaDAO {
         ArrayList<Notifica> list = new ArrayList<>();
         
         String sql = """
-            SELECT n.*, p.nome as nome_progetto, a.nome as titolo_attivita
+            SELECT n.*, p.nome as nome_progetto, a.nome as nome_attivita, u.nome as nome_proprietario, u.id as id_proprietario
             FROM notifica n
             LEFT JOIN progetto p ON n.id_progetto = p.id
             LEFT JOIN attivita a ON n.id_attivita = a.id
-            WHERE n.id_proprietario = ?
+            LEFT JOIN utente u ON p.id_proprietario = u.id
+            WHERE p.id = ?
             ORDER BY n.data_invio DESC
             """;
 
@@ -71,6 +72,13 @@ public class NotificaDAO {
                 n.setTipo(Notifica.Tipo.valueOf(rs.getString("tipo")));
                 n.setGiorniMancanti(rs.getInt("giorni_mancanti"));
                 n.setMittente((Proprietario) MainController.getInstance().getUtenteLoggato());
+                n.setDataInvio(rs.getDate("data_invio").toLocalDate());
+                
+                // Proprietario Proxy
+                Proprietario pr = new Proprietario();
+                pr.setId(rs.getLong("id_proprietario"));
+                pr.setNome(rs.getString("nome_proprietario"));
+                n.setMittente(pr);
 
                 // Progetto Proxy
                 Progetto p = new Progetto();
@@ -84,7 +92,7 @@ public class NotificaDAO {
                     // Attività anonima 
                     Attivita a = new Attivita() {}; 
                     a.setId(idAtt);
-                    a.setNome(rs.getString("titolo_attivita"));
+                    a.setNome(rs.getString("nome_attivita"));
                     n.setAttivita(a);
                 }
 

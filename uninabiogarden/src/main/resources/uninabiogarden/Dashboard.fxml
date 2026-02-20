@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="mainContent" alignment="CENTER" prefHeight="566.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uninabiogarden.ControllerDashboard">
+<VBox fx:id="mainContent" alignment="CENTER" prefHeight="566.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uninabiogarden.ControllerDashboard">
    <children>
       <HBox>
          <children>
@@ -60,11 +60,11 @@
                   </Label>
                   <TableView fx:id="notificheTable" prefHeight="252.0" prefWidth="535.0">
                      <columns>
-                        <TableColumn prefWidth="100.0" text="Progetto" />
-                        <TableColumn prefWidth="87.0" text="Attività" />
-                        <TableColumn prefWidth="64.0" text="Tipo" />
-                        <TableColumn prefWidth="94.0" text="Urgenza" />
-                        <TableColumn prefWidth="188.0" text="Contenuto" />
+                        <TableColumn fx:id="nomeNotificaColonna" prefWidth="100.0" text="Nome evento" />
+                        <TableColumn fx:id="dataInvioNotificaColonna" prefWidth="93.0" text="Data invio" />
+                        <TableColumn fx:id="descrizioneNotificaColonna" prefWidth="156.0" text="Descrizione" />
+                        <TableColumn fx:id="urgenzaNotificaColonna" prefWidth="72.0" text="Urgenza" />
+                        <TableColumn fx:id="progettoNotificaColonna" prefWidth="102.0" text="Progetto" />
                      </columns>
                   </TableView>
                </children>

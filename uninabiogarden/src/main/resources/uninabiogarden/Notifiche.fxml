@@ -26,12 +26,15 @@
       </HBox>
       <TableView fx:id="notificheTable" prefHeight="461.0" prefWidth="1070.0">
          <columns>
-            <TableColumn fx:id="nomeNotificaColonna" prefWidth="102.0" text="Nome evento" />
-            <TableColumn fx:id="urgenzaNotificaColonna" prefWidth="74.0" text="Urgenza" />
-            <TableColumn fx:id="descrizioneNotificaColonna" prefWidth="119.0" text="Descrizione" />
-            <TableColumn fx:id="progettoNotificaColonna" prefWidth="96.0" text="Progetto" />
-            <TableColumn fx:id="attivitaNotificaColonna" prefWidth="104.0" text="Attività" />
-            <TableColumn fx:id="dataInvioNotificaColonna" prefWidth="136.0" text="Data invio" />
+            <TableColumn fx:id="nomeNotificaColonna" prefWidth="108.0" text="Nome evento" />
+            <TableColumn fx:id="urgenzaNotificaColonna" prefWidth="79.0" text="Urgenza" />
+            <TableColumn fx:id="descrizioneNotificaColonna" prefWidth="201.0" text="Descrizione" />
+            <TableColumn fx:id="dataInvioNotificaColonna" minWidth="0.0" prefWidth="86.0" text="Data invio" />
+            <TableColumn fx:id="tipoNotificaColonna" prefWidth="182.0" text="Tipo notifica" />
+            <TableColumn fx:id="giorniMancantiColonna" prefWidth="122.0" text="Scadenza (in giorni)" />
+            <TableColumn fx:id="mittenteNotificaColonna" minWidth="7.0" prefWidth="109.0" text="Mittente" />
+            <TableColumn fx:id="progettoNotificaColonna" prefWidth="82.0" text="Progetto" />
+            <TableColumn fx:id="attivitaNotificaColonna" minWidth="7.0" prefWidth="70.0" text="Attività" />
          </columns>
       </TableView>
       <HBox alignment="CENTER" prefHeight="35.0" prefWidth="1050.0">

@@ -14,6 +14,8 @@ import uninabiogarden.entities.Orto;
 import uninabiogarden.entities.Progetto;
 import uninabiogarden.entities.Proprietario;
 import uninabiogarden.entities.Utente;
+import uninabiogarden.entities.Notifica;
+import java.util.ArrayList;
 
 public class MainController {
   // ==============================================================================================
@@ -45,6 +47,7 @@ public class MainController {
   private List<Orto> orti;
   private List<Coltura> colture;
   private List<Coltivatore> coltivatori;
+  private ArrayList<Notifica> notifiche;
 
   // ==============================================================================================
   // Sezione: Accessors
@@ -81,6 +84,10 @@ public class MainController {
       caricaColtivatori();
     }
     return coltivatori;
+  }
+
+  public ArrayList<Notifica> getNotifiche() {
+    return notifiche;
   }
 
   // ==============================================================================================
@@ -470,5 +477,9 @@ public class MainController {
     orti = null;
     colture = null;
   }
+
+  // ==============================================================================================
+  // Sezione: Notifiche
+  // ==============================================================================================
 
 }
