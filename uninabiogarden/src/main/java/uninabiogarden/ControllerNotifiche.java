@@ -1,7 +1,6 @@
 package uninabiogarden;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -12,7 +11,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.VBox;
-import uninabiogarden.dao.NotificaDAO;
 import uninabiogarden.entities.Notifica;
 
 public class ControllerNotifiche {
@@ -99,15 +97,8 @@ public class ControllerNotifiche {
     }
 
     public void loadData() {
-        System.out.println("Caricamento notifiche dal database...");
-
-        ArrayList<Notifica> dataFromDb = NotificaDAO.getInstance().getAllNotifiche();
-        notifiche.setAll(dataFromDb); 
-
-        // per testing
-        for (Notifica n : dataFromDb) {
-            System.out.println("Notifica: " + n.getNome() + ", Progetto: " + n.getProgetto().getNomeProgetto());
-        }
+        notifiche.clear();
+        notifiche.addAll(MainController.getInstance().getNotifiche());
     }
 
 

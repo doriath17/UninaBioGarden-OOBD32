@@ -13,62 +13,84 @@ import uninabiogarden.entities.Notifica;
 import uninabiogarden.entities.Progetto;
 import uninabiogarden.entities.Proprietario;
 import uninabiogarden.entities.Attivita;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.ObservableList;
 
 public class ControllerCreaNotificaAttivita {
 
-    @FXML
-    private TableView<Attivita> attivitaTable;
+    @FXML private TableView<Attivita> attivitaTable;
 
-    @FXML
-    private TableColumn<Progetto, String> dataInizioProgettoColonna;
+    @FXML private TableColumn<Progetto, String> dataInizioProgettoColonna;
 
-    @FXML
-    private TextArea descrizioneField;
+    @FXML private TextArea descrizioneField;
 
-    @FXML
-    private TableColumn<Progetto, String> descrizioneProgettoColonna;
+    @FXML private TableColumn<Progetto, String> descrizioneProgettoColonna;
 
-    @FXML
-    private Label errorLable;
+    @FXML private Label errorLable;
 
-    @FXML
-    private VBox mainContent;
+    @FXML private VBox mainContent;
 
-    @FXML
-    private TextField nomeField;
+    @FXML private TextField nomeField;
 
-    @FXML
-    private TableColumn<Progetto, String> nomeProgettoColonna;
+    @FXML private TableColumn<Progetto, String> nomeProgettoColonna;
 
-    @FXML
-    private TableColumn<Attivita, String> noteTecnicheAttivitaColonna;
+    @FXML private TableColumn<Attivita, String> noteTecnicheAttivitaColonna;
 
-    @FXML
-    private TableView<Progetto> progettoTable;
+    @FXML private TableView<Progetto> progettoTable;
 
-    @FXML
-    private TableColumn<Attivita, String> statoAttivitaColonna;
+    @FXML private TableColumn<Attivita, String> statoAttivitaColonna;
 
-    @FXML
-    private TableColumn<Progetto, String> statoProgettoColonna;
+    @FXML private TableColumn<Progetto, String> statoProgettoColonna;
 
-    @FXML
-    private TableColumn<Attivita, String> titoloAttivitaColonna;
+    @FXML private TableColumn<Attivita, String> titoloAttivitaColonna;
 
-    @FXML
-    private ChoiceBox<Notifica.Urgenza> urgenzaField;
+    @FXML private ChoiceBox<Notifica.Urgenza> urgenzaField;
+
+
+
+    ObservableList<Attivita> attivita = javafx.collections.FXCollections.observableArrayList();
+    ObservableList<Progetto> progetti = javafx.collections.FXCollections.observableArrayList();
+
 
     @FXML
     void initialize() {
+        Utils.addCharacterLimit(nomeField, 100);
+        Utils.addCharacterLimit(descrizioneField, 500);
+
 
         urgenzaField.getItems().addAll(Notifica.Urgenza.values());
         urgenzaField.setValue(Notifica.Urgenza.BASSA);
-        
-        Utils.addCharacterLimit(nomeField, 50);
-        Utils.addCharacterLimit(descrizioneField, 500);
 
         errorLable.setText("");
+
+
+        // tabella progetti
+        dataInizioProgettoColonna.setCellValueFactory(cellData -> {
+            String a = cellData.getValue().getDataInizio().toString();
+            return new SimpleStringProperty(a);
+        });
+
+        descrizioneProgettoColonna.setCellValueFactory(cellData -> {
+            String a = cellData.getValue().getDescrizione();
+            return new SimpleStringProperty(a);
+        });
+
+        nomeProgettoColonna.setCellValueFactory(cellData -> {
+            String a = cellData.getValue().getNomeProgetto();
+            return new SimpleStringProperty(a);
+        });
+
+        statoProgettoColonna.setCellValueFactory(cellData -> {
+            String a = cellData.getValue().getStato().toString();
+            return new SimpleStringProperty(a);
+        });
  
+
+
+        // tabella attivita
+
+
+
     }
 
     @FXML
@@ -87,7 +109,7 @@ public class ControllerCreaNotificaAttivita {
         Notifica ntf = new Notifica();
         getData(ntf);
 
-        UIController.getInstance().openCreaNotificheStep2View(/* ntf */);
+        UIController.getInstance().openCreaNotificaStep2View(ntf, false);
 
         //for testign
         System.out.println(ntf.toString());

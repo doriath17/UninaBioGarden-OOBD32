@@ -25,6 +25,8 @@ public class Progetto {
   private List<Coltivazione> coltivazioni = new ArrayList<>();
   private List<Coltivatore> coltivatori = new ArrayList<>();
 
+  private List<Notifica> notifiche = new ArrayList<>();
+
   public Progetto() {
   }
 

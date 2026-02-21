@@ -1,7 +1,5 @@
 package uninabiogarden.entities;
 
-import java.security.Timestamp;
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -128,6 +126,31 @@ public class Notifica {
         this.attivita = attivita;
     }
     
+    public ArrayList<Coltivatore> getDestinatari() {
+        return destinatari;
+    }
+
+    public void setDestinatari(ArrayList<Coltivatore> destinatari) {
+        this.destinatari = destinatari;
+    }
+
+    @Override
+    public String toString() {
+        return "Notifica{" +
+                "id=" + id +
+                ", dataInvio=" + dataInvio +
+                ", nome='" + nome + '\'' +
+                ", descrizione='" + descrizione + '\'' +
+                ", urgenza=" + urgenza +
+                ", tipo=" + tipo +
+                ", giorniMancanti=" + giorniMancanti +
+                ", mittente=" + mittente.getNome() +
+                ", progetto=" + progetto.getNomeProgetto() +
+                ", attivita=" + attivita +
+                ", destinatari=" + destinatari.stream().map(Coltivatore::getNome).toList() +
+                '}';
+                
+            }
 
 }
 

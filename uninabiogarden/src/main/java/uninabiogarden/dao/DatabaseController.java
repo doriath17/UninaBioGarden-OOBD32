@@ -23,6 +23,7 @@ public class DatabaseController {
   private ProgettoDao progettoDao = new ProgettoDao();
   private ColtivazioneDao coltivazioneDao = new ColtivazioneDao();
   private AttivitaDao attivitaDao = new AttivitaDao();
+  private NotificaDAO notificaDao = NotificaDAO.getInstance();
 
   public UtenteDao getUtenteDao() {
     return utenteDao;
@@ -56,4 +57,8 @@ public class DatabaseController {
     return attivitaDao;
   }
 
+  public NotificaDAO getNotificaDao() {
+    return notificaDao;
+  }
+  
 }

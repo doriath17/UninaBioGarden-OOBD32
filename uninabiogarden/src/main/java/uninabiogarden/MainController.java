@@ -183,6 +183,7 @@ public class MainController {
       caricaLotti(proprietario);
       caricaColtivatori(); // deve essere caricato prima dei progetti (richiesto da caricaProgetti)
       caricaProgetti(proprietario);
+      caricaNotifiche();
     }
   }
 
@@ -481,5 +482,12 @@ public class MainController {
   // ==============================================================================================
   // Sezione: Notifiche
   // ==============================================================================================
+
+  public void caricaNotifiche() {
+    notifiche = databaseController.getNotificaDao().getAllNotificheOfUtente(utenteLoggato);
+    System.out.println("Notifiche caricate con successo: " + notifiche.size() + " notifiche trovate");
+  }
+
+
 
 }

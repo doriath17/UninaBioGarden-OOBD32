@@ -11,6 +11,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import uninabiogarden.entities.Attivita;
 import uninabiogarden.entities.Coltivazione;
+import uninabiogarden.entities.Notifica;
 import uninabiogarden.entities.Progetto;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -249,9 +250,14 @@ public class UIController {
     loadViewIntoContent(FxmlView.CREA_NOTIFICHE_ATTIVITA_VIEW, homeController.getSelectedContent());
   }
 
-  public void openCreaNotificheStep2View() {
+  public void openCreaNotificaStep2View(Notifica nuovaNotifica, boolean init) {
     ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
     loadViewIntoContent(FxmlView.CREA_NOTIFICHE_STEP_2, homeController.getSelectedContent());
+
+    if (init) {
+      ControllerCreaNotificaStep2 step2Controller = (ControllerCreaNotificaStep2) controllers.get(FxmlView.CREA_NOTIFICHE_STEP_2);
+      step2Controller.init(nuovaNotifica);
+    }
   }
 
   public void openDettaglioColtivazioneView(Progetto progetto, Coltivazione coltivazione, Label errorLabel) {

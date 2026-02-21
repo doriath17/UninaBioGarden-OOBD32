@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import uninabiogarden.entities.*;
 import uninabiogarden.MainController;
+import java.sql.Statement;
 
 public class NotificaDAO {
 
@@ -20,29 +21,82 @@ public class NotificaDAO {
         return instance;
     }
 
-    public void saveNotifica(Notifica notifica) {
-        
-        String sql = "INSERT INTO Notifiche (nome_evento, urgenza, descrizione, tipo, giorni_mancanti, id_proprietario, id_progetto) VALUES (?, ?, ?, ?, ?, ?, ?)";
+public void saveNotifica(Notifica notifica) {
+    
+    String sqlNotifica = "INSERT INTO notifica (nome_evento, urgenza, descrizione, tipo, giorni_mancanti, id_progetto, id_attivita) " +
+                         "VALUES (?, ?::urgenza_notifica, ?, ?::tipo_notifica, ?, ?, ?)";
 
-        try (var conn = database.getConnection();
-            var stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, notifica.getNome());
-            stmt.setString(2, notifica.getUrgenza().toString());
-            stmt.setString(3, notifica.getDescrizione());
-            stmt.setString(4, notifica.getTipo().toString());
-            stmt.setInt(5, notifica.getGiorniMancanti());
-            stmt.setLong(6, notifica.getMittente().getId());
-            stmt.setLong(7, notifica.getProgetto().getId());
-            stmt.executeUpdate();
+    String sqlRiceve = "INSERT INTO riceve (id_notifica, id_coltivatore, is_letta) VALUES (?, ?, false)";
+
+    try (var conn = database.getConnection()) {
+
+        conn.setAutoCommit(false);
+
+        try (var stmtN = conn.prepareStatement(sqlNotifica, Statement.RETURN_GENERATED_KEYS);
+             var stmtR = conn.prepareStatement(sqlRiceve)) {
+
+            // Notifica
+            stmtN.setString(1, notifica.getNome());
+            stmtN.setString(2, notifica.getUrgenza().toString());
+            stmtN.setString(3, notifica.getDescrizione());
+            stmtN.setString(4, notifica.getTipo().toString());
+            
+            if (notifica.getGiorniMancanti() != null) {
+                stmtN.setInt(5, notifica.getGiorniMancanti());
+            } else { 
+                stmtN.setNull(5, java.sql.Types.INTEGER);
+            }
+
+            stmtN.setLong(6, notifica.getProgetto().getId());
+
+            if (notifica.getAttivita() != null) {
+                stmtN.setLong(7, notifica.getAttivita().getId());
+            } else {
+                stmtN.setNull(7, java.sql.Types.INTEGER);
+            }
+
+            stmtN.executeUpdate();
+
+            // recupero id notifica
+            int generatedId = -1;
+            try (var rs = stmtN.getGeneratedKeys()) {
+                if (rs.next()) {
+                    generatedId = rs.getInt(1);
+                }
+            }
+
+            // riceve
+            if (generatedId != -1 && notifica.getDestinatari() != null) {
+                // for (Coltivatore c : notifica.getDestinatari()) {
+                //     stmtR.setInt(1, generatedId);
+                //     stmtR.setLong(2, c.getId());
+                //     stmtR.addBatch();
+                // }
+                // stmtR.executeBatch();
+                for (Coltivatore c : notifica.getDestinatari()) {
+                    stmtR.setInt(1, generatedId);
+                    stmtR.setLong(2, c.getId());
+                    stmtR.executeUpdate();
+                }
+            }
+
+            // salva tutto
+            conn.commit();
+            System.out.println("Notifica salvata con successo! ID: " + generatedId);
 
         } catch (Exception e) {
-            System.err.println("Errore durante il salvataggio della notifica: " + e.getMessage());
-            throw new RuntimeException(e);
+            conn.rollback();
+            throw e;
         }
+    } catch (Exception e) {
+        System.err.println("Errore fatale: " + e.getMessage());
+        throw new RuntimeException(e);
+    }
+
     }
 
 
-    public ArrayList<Notifica> getAllNotifiche() {
+    public ArrayList<Notifica> getAllNotificheOfUtente(Utente utente) {
 
         ArrayList<Notifica> list = new ArrayList<>();
         
@@ -59,7 +113,7 @@ public class NotificaDAO {
         try (var conn = database.getConnection(); 
              var stmt = conn.prepareStatement(sql)) {
 
-            stmt.setLong(1, MainController.getInstance().getUtenteLoggato().getId());
+            stmt.setLong(1, utente.getId());
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {

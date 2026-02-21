@@ -45,49 +45,46 @@ public class ControllerDashboard {
 
   @FXML
   private void initialize() {
+
     messaggiobenvenuto.setText("Benvenuto " + MainController.getInstance().getUtenteLoggato().getNome() + "!");
 
-        nomeNotificaColonna.setCellValueFactory(cellData -> {
-            String a = cellData.getValue().getNome();
-            return new SimpleStringProperty(a);
-        });
-  
-        descrizioneNotificaColonna.setCellValueFactory(cellData -> {
-            String a = cellData.getValue().getDescrizione(); 
-            return new SimpleStringProperty(a);
-        });
-  
-        urgenzaNotificaColonna.setCellValueFactory(cellData -> {
-            String a = cellData.getValue().getUrgenza().toString();
-            return new SimpleStringProperty(a);
-        });
-  
-        progettoNotificaColonna.setCellValueFactory(cellData -> {
-            String a = cellData.getValue().getProgetto().getNomeProgetto();
-            return new SimpleStringProperty(a);
-        });
 
-        dataInvioNotificaColonna.setCellValueFactory(cellData -> {
-            LocalDate timestamp = cellData.getValue().getDataInvio();
-            return new SimpleObjectProperty<>(timestamp);
-        });
+    // Tabella notifiche
+    nomeNotificaColonna.setCellValueFactory(cellData -> {
+        String a = cellData.getValue().getNome();
+        return new SimpleStringProperty(a);
+    });
+  
+    descrizioneNotificaColonna.setCellValueFactory(cellData -> {
+        String a = cellData.getValue().getDescrizione(); 
+        return new SimpleStringProperty(a);
+    });
+  
+    urgenzaNotificaColonna.setCellValueFactory(cellData -> {
+        String a = cellData.getValue().getUrgenza().toString();
+        return new SimpleStringProperty(a);
+    });
+  
+    progettoNotificaColonna.setCellValueFactory(cellData -> {
+        String a = cellData.getValue().getProgetto().getNomeProgetto();
+        return new SimpleStringProperty(a);
+    });
 
-        // loadData();
+    dataInvioNotificaColonna.setCellValueFactory(cellData -> {
+        LocalDate timestamp = cellData.getValue().getDataInvio();
+        return new SimpleObjectProperty<>(timestamp);
+    });
+
+    loadData();
+
+    notificheTable.setItems(notifiche);
 
     }
 
-    // //TODO: da rimuovere
-    // public void loadData() {
-    //     System.out.println("Caricamento notifiche dal database...");
-
-    //     ArrayList<Notifica> dataFromDb = NotificaDAO.getInstance().getAllNotifiche();
-    //     notifiche.setAll(dataFromDb); 
-
-    //     // per testing
-    //     for (Notifica n : dataFromDb) {
-    //         System.out.println("Notifica: " + n.getNome() + ", Progetto: " + n.getProgetto().getNomeProgetto());
-    //     }
-    // }
+    public void loadData() {
+        notifiche.clear();
+        notifiche.addAll(MainController.getInstance().getNotifiche());
+    }
 
 
 }

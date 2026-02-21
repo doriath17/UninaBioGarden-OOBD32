@@ -41,11 +41,12 @@ CREATE TABLE notifica (
 DROP TABLE IF EXISTS riceve CASCADE;
 
 CREATE TABLE riceve (
-  id_notifica INT NOT NULL PRIMARY KEY,
+  id_notifica INT NOT NULL,
   id_coltivatore INT NOT NULL,
   is_letta BOOLEAN NOT NULL,
   data_lettura TIMESTAMP,
 
+  PRIMARY KEY (id_notifica, id_coltivatore),
   FOREIGN KEY (id_notifica) REFERENCES notifica (id) ON DELETE CASCADE,
   FOREIGN KEY (id_coltivatore) REFERENCES utente (id) ON DELETE CASCADE
 );
