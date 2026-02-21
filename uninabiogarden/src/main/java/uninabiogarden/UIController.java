@@ -9,7 +9,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import uninabiogarden.entities.Attivita;
 import uninabiogarden.entities.Coltivazione;
 import uninabiogarden.entities.Notifica;
 import uninabiogarden.entities.Progetto;
@@ -235,19 +234,38 @@ public class UIController {
     notificheController.init(progetto, errorLabel);
   }
 
-  public void openNotificheView() {
+  // -- =======================================================================================================
+  // -- Notifiche
+  // -- =======================================================================================================
+
+  public void openNotificheView(boolean init) {
     ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
     loadViewIntoContent(FxmlView.NOTIFICHE_VIEW, homeController.getSelectedContent());
+    
+    if(init){
+      ControllerNotifiche notificheController = (ControllerNotifiche) controllers.get(FxmlView.NOTIFICHE_VIEW);
+      notificheController.init(); // per avere la lista aggiornata delle notifiche ogni volta che si apre la view
+    }
   }
 
-  public void openCreaNotificheView() {
+  public void openCreaNotificheView(Notifica nuovaNotifica, boolean init) {
     ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
     loadViewIntoContent(FxmlView.CREA_NOTIFICHE_VIEW, homeController.getSelectedContent());
+
+    if(init){
+      ControllerCreaNotifica creaNotificaController = (ControllerCreaNotifica) controllers.get(FxmlView.CREA_NOTIFICHE_VIEW);
+      creaNotificaController.init(nuovaNotifica);
+    }
   }
 
-  public void openCreaNotificheAttivitaView() {
+  public void openCreaNotificheAttivitaView(Notifica nuovaNotifica, boolean init) {
     ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
     loadViewIntoContent(FxmlView.CREA_NOTIFICHE_ATTIVITA_VIEW, homeController.getSelectedContent());
+
+    if(init){
+      ControllerCreaNotificaAttivita creaNotificaAttivitaController = (ControllerCreaNotificaAttivita) controllers.get(FxmlView.CREA_NOTIFICHE_ATTIVITA_VIEW);
+      creaNotificaAttivitaController.init(nuovaNotifica);
+    }
   }
 
   public void openCreaNotificaStep2View(Notifica nuovaNotifica, boolean init) {
@@ -259,6 +277,11 @@ public class UIController {
       step2Controller.init(nuovaNotifica);
     }
   }
+
+  
+  // -- =======================================================================================================
+  // -- Coltivazione
+  // -- =======================================================================================================
 
   public void openDettaglioColtivazioneView(Progetto progetto, Coltivazione coltivazione, Label errorLabel) {
     ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);

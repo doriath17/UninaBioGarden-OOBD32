@@ -91,25 +91,33 @@ public class ControllerNotifiche {
             return new SimpleStringProperty(a);
         });
 
-        loadData(); 
+        // loadData(); 
+        init();
 
         notificheTable.setItems(notifiche);
     }
 
-    public void loadData() {
+    public void init(){
         notifiche.clear();
         notifiche.addAll(MainController.getInstance().getNotifiche());
+        // notificheTable.setItems(notifiche);
+        notificheTable.refresh();
     }
+
+    // public void loadData() {
+    //     notifiche.clear();
+    //     notifiche.addAll(MainController.getInstance().getNotifiche());
+    // }
 
 
     @FXML
     void creaNotificaAction(ActionEvent event) {
-        UIController.getInstance().openCreaNotificheView();
+        UIController.getInstance().openCreaNotificheView(new Notifica(), true);
     }
 
     @FXML
     void creaNotificaAttivitaAction(ActionEvent event) {
-        UIController.getInstance().openCreaNotificheAttivitaView();
+        UIController.getInstance().openCreaNotificheAttivitaView(new Notifica(), true);
     }
 
     @FXML

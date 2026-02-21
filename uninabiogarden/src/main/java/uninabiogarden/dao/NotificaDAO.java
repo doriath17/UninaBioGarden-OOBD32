@@ -23,8 +23,8 @@ public class NotificaDAO {
 
 public void saveNotifica(Notifica notifica) {
     
-    String sqlNotifica = "INSERT INTO notifica (nome_evento, urgenza, descrizione, tipo, giorni_mancanti, id_progetto, id_attivita) " +
-                         "VALUES (?, ?::urgenza_notifica, ?, ?::tipo_notifica, ?, ?, ?)";
+    String sqlNotifica = "INSERT INTO notifica (nome_evento, urgenza, descrizione, tipo, id_progetto, id_attivita) " +
+                         "VALUES (?, ?::urgenza_notifica, ?, ?::tipo_notifica, ?, ?)";
 
     String sqlRiceve = "INSERT INTO riceve (id_notifica, id_coltivatore, is_letta) VALUES (?, ?, false)";
 
@@ -41,18 +41,18 @@ public void saveNotifica(Notifica notifica) {
             stmtN.setString(3, notifica.getDescrizione());
             stmtN.setString(4, notifica.getTipo().toString());
             
-            if (notifica.getGiorniMancanti() != null) {
-                stmtN.setInt(5, notifica.getGiorniMancanti());
-            } else { 
-                stmtN.setNull(5, java.sql.Types.INTEGER);
-            }
+            // if (notifica.getGiorniMancanti() != null) {
+            //     stmtN.setInt(5, notifica.getGiorniMancanti());
+            // } else { 
+            //     stmtN.setNull(5, java.sql.Types.INTEGER);
+            // }
 
-            stmtN.setLong(6, notifica.getProgetto().getId());
+            stmtN.setLong(5, notifica.getProgetto().getId());
 
             if (notifica.getAttivita() != null) {
-                stmtN.setLong(7, notifica.getAttivita().getId());
+                stmtN.setLong(6, notifica.getAttivita().getId());
             } else {
-                stmtN.setNull(7, java.sql.Types.INTEGER);
+                stmtN.setNull(6, java.sql.Types.INTEGER);
             }
 
             stmtN.executeUpdate();

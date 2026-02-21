@@ -45,7 +45,7 @@ public class ControllerHome {
 
   @FXML
   private void notificheAction(ActionEvent event) {
-    UIController.getInstance().openNotificheView();
+    UIController.getInstance().openNotificheView(false);
   }
 
   @FXML

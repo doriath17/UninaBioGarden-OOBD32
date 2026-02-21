@@ -51,6 +51,8 @@ public class ControllerCreaNotificaAttivita {
     ObservableList<Attivita> attivita = javafx.collections.FXCollections.observableArrayList();
     ObservableList<Progetto> progetti = javafx.collections.FXCollections.observableArrayList();
 
+    Notifica nuovaNotifica;
+
 
     @FXML
     void initialize() {
@@ -88,15 +90,45 @@ public class ControllerCreaNotificaAttivita {
 
 
         // tabella attivita
+        titoloAttivitaColonna.setCellValueFactory(cellData -> {
+            String a = cellData.getValue().getNome();
+            return new SimpleStringProperty(a);
+        });
 
+        noteTecnicheAttivitaColonna.setCellValueFactory(cellData -> {
+            String a = cellData.getValue().getNoteTecniche();
+            return new SimpleStringProperty(a);
+        });
 
+        statoAttivitaColonna.setCellValueFactory(cellData -> {
+            String a = cellData.getValue().getStato().toString();
+            return new SimpleStringProperty(a);
+        });
+
+        progettoTable.setItems(progetti);
+
+    }
+
+    public void init(Notifica nuovaNotifica) {
+
+        this.nuovaNotifica = nuovaNotifica;
+
+        // progettp
+        progetti.setAll(MainController.getInstance().getProgetti());
+        // progettoTable.setItems(progetti);
+        progettoTable.refresh(); 
+
+        //TODO: da implementare quando attività sarà implementata
+        // attivita.setAll(MainController.getInstance().getAttivita());
+        // attivitaTable.setItems(attivita);
+        // attivitaTable.refresh();
 
     }
 
     @FXML
     void indietroAction(ActionEvent event) {
-        clearForm();
-        UIController.getInstance().openNotificheView();
+        clear();
+        UIController.getInstance().openNotificheView(true);
     }
 
     @FXML
@@ -106,13 +138,12 @@ public class ControllerCreaNotificaAttivita {
             return;
         }
 
-        Notifica ntf = new Notifica();
-        getData(ntf);
+        getData(nuovaNotifica);
 
-        UIController.getInstance().openCreaNotificaStep2View(ntf, false);
+        UIController.getInstance().openCreaNotificaStep2View(nuovaNotifica, false);
 
         //for testign
-        System.out.println(ntf.toString());
+        System.out.println(nuovaNotifica.toString());
     }
 
     boolean isFormInvalid() { 
@@ -135,7 +166,7 @@ public class ControllerCreaNotificaAttivita {
     return false; 
 }
 
-    void clearForm() {
+    void clear() {
         nomeField.clear();
         descrizioneField.clear();
         urgenzaField.setValue(Notifica.Urgenza.BASSA);
@@ -143,6 +174,9 @@ public class ControllerCreaNotificaAttivita {
     }
 
     void getData(Notifica notifica) {
+        if (notifica == null) {
+            notifica = new Notifica();
+        }
         notifica.setNome(nomeField.getText());
         notifica.setDescrizione(descrizioneField.getText());
         notifica.setUrgenza((Notifica.Urgenza) urgenzaField.getValue());

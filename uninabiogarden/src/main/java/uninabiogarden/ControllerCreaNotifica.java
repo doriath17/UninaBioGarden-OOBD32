@@ -12,7 +12,6 @@ import javafx.scene.layout.VBox;
 import uninabiogarden.entities.Notifica;
 import uninabiogarden.entities.Progetto;
 import uninabiogarden.entities.Proprietario;
-
 import javafx.collections.ObservableList;
 
 import javafx.beans.property.SimpleStringProperty;
@@ -41,6 +40,7 @@ public class ControllerCreaNotifica {
 
 
     ObservableList<Progetto> progetti = javafx.collections.FXCollections.observableArrayList();
+    Notifica nuovaNotifica;
 
     @FXML
     void initialize() {
@@ -73,15 +73,23 @@ public class ControllerCreaNotifica {
             return new SimpleStringProperty(a);
         });
         
-        loadData();
+        // loadData();
 
         progettoTable.setItems(progetti);
 
     }
 
-    void loadData() {
+    public void init(Notifica nuovaNotifica) {
+        
+        this.nuovaNotifica = nuovaNotifica != null ? nuovaNotifica : new Notifica();
+
         progetti.setAll(MainController.getInstance().getProgetti());
+        progettoTable.refresh(); 
     }
+
+    // void loadData() {
+    //     progetti.setAll(MainController.getInstance().getProgetti());
+    // }
 
 
     boolean isFormInvalid() { 
@@ -100,7 +108,7 @@ public class ControllerCreaNotifica {
         return false; 
     }
 
-    void clearForm() {
+    void clear() {
         nomeField.clear();
         descrizioneField.clear();
         urgenzaField.setValue(Notifica.Urgenza.BASSA);
@@ -108,6 +116,9 @@ public class ControllerCreaNotifica {
     }
 
     void getData(Notifica notifica) {
+        if (notifica == null) {
+            notifica = new Notifica();
+        }
         notifica.setNome(nomeField.getText());
         notifica.setDescrizione(descrizioneField.getText());
         notifica.setUrgenza((Notifica.Urgenza) urgenzaField.getValue());
@@ -123,7 +134,7 @@ public class ControllerCreaNotifica {
 
     @FXML
     void indietroAction(ActionEvent event) {
-        UIController.getInstance().openNotificheView();
+        UIController.getInstance().openNotificheView(true);
     }
 
     @FXML
@@ -133,13 +144,12 @@ public class ControllerCreaNotifica {
             return;
         }
 
-        Notifica ntf = new Notifica();
-        getData(ntf);
+        getData(nuovaNotifica);
 
-        UIController.getInstance().openCreaNotificaStep2View(ntf, true);
+        UIController.getInstance().openCreaNotificaStep2View(nuovaNotifica, true);
 
         //for testign
-        System.out.println(ntf.toString());
+        System.out.println(nuovaNotifica.toString());
     }
 
 

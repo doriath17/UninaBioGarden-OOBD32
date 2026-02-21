@@ -52,8 +52,7 @@ public class ControllerCreaNotificaStep2 {
     private Map<Coltivatore, SimpleBooleanProperty> availableSelectionMap = new HashMap<>();
     private Map<Coltivatore, SimpleBooleanProperty> selectedSelectionMap = new HashMap<>();
     
-
-    private boolean initNextStep = true;
+    
     private Notifica nuovaNotifica;
 
     @FXML
@@ -66,18 +65,21 @@ public class ControllerCreaNotificaStep2 {
         availableNomeColumn.setCellValueFactory(new PropertyValueFactory<>("fullName"));
         availableUsernameColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
         Utils.<Coltivatore>setupCheckBoxColumn(availableSelectionColumn, availableSelectionMap);
+
         availableColtivatoriTable.setItems(availableColtivatoriObsList);
+
 
         selectedNomeColumn.setCellValueFactory(new PropertyValueFactory<>("fullName"));
         selectedUsernameColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
         Utils.<Coltivatore>setupCheckBoxColumn(selectedSelectionColumn, selectedSelectionMap);
+
         selectedColtivatoriTable.setItems(selectedColtivatoriObsList);
+
     }
 
     public void init(Notifica nuovaNotifica) {
-        this.nuovaNotifica = nuovaNotifica;
-        clear();
-        initNextStep = true;
+
+        this.nuovaNotifica = nuovaNotifica != null ? nuovaNotifica : new Notifica();
         loadColtivatoriDisponibili();
     }
 
@@ -102,11 +104,13 @@ public class ControllerCreaNotificaStep2 {
         errorLabel.setText("");
         availableColtivatoriObsList.clear();
         selectedColtivatoriObsList.clear();
+        availableSelectionMap.clear();
+        selectedSelectionMap.clear();
     }
 
     @FXML
     private void indietroAction(ActionEvent event) {
-        UIController.getInstance().openCreaNotificheView();
+        UIController.getInstance().openCreaNotificheView(nuovaNotifica, false);
     }
 
     @FXML
@@ -154,9 +158,7 @@ public class ControllerCreaNotificaStep2 {
             }
         );
 
+        clear();
 
-        if (initNextStep) {
-            initNextStep = false;
-        }
     }
 }
