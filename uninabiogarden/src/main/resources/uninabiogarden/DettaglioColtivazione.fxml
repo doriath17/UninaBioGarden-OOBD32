@@ -166,7 +166,7 @@
                   <Insets />
                </GridPane.margin>
             </Button>
-            <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="242.0" text="Vedi Attività" GridPane.columnIndex="1" />
+            <Button mnemonicParsing="false" onAction="#openAttivita" prefHeight="26.0" prefWidth="242.0" text="Vedi Attività" GridPane.columnIndex="1" />
          </children>
       </GridPane>
    </children>
