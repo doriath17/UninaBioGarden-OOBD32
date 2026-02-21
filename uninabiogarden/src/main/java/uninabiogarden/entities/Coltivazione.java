@@ -41,12 +41,22 @@ public class Coltivazione {
     this.noteTecniche = noteTecniche;
   }
 
+  public String validateUpdate(Coltivazione updatedColtivazione) {
+
+    return null;
+  }
+
   public Raccolta getRaccolta() {
     return attivita.stream()
         .filter(a -> a instanceof Raccolta)
         .map(a -> (Raccolta) a)
         .findFirst()
         .orElse(null);
+  }
+
+  public LocalDate getDataFinePrevista() {
+    return this.getDataInizio()
+        .plusDays(this.getColtura().getTempoMaturazione());
   }
 
   public Long getId() {

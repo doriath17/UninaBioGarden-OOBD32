@@ -47,4 +47,22 @@ public class ColtivazioneDao {
       throw new RuntimeException("Errore durante il recupero delle coltivazioni. Riprova più tardi.");
     }
   }
+
+  public void update(String nuovoStato, String nuoveNoteTecniche, Long idColtivazione) {
+    var sql = """
+        UPDATE coltivazione
+        SET stato_salute = ?::stato_salute_coltivazione, note_tecniche = ?
+        WHERE id = ?
+        """;
+    try (Connection conn = database.getConnection();
+        PreparedStatement stmt = conn.prepareStatement(sql)) {
+      stmt.setString(1, nuovoStato);
+      stmt.setString(2, nuoveNoteTecniche);
+      stmt.setLong(3, idColtivazione);
+      stmt.executeUpdate();
+    } catch (Exception e) {
+      System.err.println("Errore durante l'aggiornamento della coltivazione: " + e.getMessage());
+      throw new RuntimeException("Errore durante l'aggiornamento della coltivazione. Riprova più tardi.");
+    }
+  }
 }

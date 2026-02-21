@@ -470,6 +470,26 @@ public class MainController {
   }
 
   // ==============================================================================================
+  // Sezione: Coltivazione
+  // ==============================================================================================
+
+  public void updateColtivazione(Coltivazione.StatoSalute nuovoStatoSalute, String nuoveNoteTecniche,
+      Coltivazione coltivazione) {
+    if (nuovoStatoSalute == null) {
+      throw new IllegalArgumentException("Nuovo Stato di salute non selezionato");
+    }
+    if (nuoveNoteTecniche == null) {
+      nuoveNoteTecniche = "";
+    }
+
+    DatabaseController.getInstance().getColtivazioneDao().update(nuovoStatoSalute.name(), nuoveNoteTecniche,
+        coltivazione.getId());
+    coltivazione.setStatoSalute(nuovoStatoSalute);
+    coltivazione.setNoteTecniche(nuoveNoteTecniche);
+    System.out.println("Coltivazione con Id: " + coltivazione.getId() + " aggiornata con successo");
+  }
+
+  // ==============================================================================================
   // Sezione: Profilo
   // ==============================================================================================
 
@@ -487,7 +507,5 @@ public class MainController {
     notifiche = databaseController.getNotificaDao().getAllNotificheOfUtente(utenteLoggato);
     System.out.println("Notifiche caricate con successo: " + notifiche.size() + " notifiche trovate");
   }
-
-
 
 }
