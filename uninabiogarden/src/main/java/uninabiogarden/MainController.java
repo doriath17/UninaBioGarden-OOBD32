@@ -2,10 +2,12 @@ package uninabiogarden;
 
 import java.util.List;
 
+import uninabiogarden.controller.AttivitaController;
 import uninabiogarden.dao.DatabaseController;
 import uninabiogarden.dto.LottoDto;
 import uninabiogarden.dto.OrtoDto;
 import uninabiogarden.dto.UtenteDto;
+import uninabiogarden.entities.Attivita;
 import uninabiogarden.entities.Coltivatore;
 import uninabiogarden.entities.Coltivazione;
 import uninabiogarden.entities.Coltura;
@@ -23,6 +25,7 @@ public class MainController {
   // ==============================================================================================
 
   private static MainController instance;
+  private AttivitaController attivitaController = new AttivitaController(this);
 
   public static MainController getInstance() {
     if (instance == null) {
@@ -470,6 +473,34 @@ public class MainController {
   }
 
   // ==============================================================================================
+  // Sezione: Coltivazione
+  // ==============================================================================================
+
+  public void updateColtivazione(Coltivazione.StatoSalute nuovoStatoSalute, String nuoveNoteTecniche,
+      Coltivazione coltivazione) {
+    if (nuovoStatoSalute == null) {
+      throw new IllegalArgumentException("Nuovo Stato di salute non selezionato");
+    }
+    if (nuoveNoteTecniche == null) {
+      nuoveNoteTecniche = "";
+    }
+
+    DatabaseController.getInstance().getColtivazioneDao().update(nuovoStatoSalute.name(), nuoveNoteTecniche,
+        coltivazione.getId());
+    coltivazione.setStatoSalute(nuovoStatoSalute);
+    coltivazione.setNoteTecniche(nuoveNoteTecniche);
+    System.out.println("Coltivazione con Id: " + coltivazione.getId() + " aggiornata con successo");
+  }
+
+  // ==============================================================================================
+  // Sezione: Attivita
+  // ==============================================================================================
+
+  public void updateAttivita(Attivita dto, Attivita original, Coltivazione coltivazione) {
+    attivitaController.update(dto, original, coltivazione);
+  }
+
+  // ==============================================================================================
   // Sezione: Profilo
   // ==============================================================================================
 
@@ -487,7 +518,5 @@ public class MainController {
     notifiche = databaseController.getNotificaDao().getAllNotificheOfUtente(utenteLoggato);
     System.out.println("Notifiche caricate con successo: " + notifiche.size() + " notifiche trovate");
   }
-
-
 
 }

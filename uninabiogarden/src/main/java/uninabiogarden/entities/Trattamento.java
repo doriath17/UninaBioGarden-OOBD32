@@ -16,6 +16,31 @@ public class Trattamento extends Attivita {
     super(nome, dataInizio, noteTecniche, coltivazione, coltivatore);
   }
 
+  public Trattamento(Trattamento source) {
+    copyFrom(source);
+  }
+
+  @Override
+  public void copyFrom(Attivita source) {
+    super.copyFrom(source);
+    if (source instanceof Trattamento tratt) {
+      this.nomeProdotto = tratt.nomeProdotto;
+      this.tempoCarenza = tratt.tempoCarenza;
+    }
+  }
+
+  @Override
+  public String validate() {
+    String validationError = super.validate();
+    if (validationError != null) {
+      return validationError;
+    }
+    if (nomeProdotto == null || nomeProdotto.isBlank()) {
+      return "Il nome del prodotto è obbligatorio per i trattamenti.";
+    }
+    return null;
+  }
+
   public String getNomeProdotto() {
     return nomeProdotto;
   }

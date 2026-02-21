@@ -1,6 +1,5 @@
 package uninabiogarden;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javafx.collections.FXCollections;
@@ -8,13 +7,10 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import uninabiogarden.entities.Coltivazione;
 import uninabiogarden.entities.Progetto;
-import uninabiogarden.entities.Raccolta;
 
 public class ControllerDettaglioColtivazione {
 
@@ -31,16 +27,13 @@ public class ControllerDettaglioColtivazione {
   private Label finePrevistaLabel;
 
   @FXML
-  private DatePicker dataInizioField;
+  private Label dataInizioLabel;
 
   @FXML
   private ChoiceBox<String> statoSaluteChoiceBox;
 
   @FXML
-  private ChoiceBox<String> statoChoiceBox;
-
-  @FXML
-  private ChoiceBox<String> statoRaccoltaChoiceBox;
+  private Label statoColtivazioneLabel;
 
   @FXML
   private TextArea noteTecnicheField;
@@ -52,39 +45,12 @@ public class ControllerDettaglioColtivazione {
   @FXML
   private Button editButton;
 
-  @FXML
-  private Label dataInizioLabel;
-
-  @FXML
-  private Label nomeRaccoltaField;
-
-  @FXML
-  private Label nomeColturaLabel1;
-
-  @FXML
-  private DatePicker scadenzaField;
-
-  @FXML
-  private TextField qtyPrevistaField;
-
-  @FXML
-  private TextField qtyEffettivaField;
-
-  @FXML
-  private Label nomeColtivatoreLabel;
-
-  @FXML
-  private Label dataPianificazioneLabel;
-
-  @FXML
-  private Button raccoltaButton;
-
   private Coltivazione coltivazione;
-  private Raccolta raccolta;
   private Progetto progetto;
 
   @FXML
   private void initialize() {
+    Utils.addCharacterLimit(noteTecnicheField, 500);
   }
 
   public void init(Progetto progetto, Coltivazione coltivazione, Label errorLabel) {
@@ -92,138 +58,55 @@ public class ControllerDettaglioColtivazione {
     this.progetto = progetto;
     this.errorLabelTornaIndietro = errorLabel;
     loadColtivazioneInfo();
-    loadRaccoltaInfo();
-    setupRaccoltaButton();
     toggleEditMode(false);
-
     errorLabel.setText("");
-    nomeRaccoltaField.setText("N/A");
-    dataPianificazioneLabel.setText("N/A");
-    nomeColtivatoreLabel.setText("N/A");
-  }
-
-  private List<String> getAvailableStatiRaccolta() {
-    List<String> stati = new ArrayList<>();
-    if (raccolta == null) {
-      stati.add("PIANIFICATA");
-    } else {
-      switch (raccolta.getStato()) {
-        case PIANIFICATA:
-          stati.add("PIANIFICATA");
-          stati.add("IN_CORSO");
-          break;
-        case IN_CORSO:
-          stati.add("IN_CORSO");
-          stati.add("COMPLETATA");
-          break;
-        case COMPLETATA:
-          stati.add("COMPLETATA");
-          break;
-      }
-    }
-    return stati;
-  }
-
-  private List<String> getAvailableStatiColtivazione() {
-    List<String> stati = new ArrayList<>();
-    if (coltivazione.getStato() == null) {
-      stati.add("ATTIVA");
-    } else {
-      switch (coltivazione.getStato()) {
-        case ATTIVA:
-          stati.add("ATTIVA");
-          // Can only transition to IN_RACCOLTA if all activities are complete except
-          // raccolta which must be IN_CORSO
-          // For now, we allow the transition and validation should be done on save
-          stati.add("IN_RACCOLTA");
-          break;
-        case IN_RACCOLTA:
-          stati.add("IN_RACCOLTA");
-          // Can only transition to CONCLUSA if raccolta is completed
-          stati.add("CONCLUSA");
-          break;
-        case CONCLUSA:
-          // Terminal state - no transitions allowed
-          stati.add("CONCLUSA");
-          break;
-      }
-    }
-    return stati;
   }
 
   private void loadColtivazioneInfo() {
     if (coltivazione != null && progetto != null) {
       nomeProgettoLabel.setText(progetto.getNomeProgetto());
 
-      // Setup stato coltivazione with transition restrictions
-      statoChoiceBox.setItems(FXCollections.observableArrayList(getAvailableStatiColtivazione()));
-      statoChoiceBox.setValue(coltivazione.getStato() != null ? coltivazione.getStato().name() : null);
+      nomeColturaLabel.setText(
+          coltivazione.getColtura() != null ? coltivazione.getColtura().getNomeComune() : "N/A");
 
-      // Setup stato salute (no restrictions)
+      dataInizioLabel.setText(coltivazione.getDataInizio() != null ? coltivazione.getDataInizio().toString() : "N/A");
+
+      tempoMaturazioneLabel.setText(
+          coltivazione.getColtura() != null ? coltivazione.getColtura().getTempoMaturazione() + " giorni" : "N/A");
+
+      if (coltivazione.getDataInizio() != null && coltivazione.getColtura() != null) {
+        finePrevistaLabel.setText(coltivazione.getDataFinePrevista().toString());
+      } else {
+        finePrevistaLabel.setText("N/A");
+      }
+
+      statoColtivazioneLabel.setText(coltivazione.getStato().name());
+
       statoSaluteChoiceBox.setItems(FXCollections.observableArrayList(
           List.of(Coltivazione.StatoSalute.values()).stream().map(Enum::name).toList()));
       statoSaluteChoiceBox
           .setValue(coltivazione.getStatoSalute() != null ? coltivazione.getStatoSalute().name() : null);
 
-      nomeColturaLabel.setText(
-          coltivazione.getColtura() != null ? coltivazione.getColtura().getNomeComune() : "N/A");
-      tempoMaturazioneLabel.setText(
-          coltivazione.getColtura() != null ? coltivazione.getColtura().getTempoMaturazione() + " giorni" : "N/A");
-
-      dataInizioLabel.setText(coltivazione.getDataInizio() != null ? coltivazione.getDataInizio().toString() : "N/A");
-
-      if (coltivazione.getDataInizio() != null && coltivazione.getColtura() != null) {
-        var finePrevista = coltivazione.getDataInizio()
-            .plusDays(coltivazione.getColtura().getTempoMaturazione());
-        finePrevistaLabel.setText(finePrevista.toString());
-      } else {
-        finePrevistaLabel.setText("N/A");
-      }
-    }
-  }
-
-  private void loadRaccoltaInfo() {
-    this.raccolta = coltivazione.getRaccolta();
-
-    if (raccolta != null) {
-      statoRaccoltaChoiceBox.setItems(FXCollections.observableArrayList(getAvailableStatiRaccolta()));
-      statoRaccoltaChoiceBox.setValue(raccolta.getStato() != null ? raccolta.getStato().name() : null);
-
-      nomeRaccoltaField.setText(raccolta.getNome());
-      dataPianificazioneLabel
-          .setText(raccolta.getDataPianificazione() != null ? raccolta.getDataPianificazione().toString() : "N/A");
-      scadenzaField.setValue(raccolta.getDataScadenza());
-      dataInizioField.setValue(coltivazione.getDataInizio());
-      qtyPrevistaField.setText(String.valueOf(raccolta.getQuantitaPrevistaKg()));
-      qtyEffettivaField.setText(String.valueOf(raccolta.getQuantitaEffettivaKg()));
-      nomeColtivatoreLabel.setText(raccolta.getColtivatore() != null ? raccolta.getColtivatore().getNome() : "N/A");
+      noteTecnicheField.setText(coltivazione.getNoteTecniche());
     }
   }
 
   private void toggleEditMode(boolean editMode) {
-    boolean isConcluded = progetto.getStato() == Progetto.Stato.CONCLUSO;
-    boolean isColtivazioneConclusa = coltivazione.getStato() == Coltivazione.Stato.CONCLUSA;
+    boolean isReadOnly = progetto.getStato() == Progetto.Stato.CONCLUSO
+        || coltivazione.getStato() == Coltivazione.Stato.CONCLUSA;
 
-    if (isConcluded || isColtivazioneConclusa) {
-      setDisable(true);
+    if (isReadOnly) {
+      setEditable(false);
       editButton.setDisable(true);
-      return;
     } else {
-      setDisable(!editMode);
+      setEditable(editMode);
       editButton.setText(editMode ? "Salva" : "Modifica");
     }
   }
 
-  private void setDisable(boolean disable) {
-    dataInizioField.setDisable(disable);
-    statoSaluteChoiceBox.setDisable(disable);
-    statoChoiceBox.setDisable(disable);
-    statoRaccoltaChoiceBox.setDisable(disable);
-    noteTecnicheField.setEditable(!disable);
-    nomeRaccoltaField.setDisable(disable);
-    scadenzaField.setDisable(disable);
-    qtyPrevistaField.setDisable(disable);
-    qtyEffettivaField.setDisable(disable);
+  private void setEditable(boolean editable) {
+    statoSaluteChoiceBox.setDisable(!editable);
+    noteTecnicheField.setEditable(editable);
   }
 
   @FXML
@@ -234,35 +117,24 @@ public class ControllerDettaglioColtivazione {
     }
 
     try {
-
       toggleEditMode(false);
-
+      var nuovoStatoSalute = Coltivazione.StatoSalute.valueOf(statoSaluteChoiceBox.getValue());
+      var nuoveNoteTecniche = noteTecnicheField.getText();
+      MainController.getInstance().updateColtivazione(nuovoStatoSalute, nuoveNoteTecniche, coltivazione);
       Utils.showSuccess(errorLabel, "Coltivazione aggiornata con successo");
     } catch (Exception e) {
-      Utils.showError(errorLabel, "Errore durante il salvataggio: " + e.getMessage());
+      Utils.showError(errorLabel, e.getMessage());
     }
+    loadColtivazioneInfo();
   }
 
   @FXML
   private void indietroAction(ActionEvent event) {
-    UIController.getInstance().openProgettoColtivazioni(progetto, errorLabelTornaIndietro);
+    UIController.getInstance().backToProgettoColtivazioni(progetto);
   }
 
   @FXML
   private void openAttivita() {
     UIController.getInstance().openDettaglioAttivitaView(progetto, coltivazione, errorLabelTornaIndietro);
-  }
-
-  private void setupRaccoltaButton() {
-    if (raccolta == null) {
-      raccoltaButton.setText("Pianifica Raccolta");
-    } else {
-      raccoltaButton.setVisible(false);
-    }
-  }
-
-  @FXML
-  private void raccoltaAction() {
-
   }
 }

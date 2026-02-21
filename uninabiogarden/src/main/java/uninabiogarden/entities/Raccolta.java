@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 public class Raccolta extends Attivita {
 
-  private double quantitaPrevistaKg;
+  private Double quantitaPrevistaKg;
   private Double quantitaEffettivaKg;
 
   public Raccolta() {
@@ -16,11 +16,41 @@ public class Raccolta extends Attivita {
     super(nome, dataInizio, noteTecniche, coltivazione, coltivatore);
   }
 
-  public double getQuantitaPrevistaKg() {
+  public Raccolta(Raccolta source) {
+    super(source);
+    this.quantitaPrevistaKg = source.quantitaPrevistaKg;
+    this.quantitaEffettivaKg = source.quantitaEffettivaKg;
+  }
+
+  @Override
+  public void copyFrom(Attivita source) {
+    super.copyFrom(source);
+    if (source instanceof Raccolta racc) {
+      this.quantitaPrevistaKg = racc.quantitaPrevistaKg;
+      this.quantitaEffettivaKg = racc.quantitaEffettivaKg;
+    }
+  }
+
+  @Override
+  public String validate() {
+    String validationError = super.validate();
+    if (validationError != null) {
+      return validationError;
+    }
+    if (quantitaPrevistaKg != null && quantitaPrevistaKg <= 0) {
+      return "La quantità prevista deve essere positiva se specificata.";
+    }
+    if (quantitaEffettivaKg != null && quantitaEffettivaKg < 0) {
+      return "La quantità effettiva deve essere positiva o zero se specificata.";
+    }
+    return null;
+  }
+
+  public Double getQuantitaPrevistaKg() {
     return quantitaPrevistaKg;
   }
 
-  public void setQuantitaPrevistaKg(double quantitaPrevistaKg) {
+  public void setQuantitaPrevistaKg(Double quantitaPrevistaKg) {
     this.quantitaPrevistaKg = quantitaPrevistaKg;
   }
 
