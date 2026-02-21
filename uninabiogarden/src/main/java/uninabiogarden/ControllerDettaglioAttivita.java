@@ -27,6 +27,7 @@ import uninabiogarden.entities.Progetto;
 import uninabiogarden.entities.Raccolta;
 import uninabiogarden.entities.Semina;
 import uninabiogarden.entities.Trattamento;
+import uninabiogarden.exceptions.ValidationException;
 
 public class ControllerDettaglioAttivita {
 
@@ -78,7 +79,24 @@ public class ControllerDettaglioAttivita {
   private Progetto progetto;
   private Coltivazione coltivazione;
   private Attivita attivita;
-  private Label errorLabelBack;
+
+  // References to dynamic input fields created in the specific-attributes views
+  private TextField seminaQtyField;
+  private TextField seminaProfField;
+
+  private ChoiceBox<String> irrigazioneMetodoBox;
+  private TextField irrigazioneVolField;
+
+  private ChoiceBox<String> concimazioneTipoBox;
+  private TextField concimazioneQtyField;
+
+  private TextField trattamentoNomeField;
+  private TextField trattamentoCarenzaField;
+
+  private TextField raccoltaPrevField;
+  private TextField raccoltaEffField;
+
+  private TextArea noteTecnicheArea;
 
   private enum ContentView {
     NONE, SPECIFICI, NOTE_TECNICHE
@@ -86,19 +104,52 @@ public class ControllerDettaglioAttivita {
 
   private ContentView currentContentView = ContentView.NONE;
 
+  // ==============================================================================================
+  // Initialization upon creation
+  // ==============================================================================================
+
   @FXML
   private void initialize() {
     setupTable();
+    initDynamicFields();
   }
 
-  public void init(Progetto progetto, Coltivazione coltivazione, Label errorLabel) {
-    this.progetto = progetto;
-    this.coltivazione = coltivazione;
-    this.errorLabelBack = errorLabel;
-    this.attivita = null;
-    this.errorLabel.setText("");
-    attivitaTable.setItems(FXCollections.observableArrayList(coltivazione.getAttivita()));
-    clearDetailPanel();
+  private void initDynamicFields() {
+    // Semina
+    seminaQtyField = new TextField();
+    Utils.addDoubleFilter(seminaQtyField, 6, 0);
+    seminaProfField = new TextField();
+    Utils.addDoubleFilter(seminaProfField, 2, 2);
+
+    // Irrigazione
+    irrigazioneMetodoBox = new ChoiceBox<>(FXCollections.observableArrayList(
+        List.of(Irrigazione.MetodoIrrigazione.values()).stream().map(Enum::name).toList()));
+    irrigazioneVolField = new TextField();
+    Utils.addDoubleFilter(irrigazioneVolField, 3, 2);
+
+    // Concimazione
+    concimazioneTipoBox = new ChoiceBox<>(FXCollections.observableArrayList(
+        List.of(Concimazione.TipoConcime.values()).stream().map(Enum::name).toList()));
+    concimazioneQtyField = new TextField();
+    Utils.addDoubleFilter(concimazioneQtyField, 3, 2);
+
+    // Trattamento
+    trattamentoNomeField = new TextField();
+    Utils.addCharacterLimit(trattamentoNomeField, 50);
+    trattamentoCarenzaField = new TextField();
+    Utils.addDoubleFilter(trattamentoCarenzaField, 6, 0);
+
+    // Raccolta
+    raccoltaPrevField = new TextField();
+    Utils.addDoubleFilter(raccoltaPrevField, 3, 2);
+    raccoltaEffField = new TextField();
+    Utils.addDoubleFilter(raccoltaEffField, 3, 2);
+
+    // Note tecniche
+    noteTecnicheArea = new TextArea();
+    noteTecnicheArea.setPrefHeight(140);
+    noteTecnicheArea.setWrapText(true);
+    Utils.addCharacterLimit(noteTecnicheArea, 1000);
   }
 
   private void setupTable() {
@@ -129,15 +180,28 @@ public class ControllerDettaglioAttivita {
     this.currentContentView = ContentView.NONE;
     specificAttributesContent.getChildren().clear();
     if (selected == null) {
-      clearDetailPanel();
+      clearData();
     } else {
       loadAttivitaInfo();
-      toggleEditMode(false);
+      toggleEditMode(false, selected);
     }
     Utils.hideMessage(errorLabel);
   }
 
-  private void clearDetailPanel() {
+  // ==============================================================================================
+  // Initialization upon opening
+  // ==============================================================================================
+
+  public void init(Progetto progetto, Coltivazione coltivazione, Label errorLabel) {
+    this.progetto = progetto;
+    this.coltivazione = coltivazione;
+    this.attivita = null;
+    this.errorLabel.setText("");
+    attivitaTable.setItems(FXCollections.observableArrayList(coltivazione.getAttivita()));
+    clearData();
+  }
+
+  private void clearData() {
     tipologiaLabel.setText("");
     nomeAttivitaLabel.setText("");
     dataPianificazioneLabel.setText("");
@@ -164,6 +228,7 @@ public class ControllerDettaglioAttivita {
     statoChoiceBox.setValue(attivita.getStato() != null ? attivita.getStato().name() : null);
     dataInizioField.setValue(attivita.getDataInizio());
     scadenzaField.setValue(attivita.getDataScadenza());
+    populateDynamicFields(attivita);
 
     // Refresh dynamic panel if one is already open
     if (currentContentView == ContentView.SPECIFICI) {
@@ -173,7 +238,35 @@ public class ControllerDettaglioAttivita {
     }
   }
 
-  // ---- Edit mode ----
+  private void populateDynamicFields(Attivita a) {
+    noteTecnicheArea.setText(a.getNoteTecniche() != null ? a.getNoteTecniche() : "");
+    if (a instanceof Semina semina) {
+      seminaQtyField.setText(String.valueOf(semina.getQuantitaSementi()));
+      seminaProfField.setText(
+          semina.getProfonditaSeminaCm() != null ? String.valueOf(semina.getProfonditaSeminaCm()) : "");
+    } else if (a instanceof Irrigazione irr) {
+      irrigazioneMetodoBox.setValue(irr.getMetodo() != null ? irr.getMetodo().name() : null);
+      irrigazioneVolField.setText(
+          irr.getVolumeAcquaL() != null ? String.valueOf(irr.getVolumeAcquaL()) : "");
+    } else if (a instanceof Concimazione conc) {
+      concimazioneTipoBox.setValue(conc.getTipoConcime() != null ? conc.getTipoConcime().name() : null);
+      concimazioneQtyField.setText(
+          conc.getQuantitaKg() != null ? String.valueOf(conc.getQuantitaKg()) : "");
+    } else if (a instanceof Trattamento tratt) {
+      trattamentoNomeField.setText(tratt.getNomeProdotto() != null ? tratt.getNomeProdotto() : "");
+      trattamentoCarenzaField.setText(
+          tratt.getTempoCarenza() != null ? String.valueOf(tratt.getTempoCarenza()) : "");
+    } else if (a instanceof Raccolta racc) {
+      raccoltaPrevField.setText(
+          racc.getQuantitaPrevistaKg() != null ? String.valueOf(racc.getQuantitaPrevistaKg()) : "");
+      raccoltaEffField.setText(
+          racc.getQuantitaEffettivaKg() != null ? String.valueOf(racc.getQuantitaEffettivaKg()) : "");
+    }
+  }
+
+  // ==============================================================================================
+  // Handling edit mode and read only state
+  // ==============================================================================================
 
   private boolean isInEditMode() {
     return "Salva".equals(editButton.getText());
@@ -188,16 +281,16 @@ public class ControllerDettaglioAttivita {
         || attivita.getStato() == Attivita.Stato.COMPLETATA;
   }
 
-  private void toggleEditMode(boolean editMode) {
+  private void toggleEditMode(boolean editMode, Attivita attivita) {
     if (attivita == null) {
       editButton.setDisable(true);
       return;
     }
     if (isReadOnly()) {
-      setEditable(false);
+      setEditable(false, attivita);
       editButton.setDisable(true);
     } else {
-      setEditable(editMode);
+      setEditable(editMode, attivita);
       editButton.setDisable(false);
       editButton.setText(editMode ? "Salva" : "Modifica");
     }
@@ -208,9 +301,13 @@ public class ControllerDettaglioAttivita {
     }
   }
 
-  private void setEditable(boolean editable) {
+  private void setEditable(boolean editable, Attivita attivita) {
     statoChoiceBox.setDisable(!editable);
-    dataInizioField.setDisable(!editable);
+    if (editable && (attivita.getStato() != Attivita.Stato.PIANIFICATA)) {
+      dataInizioField.setDisable(true);
+    } else {
+      dataInizioField.setDisable(!editable);
+    }
     scadenzaField.setDisable(!editable);
   }
 
@@ -224,22 +321,147 @@ public class ControllerDettaglioAttivita {
     };
   }
 
+  // ==============================================================================================
+  // Methods to load user inputs into DTOs and basic validation
+  // ==============================================================================================
+
+  private Attivita getDataAttivita(Attivita dto) {
+    Attivita.Stato newStato = Attivita.Stato.valueOf(statoChoiceBox.getValue());
+    dto.setStato(newStato);
+    dto.setDataInizio(dataInizioField.getValue());
+    dto.setDataScadenza(scadenzaField.getValue());
+
+    if (noteTecnicheArea != null)
+      dto.setNoteTecniche(noteTecnicheArea.getText());
+
+    return dto;
+  }
+
+  private Semina getDataSemina() {
+    Semina dto = new Semina((Semina) attivita);
+    getDataAttivita(dto);
+    Integer q = parseInteger(seminaQtyField, "Valore di quantità di semi non valido: " + seminaQtyField.getText());
+    if (q != null)
+      dto.setQuantitaSementi(q);
+
+    Double prof = parseDouble(seminaProfField,
+        "Valore di profondità di semina non valido: " + seminaProfField.getText());
+    if (prof != null)
+      dto.setProfonditaSeminaCm(prof);
+
+    return dto;
+  }
+
+  private Concimazione getDataConcimazione() {
+    Concimazione dto = new Concimazione((Concimazione) attivita);
+    getDataAttivita(dto);
+
+    Concimazione.TipoConcime tipo = Concimazione.TipoConcime.valueOf(concimazioneTipoBox.getValue());
+    if (tipo != null)
+      dto.setTipoConcime(tipo);
+
+    Double q = parseDouble(concimazioneQtyField,
+        "Valore di quantità di concime non valido: " + concimazioneQtyField.getText());
+    if (q != null)
+      dto.setQuantitaKg(q);
+
+    return dto;
+  }
+
+  private Irrigazione getDataIrrigazione() {
+    Irrigazione dto = new Irrigazione((Irrigazione) attivita);
+    getDataAttivita(dto);
+
+    Irrigazione.MetodoIrrigazione metodo = Irrigazione.MetodoIrrigazione.valueOf(irrigazioneMetodoBox.getValue());
+    if (metodo != null)
+      dto.setMetodo(metodo);
+
+    Double vol = parseDouble(irrigazioneVolField,
+        "Valore di volume d'acqua non valido: " + irrigazioneVolField.getText());
+    if (vol != null)
+      dto.setVolumeAcquaL(vol);
+
+    return dto;
+  }
+
+  private Trattamento getDataTrattamento() {
+    Trattamento dto = new Trattamento((Trattamento) attivita);
+    getDataAttivita(dto);
+
+    if (trattamentoNomeField != null && trattamentoNomeField.getText() != null
+        && !trattamentoNomeField.getText().isBlank())
+      dto.setNomeProdotto(trattamentoNomeField.getText());
+
+    Integer car = parseInteger(trattamentoCarenzaField,
+        "Valore di tempo di carenza non valido: " + trattamentoCarenzaField.getText());
+    if (car != null)
+      dto.setTempoCarenza(car);
+
+    return dto;
+  }
+
+  private Raccolta getDataRaccolta() {
+    Raccolta dto = new Raccolta((Raccolta) attivita);
+    getDataAttivita(dto);
+
+    Double prev = parseDouble(raccoltaPrevField,
+        "Valore di previsione raccolta non valido: " + raccoltaPrevField.getText());
+    if (prev != null)
+      dto.setQuantitaPrevistaKg(prev);
+
+    Double eff = parseDouble(raccoltaEffField,
+        "Valore di raccolta effettiva non valido: " + raccoltaEffField.getText());
+    if (eff != null)
+      dto.setQuantitaEffettivaKg(eff);
+
+    return dto;
+  }
+
+  private Attivita getData() {
+    if (attivita == null) {
+      return null;
+    }
+    Attivita dto = null;
+
+    if (attivita instanceof Semina) {
+      dto = getDataSemina();
+    } else if (attivita instanceof Irrigazione) {
+      dto = getDataIrrigazione();
+    } else if (attivita instanceof Concimazione) {
+      dto = getDataConcimazione();
+    } else if (attivita instanceof Trattamento) {
+      dto = getDataTrattamento();
+    } else if (attivita instanceof Raccolta) {
+      dto = getDataRaccolta();
+    }
+
+    return dto;
+  }
+
   @FXML
   private void edit(ActionEvent event) {
     if ("Modifica".equals(editButton.getText())) {
-      toggleEditMode(true);
+      toggleEditMode(true, attivita);
       return;
     }
     try {
-      // TODO: MainController.getInstance().updateAttivita(...)
-      toggleEditMode(false);
+      Attivita dto = getData();
+      MainController.getInstance().updateAttivita(dto, attivita, coltivazione);
+      toggleEditMode(false, dto);
+      loadAttivitaInfo();
+      attivitaTable.refresh();
       Utils.showSuccess(errorLabel, "Attività aggiornata con successo");
+    } catch (ValidationException ve) {
+      Utils.showError(errorLabel, ve.getMessage());
     } catch (Exception e) {
-      Utils.showError(errorLabel, e.getMessage());
+      System.err.println("Errore aggiornamento attività: " + e.getMessage());
+      Utils.showError(errorLabel, Constants.BASIC_ERROR_MESSAGE);
     }
-    loadAttivitaInfo();
-    attivitaTable.refresh();
   }
+
+  // ==============================================================================================
+  // Dynamic Content navigation methods
+  // ==============================================================================================
 
   @FXML
   private void openDettagliSpecifici() {
@@ -256,6 +478,10 @@ public class ControllerDettaglioAttivita {
     currentContentView = ContentView.NOTE_TECNICHE;
     buildNoteTecnicheView(isInEditMode() && !isReadOnly());
   }
+
+  // ==============================================================================================
+  // Dynamic Content methods
+  // ==============================================================================================
 
   private void buildSpecificAttributesView(boolean editable) {
     specificAttributesContent.getChildren().clear();
@@ -280,116 +506,65 @@ public class ControllerDettaglioAttivita {
     specificAttributesContent.getChildren().clear();
     if (attivita == null)
       return;
-    Label title = boldLabel("Note Tecniche");
-    TextArea area = new TextArea(attivita.getNoteTecniche() != null ? attivita.getNoteTecniche() : "");
-    area.setEditable(editable);
-    area.setPrefHeight(140);
-    area.setWrapText(true);
-    Utils.addCharacterLimit(area, 1000);
-    specificAttributesContent.getChildren().addAll(title, area);
+    noteTecnicheArea.setEditable(editable);
+    specificAttributesContent.getChildren().addAll(boldLabel("Note Tecniche"), noteTecnicheArea);
   }
 
   // SEMINA: quantita_sementi INT > 0, profondita_semina_cm DECIMAL(4,2) optional
   // [0, 50)
   private void buildSeminaView(GridPane grid, Semina semina, boolean editable) {
+    seminaQtyField.setDisable(!editable);
+    seminaProfField.setDisable(!editable);
     grid.add(boldLabel("Quantità Sementi"), 0, 0);
+    grid.add(seminaQtyField, 1, 0);
     grid.add(boldLabel("Profondità Semina (cm)"), 0, 1);
-    if (editable) {
-      TextField qtyField = new TextField(String.valueOf(semina.getQuantitaSementi()));
-      Utils.addDoubleFilter(qtyField, 6, 0); // INT > 0
-      grid.add(qtyField, 1, 0);
-      TextField profField = new TextField(
-          semina.getProfonditaSeminaCm() != null ? String.valueOf(semina.getProfonditaSeminaCm()) : "");
-      Utils.addDoubleFilter(profField, 2, 2); // DECIMAL(4,2): max 49.99
-      grid.add(profField, 1, 1);
-    } else {
-      grid.add(valueLabel(String.valueOf(semina.getQuantitaSementi())), 1, 0);
-      grid.add(valueLabel(
-          semina.getProfonditaSeminaCm() != null ? semina.getProfonditaSeminaCm() + " cm" : "N/A"), 1, 1);
-    }
+    grid.add(seminaProfField, 1, 1);
   }
 
   // IRRIGAZIONE: metodo enum, volume_acqua_l DECIMAL(5,2) optional > 0
   private void buildIrrigazioneView(GridPane grid, Irrigazione irrigazione, boolean editable) {
+    irrigazioneMetodoBox.setDisable(!editable);
+    irrigazioneVolField.setDisable(!editable);
     grid.add(boldLabel("Metodo"), 0, 0);
+    grid.add(irrigazioneMetodoBox, 1, 0);
     grid.add(boldLabel("Volume Acqua (L)"), 0, 1);
-    if (editable) {
-      ChoiceBox<String> metodoBox = new ChoiceBox<>(FXCollections.observableArrayList(
-          List.of(Irrigazione.MetodoIrrigazione.values()).stream().map(Enum::name).toList()));
-      metodoBox.setValue(irrigazione.getMetodo() != null ? irrigazione.getMetodo().name() : null);
-      grid.add(metodoBox, 1, 0);
-      TextField volField = new TextField(
-          irrigazione.getVolumeAcquaL() != null ? String.valueOf(irrigazione.getVolumeAcquaL()) : "");
-      Utils.addDoubleFilter(volField, 3, 2); // DECIMAL(5,2): 3 int digits, 2 frac
-      grid.add(volField, 1, 1);
-    } else {
-      grid.add(valueLabel(irrigazione.getMetodo() != null ? irrigazione.getMetodo().name() : "N/A"), 1, 0);
-      grid.add(valueLabel(
-          irrigazione.getVolumeAcquaL() != null ? irrigazione.getVolumeAcquaL() + " L" : "N/A"), 1, 1);
-    }
+    grid.add(irrigazioneVolField, 1, 1);
   }
 
   // CONCIMAZIONE: tipo_concime enum, quantita_kg DECIMAL(5,2) > 0
   private void buildConcimazioneView(GridPane grid, Concimazione concimazione, boolean editable) {
+    concimazioneTipoBox.setDisable(!editable);
+    concimazioneQtyField.setDisable(!editable);
     grid.add(boldLabel("Tipo Concime"), 0, 0);
+    grid.add(concimazioneTipoBox, 1, 0);
     grid.add(boldLabel("Quantità (kg)"), 0, 1);
-    if (editable) {
-      ChoiceBox<String> tipoBox = new ChoiceBox<>(FXCollections.observableArrayList(
-          List.of(Concimazione.TipoConcime.values()).stream().map(Enum::name).toList()));
-      tipoBox.setValue(concimazione.getTipoConcime() != null ? concimazione.getTipoConcime().name() : null);
-      grid.add(tipoBox, 1, 0);
-      TextField qtyField = new TextField(String.valueOf(concimazione.getQuantitaKg()));
-      Utils.addDoubleFilter(qtyField, 3, 2); // DECIMAL(5,2)
-      grid.add(qtyField, 1, 1);
-    } else {
-      grid.add(valueLabel(
-          concimazione.getTipoConcime() != null ? concimazione.getTipoConcime().name() : "N/A"), 1, 0);
-      grid.add(valueLabel(concimazione.getQuantitaKg() + " kg"), 1, 1);
-    }
+    grid.add(concimazioneQtyField, 1, 1);
   }
 
   // TRATTAMENTO: nome_prodotto VARCHAR(50) > 0, tempo_carenza INT optional > 0
   private void buildTrattamentoView(GridPane grid, Trattamento trattamento, boolean editable) {
+    trattamentoNomeField.setDisable(!editable);
+    trattamentoCarenzaField.setDisable(!editable);
     grid.add(boldLabel("Nome Prodotto"), 0, 0);
+    grid.add(trattamentoNomeField, 1, 0);
     grid.add(boldLabel("Tempo Carenza (gg)"), 0, 1);
-    if (editable) {
-      TextField nomeField = new TextField(
-          trattamento.getNomeProdotto() != null ? trattamento.getNomeProdotto() : "");
-      Utils.addCharacterLimit(nomeField, 50); // VARCHAR(50)
-      grid.add(nomeField, 1, 0);
-      TextField carenzaField = new TextField(
-          trattamento.getTempoCarenza() != null ? String.valueOf(trattamento.getTempoCarenza()) : "");
-      Utils.addDoubleFilter(carenzaField, 6, 0); // INT > 0
-      grid.add(carenzaField, 1, 1);
-    } else {
-      grid.add(valueLabel(
-          trattamento.getNomeProdotto() != null ? trattamento.getNomeProdotto() : "N/A"), 1, 0);
-      grid.add(valueLabel(
-          trattamento.getTempoCarenza() != null ? trattamento.getTempoCarenza() + " gg" : "N/A"), 1, 1);
-    }
+    grid.add(trattamentoCarenzaField, 1, 1);
   }
 
   // RACCOLTA: quantita_prevista_kg DECIMAL(5,2) > 0, quantita_effettiva_kg
   // DECIMAL(5,2) optional
   private void buildRaccoltaView(GridPane grid, Raccolta raccolta, boolean editable) {
+    boolean isPianificata = raccolta.getStato() == Attivita.Stato.PIANIFICATA;
+    boolean isInCorso = raccolta.getStato() == Attivita.Stato.IN_CORSO;
+    // quantita_prevista is only editable when PIANIFICATA
+    raccoltaPrevField.setDisable(!editable || !isPianificata);
+    // quantita_effettiva is only editable when IN_CORSO; always disabled when
+    // PIANIFICATA
+    raccoltaEffField.setDisable(!editable || !isInCorso);
     grid.add(boldLabel("Quantità Prevista (kg)"), 0, 0);
+    grid.add(raccoltaPrevField, 1, 0);
     grid.add(boldLabel("Quantità Effettiva (kg)"), 0, 1);
-    if (editable) {
-      TextField prevField = new TextField(String.valueOf(raccolta.getQuantitaPrevistaKg()));
-      Utils.addDoubleFilter(prevField, 3, 2); // DECIMAL(5,2) > 0
-      grid.add(prevField, 1, 0);
-      TextField effField = new TextField(
-          raccolta.getQuantitaEffettivaKg() != null ? String.valueOf(raccolta.getQuantitaEffettivaKg()) : "");
-      Utils.addDoubleFilter(effField, 3, 2); // DECIMAL(5,2) optional
-      grid.add(effField, 1, 1);
-    } else {
-      grid.add(valueLabel(raccolta.getQuantitaPrevistaKg() + " kg"), 1, 0);
-      grid.add(valueLabel(
-          raccolta.getQuantitaEffettivaKg() != null
-              ? raccolta.getQuantitaEffettivaKg() + " kg"
-              : "N/A"),
-          1, 1);
-    }
+    grid.add(raccoltaEffField, 1, 1);
   }
 
   private GridPane makeGrid() {
@@ -411,19 +586,48 @@ public class ControllerDettaglioAttivita {
     return label;
   }
 
-  private Label valueLabel(String text) {
-    Label label = new Label(text);
-    label.setFont(new Font(13));
-    return label;
-  }
+  // ==============================================================================================
+  // Navigation methods
+  // ==============================================================================================
 
   @FXML
   private void indietroAction(ActionEvent event) {
-    UIController.getInstance().openDettaglioColtivazioneView(progetto, coltivazione, errorLabelBack);
+    UIController.getInstance().backToProgettoColtivazioni(progetto);
   }
 
   @FXML
   private void pianificaAttivita(ActionEvent event) {
     Utils.showError(errorLabel, "Funzionalità non ancora implementata");
   }
+
+  // ==============================================================================================
+  // Helper methods
+  // ==============================================================================================
+
+  private Integer parseInteger(TextField f, String errorMessage) {
+    if (f == null)
+      return null;
+    String s = f.getText();
+    if (s == null || s.isBlank())
+      return null;
+    try {
+      return Integer.valueOf(s);
+    } catch (NumberFormatException e) {
+      throw new IllegalArgumentException(errorMessage);
+    }
+  }
+
+  private Double parseDouble(TextField f, String errorMessage) {
+    if (f == null)
+      return null;
+    String s = f.getText();
+    if (s == null || s.isBlank())
+      return null;
+    try {
+      return Double.valueOf(s);
+    } catch (NumberFormatException e) {
+      throw new IllegalArgumentException(errorMessage);
+    }
+  }
+
 }

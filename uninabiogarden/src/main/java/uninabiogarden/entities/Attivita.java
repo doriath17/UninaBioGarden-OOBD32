@@ -24,6 +24,7 @@ public abstract class Attivita {
   Coltivatore coltivatore;
 
   public Attivita() {
+    dataPianificazione = LocalDate.now();
     stato = Stato.PIANIFICATA;
   }
 
@@ -34,6 +35,52 @@ public abstract class Attivita {
     this.dataInizio = dataInizio;
     this.noteTecniche = noteTecniche;
     this.coltivatore = coltivatore;
+  }
+
+  public Attivita(Attivita source) {
+    copyFrom(source);
+  }
+
+  public void copyFrom(Attivita source) {
+    this.id = source.id;
+    this.nome = source.nome;
+    this.stato = source.stato;
+    this.dataPianificazione = source.dataPianificazione;
+    this.dataInizio = source.dataInizio;
+    this.dataFine = source.dataFine;
+    this.dataScadenza = source.dataScadenza;
+    this.noteTecniche = source.noteTecniche;
+    this.coltivatore = source.coltivatore;
+  }
+
+  // si assume che l'attivita abbia una data di pianificazione siccome questa e
+  // settata dal database tramite trigger
+  public String validate() {
+    if (dataInizio != null && dataPianificazione != null
+        && dataInizio.isBefore(dataPianificazione)) {
+      return "La data di inizio non può essere precedente alla data di pianificazione.";
+    }
+    if (dataScadenza != null && dataInizio != null
+        && dataScadenza.isBefore(dataInizio)) {
+      return "La data di scadenza non può essere precedente alla data di inizio.";
+    }
+    if (dataScadenza != null && dataPianificazione != null
+        && dataScadenza.isBefore(dataPianificazione)) {
+      return "La data di scadenza non può essere precedente alla data di pianificazione.";
+    }
+
+    // check not null dei campi obbligatori
+    if (nome == null || nome.isBlank()) {
+      return "Il nome dell'attività è obbligatorio.";
+    }
+    if (noteTecniche == null || noteTecniche.isBlank()) {
+      return "Le note tecniche sono obbligatorie.";
+    }
+    if (coltivatore == null) {
+      return "Il coltivatore è obbligatorio.";
+    }
+
+    return null;
   }
 
   public Long getId() {

@@ -255,9 +255,20 @@ public class UIController {
     loadViewIntoContent(FxmlView.CREA_NOTIFICHE_STEP_2, homeController.getSelectedContent());
 
     if (init) {
-      ControllerCreaNotificaStep2 step2Controller = (ControllerCreaNotificaStep2) controllers.get(FxmlView.CREA_NOTIFICHE_STEP_2);
+      ControllerCreaNotificaStep2 step2Controller = (ControllerCreaNotificaStep2) controllers
+          .get(FxmlView.CREA_NOTIFICHE_STEP_2);
       step2Controller.init(nuovaNotifica);
     }
+  }
+
+  public void backToProgettoColtivazioni(Progetto progetto) {
+    ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
+    loadViewIntoContent(FxmlView.DETTAGLIO_PROGETTO_VIEW, homeController.getSelectedContent());
+
+    ControllerDettaglioProgetto dettaglioController = (ControllerDettaglioProgetto) controllers
+        .get(FxmlView.DETTAGLIO_PROGETTO_VIEW);
+    dettaglioController.init(progetto);
+    openProgettoColtivazioni(progetto, dettaglioController.getErrorLabel());
   }
 
   public void openDettaglioColtivazioneView(Progetto progetto, Coltivazione coltivazione, Label errorLabel) {

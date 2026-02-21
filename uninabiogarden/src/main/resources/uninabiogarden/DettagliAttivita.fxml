@@ -76,7 +76,7 @@
                               <Font name="System Bold" size="16.0" />
                            </font>
                         </Label>
-                        <Label fx:id="dataInizioLabel" layoutX="10.0" layoutY="83.0" maxWidth="1.7976931348623157E308" prefHeight="44.0" prefWidth="525.0" text="Data Inizio Prevista" GridPane.rowIndex="4">
+                        <Label fx:id="dataInizioLabel" layoutX="10.0" layoutY="83.0" maxWidth="1.7976931348623157E308" prefHeight="44.0" prefWidth="525.0" text="Data Inizio" GridPane.rowIndex="4">
                            <font>
                               <Font name="System Bold" size="16.0" />
                            </font>

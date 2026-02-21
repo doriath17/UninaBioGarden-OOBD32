@@ -130,7 +130,7 @@ public class ControllerDettaglioColtivazione {
 
   @FXML
   private void indietroAction(ActionEvent event) {
-    UIController.getInstance().openProgettoColtivazioni(progetto, errorLabelTornaIndietro);
+    UIController.getInstance().backToProgettoColtivazioni(progetto);
   }
 
   @FXML

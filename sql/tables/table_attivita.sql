@@ -14,10 +14,10 @@ CREATE TABLE attivita (
   nome VARCHAR(100) NOT NULL,
 
   data_pianificazione TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  data_inizio TIMESTAMP CHECK (data_inizio IS NULL OR data_inizio >= data_pianificazione),
-  data_scadenza TIMESTAMP CHECK (data_scadenza IS NULL OR data_scadenza >= data_pianificazione),
-  data_fine TIMESTAMP CHECK (data_fine IS NULL OR data_fine >= data_inizio),
-  CHECK (data_fine IS NULL OR data_fine >= data_inizio),
+  data_inizio TIMESTAMP CHECK (data_inizio IS NULL OR data_inizio::date >= data_pianificazione::date),
+  data_scadenza TIMESTAMP CHECK (data_scadenza IS NULL OR data_scadenza::date >= data_pianificazione::date),
+  data_fine TIMESTAMP CHECK (data_fine IS NULL OR data_fine::date >= data_inizio::date),
+  CHECK (data_fine IS NULL OR data_fine::date >= data_inizio::date),
 
   stato stato_attivita NOT NULL DEFAULT 'PIANIFICATA', 
   tipo tipo_attivita NOT NULL,

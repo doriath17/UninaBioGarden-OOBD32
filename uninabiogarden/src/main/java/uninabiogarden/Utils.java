@@ -3,27 +3,23 @@ package uninabiogarden;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
-import java.util.Observable;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.control.TextInputControl;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
-import javafx.scene.control.Alert.AlertType;
-import javafx.util.Callback;
-import uninabiogarden.entities.Coltivatore;
 
 public class Utils {
 
@@ -73,8 +69,7 @@ public class Utils {
   }
 
   public static void addDoubleFilter(TextField textField) {
-    // Default limits derived from DECIMAL(10,2): 10 total precision, 2 fraction =>
-    // 8 integer, 2 fraction
+    // default: massimo 8 cifre intere e 2 decimali
     addDoubleFilter(textField, 8, 2);
   }
 
@@ -82,9 +77,16 @@ public class Utils {
     UnaryOperator<TextFormatter.Change> filter = change -> {
       String newText = change.getControlNewText();
 
-      // Allow empty string
+      // Permetti campo vuoto per facilitare la digitazione, altrimenti il filtro
+      // bloccherebbe l'inserimento
       if (newText.isEmpty()) {
         return change;
+      }
+
+      // Non permettere il segno negativo, né come primo carattere né in qualsiasi
+      // altra posizione
+      if (newText.startsWith("-") || newText.contains("-")) {
+        return null;
       }
 
       if (maxIntegerDigits < 1 || maxFractionDigits < 0) {
