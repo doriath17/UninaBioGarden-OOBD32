@@ -67,7 +67,7 @@ CREATE TABLE concimazione (
   id INT NOT NULL PRIMARY KEY,
 
   tipo_concime t_tipo_concime NOT NULL,
-  quantita_kg DECIMAL(5,2) NOT NULL CHECK (quantita_kg > 0),
+  quantita_kg DECIMAL(5,2) NOT NULL CHECK (quantita_kg >= 0),
 
   FOREIGN KEY (id) REFERENCES attivita (id) ON DELETE CASCADE 
 );
@@ -85,7 +85,7 @@ CREATE TABLE irrigazione (
   id INT NOT NULL PRIMARY KEY,
 
   metodo t_metodo_irrigazione NOT NULL,
-  volume_acqua_l DECIMAL(5,2) CHECK (volume_acqua_l IS NULL OR volume_acqua_l > 0),
+  volume_acqua_l DECIMAL(5,2) CHECK (volume_acqua_l IS NULL OR volume_acqua_l >= 0),
 
   FOREIGN KEY (id) REFERENCES attivita (id) ON DELETE CASCADE 
 );
@@ -99,8 +99,8 @@ DROP TABLE IF EXISTS raccolta CASCADE;
 CREATE TABLE raccolta (
   id INT NOT NULL PRIMARY KEY,
 
-  quantita_prevista_kg DECIMAL(5,2) NOT NULL CHECK (quantita_prevista_kg > 0),
-  quantita_effettiva_kg DECIMAL(5,2) CHECK (quantita_effettiva_kg IS NULL OR quantita_effettiva_kg > 0),
+  quantita_prevista_kg DECIMAL(5,2) NOT NULL CHECK (quantita_prevista_kg >= 0),
+  quantita_effettiva_kg DECIMAL(5,2) CHECK (quantita_effettiva_kg IS NULL OR quantita_effettiva_kg >= 0),
 
   FOREIGN KEY (id) REFERENCES attivita (id) ON DELETE CASCADE 
 );
@@ -114,7 +114,7 @@ DROP TABLE IF EXISTS semina CASCADE;
 CREATE TABLE semina (
   id INT NOT NULL PRIMARY KEY,
 
-  quantita_sementi INT NOT NULL CHECK (quantita_sementi > 0),
+  quantita_sementi INT NOT NULL CHECK (quantita_sementi >= 0),
   profondita_semina_cm DECIMAL(4,2) CHECK (profondita_semina_cm IS NULL OR ( profondita_semina_cm >= 0 AND profondita_semina_cm < 50)),
 
   FOREIGN KEY (id) REFERENCES attivita (id) ON DELETE CASCADE 
@@ -130,7 +130,7 @@ CREATE TABLE trattamento (
   id INT NOT NULL PRIMARY KEY,
 
   nome_prodotto VARCHAR(50) NOT NULL CHECK (length(nome_prodotto) > 0),
-  tempo_carenza INT CHECK (tempo_carenza IS NULL OR tempo_carenza > 0),
+  tempo_carenza INT CHECK (tempo_carenza IS NULL OR tempo_carenza >= 0),
 
   FOREIGN KEY (id) REFERENCES attivita (id) ON DELETE CASCADE 
 );

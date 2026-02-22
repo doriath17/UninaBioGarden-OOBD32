@@ -15,13 +15,11 @@
       </Label>
       <TableView fx:id="attivitaTable" prefHeight="330.0" prefWidth="1050.0">
          <columns>
-            <TableColumn fx:id="titoloColumn" prefWidth="286.0" text="Titolo" />
-            <TableColumn fx:id="statoColumn" prefWidth="147.0" text="Stato" />
-            <TableColumn fx:id="pianificazioneColumn" prefWidth="139.0" text="Data Pianificazione" />
-            <TableColumn fx:id="scadenzaColumn" prefWidth="126.0" text="Data Scadenza" />
-            <TableColumn fx:id="inizioColumn" prefWidth="110.0" text="Data Inizio" />
-            <TableColumn fx:id="fineColumn" minWidth="0.0" prefWidth="108.0" text="Data Fine" />
-            <TableColumn fx:id="viewColumn" minWidth="0.0" prefWidth="133.0" />
+            <TableColumn fx:id="titoloColumn" prefWidth="321.0" text="Titolo" />
+            <TableColumn fx:id="tipologiaColumn" prefWidth="166.0" text="Tipologia" />
+            <TableColumn fx:id="statoColumn" prefWidth="150.0" text="Stato" />
+            <TableColumn fx:id="nomeColturaColumn" prefWidth="310.0" text="Nome Coltura" />
+            <TableColumn fx:id="viewColumn" minWidth="0.0" prefWidth="102.0" />
          </columns>
       </TableView>
    </children>

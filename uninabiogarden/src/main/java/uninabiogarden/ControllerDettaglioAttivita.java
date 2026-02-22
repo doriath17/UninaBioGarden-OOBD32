@@ -201,6 +201,14 @@ public class ControllerDettaglioAttivita {
     clearData();
   }
 
+  public void init(Progetto progetto, Coltivazione coltivazione, Attivita selectedAttivita) {
+    init(progetto, coltivazione);
+    if (selectedAttivita != null) {
+      attivitaTable.getSelectionModel().select(selectedAttivita);
+      attivitaTable.scrollTo(selectedAttivita);
+    }
+  }
+
   private void clearData() {
     tipologiaLabel.setText("");
     nomeAttivitaLabel.setText("");

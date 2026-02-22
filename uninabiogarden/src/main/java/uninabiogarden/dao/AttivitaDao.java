@@ -7,6 +7,7 @@ import java.util.List;
 
 import uninabiogarden.entities.Attivita;
 import uninabiogarden.entities.Coltivatore;
+import uninabiogarden.entities.Coltivazione;
 import uninabiogarden.entities.Concimazione;
 import uninabiogarden.entities.Irrigazione;
 import uninabiogarden.entities.Raccolta;
@@ -17,17 +18,17 @@ public class AttivitaDao {
 
   private Database database = Database.getInstance();
 
-  public List<Attivita> findByColtivazioneId(Long coltivazioneId) {
+  public List<Attivita> findByColtivazione(Coltivazione coltivazione) {
     var attivita = new ArrayList<Attivita>();
-    attivita.addAll(findByColtivazioneId("irrigazione", coltivazioneId));
-    attivita.addAll(findByColtivazioneId("concimazione", coltivazioneId));
-    attivita.addAll(findByColtivazioneId("semina", coltivazioneId));
-    attivita.addAll(findByColtivazioneId("raccolta", coltivazioneId));
-    attivita.addAll(findByColtivazioneId("trattamento", coltivazioneId));
+    attivita.addAll(findByColtivazioneImpl("irrigazione", coltivazione));
+    attivita.addAll(findByColtivazioneImpl("concimazione", coltivazione));
+    attivita.addAll(findByColtivazioneImpl("semina", coltivazione));
+    attivita.addAll(findByColtivazioneImpl("raccolta", coltivazione));
+    attivita.addAll(findByColtivazioneImpl("trattamento", coltivazione));
     return attivita;
   }
 
-  private List<Attivita> findByColtivazioneId(String tabellaAttivita, Long coltivazioneId) {
+  private List<Attivita> findByColtivazioneImpl(String tabellaAttivita, Coltivazione coltivazione) {
     var sql = String.format("""
         SELECT *
         FROM %s as subtype
@@ -37,7 +38,7 @@ public class AttivitaDao {
 
     try (var conn = database.getConnection();
         var stmt = conn.prepareStatement(sql)) {
-      stmt.setLong(1, coltivazioneId);
+      stmt.setLong(1, coltivazione.getId());
       var rs = stmt.executeQuery();
 
       var attivita = new ArrayList<Attivita>();
@@ -97,6 +98,7 @@ public class AttivitaDao {
         coltivatore.setId(rs.getLong("id_coltivatore"));
         attivitaItem.setColtivatore(coltivatore);
 
+        attivitaItem.setColtivazione(coltivazione);
         attivita.add(attivitaItem);
       }
       return attivita;
@@ -185,7 +187,7 @@ public class AttivitaDao {
   }
 
   private void updateSemina(Semina semina, PreparedStatement stmt) throws Exception {
-    stmt.setInt(1, semina.getQuantitaSementi());
+    stmt.setObject(1, semina.getQuantitaSementi());
     stmt.setObject(2, semina.getProfonditaSeminaCm());
     stmt.setLong(3, semina.getId());
     try (var rs = stmt.executeQuery()) {

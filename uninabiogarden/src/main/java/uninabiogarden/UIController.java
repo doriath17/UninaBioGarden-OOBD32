@@ -9,6 +9,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import uninabiogarden.entities.Attivita;
 import uninabiogarden.entities.Coltivazione;
 import uninabiogarden.entities.Notifica;
 import uninabiogarden.entities.Progetto;
@@ -309,6 +310,15 @@ public class UIController {
     ControllerDettaglioAttivita dettaglioAttivitaController = (ControllerDettaglioAttivita) controllers
         .get(FxmlView.DETTAGLIO_ATTIVITA);
     dettaglioAttivitaController.init(progetto, coltivazione);
+  }
+
+  public void openDettaglioAttivitaView(Progetto progetto, Coltivazione coltivazione, Attivita attivita) {
+    ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
+    loadViewIntoContent(FxmlView.DETTAGLIO_ATTIVITA, homeController.getSelectedContent());
+
+    ControllerDettaglioAttivita dettaglioAttivitaController = (ControllerDettaglioAttivita) controllers
+        .get(FxmlView.DETTAGLIO_ATTIVITA);
+    dettaglioAttivitaController.init(progetto, coltivazione, attivita);
   }
 
   public void openPianificazioneAttivita(Progetto progetto, Coltivazione coltivazione) {

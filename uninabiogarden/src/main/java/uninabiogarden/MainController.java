@@ -370,7 +370,7 @@ public class MainController {
   // ==============================================================================================
 
   private void caricaAttivita(Coltivazione coltivazione, Progetto progetto) {
-    var attivita = databaseController.getAttivitaDao().findByColtivazioneId(coltivazione.getId());
+    var attivita = databaseController.getAttivitaDao().findByColtivazione(coltivazione);
 
     // risolvi il proxy dei coltivatori nelle attività
     attivita.forEach(attivitaItem -> {

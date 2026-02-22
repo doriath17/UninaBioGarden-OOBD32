@@ -22,6 +22,7 @@ public abstract class Attivita {
   String noteTecniche;
 
   Coltivatore coltivatore;
+  Coltivazione coltivazione;
 
   public Attivita() {
     dataPianificazione = LocalDate.now();
@@ -35,6 +36,7 @@ public abstract class Attivita {
     this.dataInizio = dataInizio;
     this.noteTecniche = noteTecniche;
     this.coltivatore = coltivatore;
+    this.coltivazione = coltivazione;
   }
 
   public Attivita(Attivita source) {
@@ -51,6 +53,7 @@ public abstract class Attivita {
     this.dataScadenza = source.dataScadenza;
     this.noteTecniche = source.noteTecniche;
     this.coltivatore = source.coltivatore;
+    this.coltivazione = source.coltivazione;
   }
 
   // si assume che l'attivita abbia una data di pianificazione siccome questa e
@@ -78,6 +81,9 @@ public abstract class Attivita {
     }
     if (coltivatore == null) {
       return "Il coltivatore è obbligatorio.";
+    }
+    if (coltivazione == null) {
+      return "La coltivazione è obbligatoria.";
     }
 
     return null;
@@ -153,6 +159,14 @@ public abstract class Attivita {
 
   public void setDataScadenza(LocalDate dataScadenza) {
     this.dataScadenza = dataScadenza;
+  }
+
+  public Coltivazione getColtivazione() {
+    return coltivazione;
+  }
+
+  public void setColtivazione(Coltivazione coltivazione) {
+    this.coltivazione = coltivazione;
   }
 
 }
