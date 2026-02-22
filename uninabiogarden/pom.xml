@@ -9,7 +9,7 @@
         <maven.compiler.source>24</maven.compiler.source>
         <maven.compiler.target>24</maven.compiler.target>
         <javafx.version>24.0.1</javafx.version>
-        <javafx.modules>javafx.controls,javafx.fxml</javafx.modules>
+        <javafx.modules>javafx.controls,javafx.fxml,javafx.swing</javafx.modules>
     </properties>
     <dependencies>
         <dependency>
@@ -28,6 +28,19 @@
           <artifactId>postgresql</artifactId>
           <version>42.5.4</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-swing</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jfree</groupId>
+            <artifactId>jfreechart</artifactId>
+            <version>1.5.3</version>
+        </dependency>
+        
     </dependencies>
     <build>
         <plugins>

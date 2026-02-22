@@ -21,78 +21,78 @@ public class NotificaDAO {
         return instance;
     }
 
-public void saveNotifica(Notifica notifica) {
+    public void saveNotifica(Notifica notifica) {
+        
+        String sqlNotifica = "INSERT INTO notifica (nome_evento, urgenza, descrizione, tipo, id_progetto, id_attivita) " +
+                             "VALUES (?, ?::urgenza_notifica, ?, ?::tipo_notifica, ?, ?)";
     
-    String sqlNotifica = "INSERT INTO notifica (nome_evento, urgenza, descrizione, tipo, id_progetto, id_attivita) " +
-                         "VALUES (?, ?::urgenza_notifica, ?, ?::tipo_notifica, ?, ?)";
-
-    String sqlRiceve = "INSERT INTO riceve (id_notifica, id_coltivatore, is_letta) VALUES (?, ?, false)";
-
-    try (var conn = database.getConnection()) {
-
-        conn.setAutoCommit(false);
-
-        try (var stmtN = conn.prepareStatement(sqlNotifica, Statement.RETURN_GENERATED_KEYS);
-             var stmtR = conn.prepareStatement(sqlRiceve)) {
-
-            // Notifica
-            stmtN.setString(1, notifica.getNome());
-            stmtN.setString(2, notifica.getUrgenza().toString());
-            stmtN.setString(3, notifica.getDescrizione());
-            stmtN.setString(4, notifica.getTipo().toString());
-            
-            // if (notifica.getGiorniMancanti() != null) {
-            //     stmtN.setInt(5, notifica.getGiorniMancanti());
-            // } else { 
-            //     stmtN.setNull(5, java.sql.Types.INTEGER);
-            // }
-
-            stmtN.setLong(5, notifica.getProgetto().getId());
-
-            if (notifica.getAttivita() != null) {
-                stmtN.setLong(6, notifica.getAttivita().getId());
-            } else {
-                stmtN.setNull(6, java.sql.Types.INTEGER);
-            }
-
-            stmtN.executeUpdate();
-
-            // recupero id notifica
-            int generatedId = -1;
-            try (var rs = stmtN.getGeneratedKeys()) {
-                if (rs.next()) {
-                    generatedId = rs.getInt(1);
-                }
-            }
-
-            // riceve
-            if (generatedId != -1 && notifica.getDestinatari() != null) {
-                // for (Coltivatore c : notifica.getDestinatari()) {
-                //     stmtR.setInt(1, generatedId);
-                //     stmtR.setLong(2, c.getId());
-                //     stmtR.addBatch();
+        String sqlRiceve = "INSERT INTO riceve (id_notifica, id_coltivatore, is_letta) VALUES (?, ?, false)";
+    
+        try (var conn = database.getConnection()) {
+        
+            conn.setAutoCommit(false);
+        
+            try (var stmtN = conn.prepareStatement(sqlNotifica, Statement.RETURN_GENERATED_KEYS);
+                 var stmtR = conn.prepareStatement(sqlRiceve)) {
+                
+                // Notifica
+                stmtN.setString(1, notifica.getNome());
+                stmtN.setString(2, notifica.getUrgenza().toString());
+                stmtN.setString(3, notifica.getDescrizione());
+                stmtN.setString(4, notifica.getTipo().toString());
+                
+                // if (notifica.getGiorniMancanti() != null) {
+                //     stmtN.setInt(5, notifica.getGiorniMancanti());
+                // } else { 
+                //     stmtN.setNull(5, java.sql.Types.INTEGER);
                 // }
-                // stmtR.executeBatch();
-                for (Coltivatore c : notifica.getDestinatari()) {
-                    stmtR.setInt(1, generatedId);
-                    stmtR.setLong(2, c.getId());
-                    stmtR.executeUpdate();
+    
+                stmtN.setLong(5, notifica.getProgetto().getId());
+    
+                if (notifica.getAttivita() != null) {
+                    stmtN.setLong(6, notifica.getAttivita().getId());
+                } else {
+                    stmtN.setNull(6, java.sql.Types.INTEGER);
                 }
+            
+                stmtN.executeUpdate();
+            
+                // recupero id notifica
+                int generatedId = -1;
+                try (var rs = stmtN.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        generatedId = rs.getInt(1);
+                    }
+                }
+            
+                // riceve
+                if (generatedId != -1 && notifica.getDestinatari() != null) {
+                    // for (Coltivatore c : notifica.getDestinatari()) {
+                    //     stmtR.setInt(1, generatedId);
+                    //     stmtR.setLong(2, c.getId());
+                    //     stmtR.addBatch();
+                    // }
+                    // stmtR.executeBatch();
+                    for (Coltivatore c : notifica.getDestinatari()) {
+                        stmtR.setInt(1, generatedId);
+                        stmtR.setLong(2, c.getId());
+                        stmtR.executeUpdate();
+                    }
+                }
+            
+                // salva tutto
+                conn.commit();
+                System.out.println("Notifica salvata con successo! ID: " + generatedId);
+            
+            } catch (Exception e) {
+                conn.rollback();
+                throw e;
             }
-
-            // salva tutto
-            conn.commit();
-            System.out.println("Notifica salvata con successo! ID: " + generatedId);
-
         } catch (Exception e) {
-            conn.rollback();
-            throw e;
+            System.err.println("Errore fatale: " + e.getMessage());
+            throw new RuntimeException(e);
         }
-    } catch (Exception e) {
-        System.err.println("Errore fatale: " + e.getMessage());
-        throw new RuntimeException(e);
-    }
-
+    
     }
 
 

@@ -284,10 +284,18 @@ public class UIController {
     }
   }
 
+  // -- =======================================================================================================
+  // -- Report
+  // -- =======================================================================================================
+
+  public void openReportView() {
+    ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
+    loadViewIntoContent(FxmlView.REPORT_VIEW, homeController.getSelectedContent());
+  }
+
   public void backToProgettoColtivazioni(Progetto progetto) {
     ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
     loadViewIntoContent(FxmlView.DETTAGLIO_PROGETTO_VIEW, homeController.getSelectedContent());
-
     ControllerDettaglioProgetto dettaglioController = (ControllerDettaglioProgetto) controllers
         .get(FxmlView.DETTAGLIO_PROGETTO_VIEW);
     dettaglioController.init(progetto);

@@ -60,7 +60,7 @@ public class ControllerHome {
 
   @FXML
   private void ReportAction(ActionEvent event) {
-    // TODO: implement report navigation
+    UIController.getInstance().openReportView();
   }
 
 }

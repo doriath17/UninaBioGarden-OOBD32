@@ -13,6 +13,7 @@ public enum FxmlView {
   CREA_ORTO_VIEW("/uninabiogarden/CreaOrto.fxml"),
   LOTTI_VIEW("/uninabiogarden/Lotti.fxml"),
   CREA_LOTTO_VIEW("/uninabiogarden/CreaLotto.fxml"),
+  REPORT_VIEW("/uninabiogarden/Report.fxml"),
 
   CREA_PROGETTO_STEP_1("/uninabiogarden/CreaProgettoStep1.fxml"),
   CREA_PROGETTO_STEP_2("/uninabiogarden/CreaProgettoStep2.fxml"),
