@@ -592,7 +592,7 @@ public class ControllerDettaglioAttivita {
 
   @FXML
   private void indietroAction(ActionEvent event) {
-    UIController.getInstance().backToProgettoColtivazioni(progetto);
+    UIController.getInstance().openDettaglioColtivazioneView(progetto, coltivazione);
   }
 
   @FXML

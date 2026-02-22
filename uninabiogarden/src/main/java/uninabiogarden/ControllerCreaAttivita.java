@@ -387,7 +387,7 @@ public class ControllerCreaAttivita {
 
     try {
       MainController.getInstance().createAttivita(attivita, coltivazione);
-      UIController.getInstance().openDettaglioColtivazioneView(progetto, coltivazione);
+      UIController.getInstance().openDettaglioAttivitaView(progetto, coltivazione);
     } catch (ValidationException e) {
       Utils.showError(errorLabel, e.getMessage());
     } catch (Exception e) {
@@ -398,7 +398,7 @@ public class ControllerCreaAttivita {
 
   @FXML
   private void indietroAction() {
-    UIController.getInstance().openDettaglioColtivazioneView(progetto, coltivazione);
+    UIController.getInstance().openDettaglioAttivitaView(progetto, coltivazione);
   }
 
   // ==============================================================================================
