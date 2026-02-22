@@ -1,5 +1,6 @@
 package uninabiogarden.dao;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.List;
@@ -138,7 +139,7 @@ public class AttivitaDao {
       }
     } catch (Exception e) {
       System.err.println("Errore durante l'aggiornamento dell'attività: " + e.getMessage());
-      throw new RuntimeException("Errore durante l'aggiornamento dell'attività. Riprova più tardi.");
+      throw new RuntimeException(e);
     }
     return dto;
   }
@@ -282,4 +283,205 @@ public class AttivitaDao {
     }
   }
 
+  // ==============================================================================================
+  // Create Attivita (sia tabella attivita che tabella specifica)
+  // ==============================================================================================
+
+  // CREATE TYPE tipo_attivita AS ENUM ('SEMINA', 'IRRIGAZIONE', 'CONCIMAZIONE',
+  // 'TRATTAMENTO', 'RACCOLTA');
+  private Attivita createAttivitaGenerica(Attivita attivita, Long coltivazioneId, Connection conn) throws Exception {
+    var sqlInsertAttivita = """
+        INSERT INTO attivita (id_coltivazione, id_coltivatore, nome, data_inizio, data_scadenza, note_tecniche, tipo)
+        VALUES (?, ?, ?, ?, ?, ?, ?::tipo_attivita)
+        RETURNING id, data_pianificazione, stato, data_inizio, data_scadenza, note_tecniche
+        """;
+
+    String tipo = null;
+    if (attivita instanceof Semina) {
+      tipo = "SEMINA";
+    } else if (attivita instanceof Irrigazione) {
+      tipo = "IRRIGAZIONE";
+    } else if (attivita instanceof Concimazione) {
+      tipo = "CONCIMAZIONE";
+    } else if (attivita instanceof Trattamento) {
+      tipo = "TRATTAMENTO";
+    } else if (attivita instanceof Raccolta) {
+      tipo = "RACCOLTA";
+    }
+
+    try (var stmt = conn.prepareStatement(sqlInsertAttivita)) {
+      stmt.setLong(1, coltivazioneId);
+      stmt.setLong(2, attivita.getColtivatore().getId());
+      stmt.setString(3, attivita.getNome());
+      stmt.setDate(4, attivita.getDataInizio() != null ? java.sql.Date.valueOf(attivita.getDataInizio()) : null);
+      stmt.setDate(5, attivita.getDataScadenza() != null ? java.sql.Date.valueOf(attivita.getDataScadenza()) : null);
+      stmt.setString(6, attivita.getNoteTecniche());
+      stmt.setString(7, tipo);
+
+      try (var rs = stmt.executeQuery()) {
+        if (rs.next()) {
+          attivita.setId(rs.getLong("id"));
+          attivita.setDataInizio(
+              rs.getDate("data_inizio") != null ? rs.getDate("data_inizio").toLocalDate() : null);
+          attivita.setDataScadenza(
+              rs.getDate("data_scadenza") != null ? rs.getDate("data_scadenza").toLocalDate() : null);
+          attivita.setNoteTecniche(rs.getString("note_tecniche"));
+          attivita.setDataPianificazione(
+              rs.getDate("data_pianificazione") != null ? rs.getDate("data_pianificazione").toLocalDate() : null);
+          attivita.setStato(Attivita.Stato.valueOf(rs.getString("stato")));
+        }
+      }
+    }
+    return attivita;
+  }
+
+  private Attivita createRaccolta(Raccolta raccolta, Connection conn) throws Exception {
+    var sqlInsertRaccolta = """
+        INSERT INTO raccolta (id, quantita_prevista_kg)
+        VALUES (?, ?)
+        RETURNING id, quantita_prevista_kg
+        """;
+
+    try (var stmt = conn.prepareStatement(sqlInsertRaccolta)) {
+      stmt.setLong(1, raccolta.getId());
+      stmt.setObject(2, raccolta.getQuantitaPrevistaKg());
+
+      try (var rs = stmt.executeQuery()) {
+        if (rs.next()) {
+          double prev = rs.getDouble("quantita_prevista_kg");
+          raccolta.setQuantitaPrevistaKg(rs.wasNull() ? null : prev);
+        }
+      }
+    }
+    return raccolta;
+  }
+
+  private Attivita createTrattamento(Trattamento trattamento, Connection conn) throws Exception {
+    var sqlInsertTrattamento = """
+        INSERT INTO trattamento (id, nome_prodotto, tempo_carenza)
+        VALUES (?, ?, ?)
+        RETURNING id, nome_prodotto, tempo_carenza
+        """;
+
+    try (var stmt = conn.prepareStatement(sqlInsertTrattamento)) {
+      stmt.setLong(1, trattamento.getId());
+      stmt.setString(2, trattamento.getNomeProdotto());
+      stmt.setObject(3, trattamento.getTempoCarenza());
+
+      try (var rs = stmt.executeQuery()) {
+        if (rs.next()) {
+          trattamento.setNomeProdotto(rs.getString("nome_prodotto"));
+          int car = rs.getInt("tempo_carenza");
+          trattamento.setTempoCarenza(rs.wasNull() ? null : car);
+        }
+      }
+    }
+    return trattamento;
+  }
+
+  private Attivita createIrrigazione(Irrigazione irrigazione, Connection conn) throws Exception {
+    var sqlInsertIrrigazione = """
+        INSERT INTO irrigazione (id, metodo, volume_acqua_l)
+        VALUES (?, ?::t_metodo_irrigazione, ?)
+        RETURNING id, metodo, volume_acqua_l
+        """;
+
+    try (var stmt = conn.prepareStatement(sqlInsertIrrigazione)) {
+      stmt.setLong(1, irrigazione.getId());
+      stmt.setString(2, irrigazione.getMetodo() != null ? irrigazione.getMetodo().name() : null);
+      stmt.setObject(3, irrigazione.getVolumeAcquaL());
+
+      try (var rs = stmt.executeQuery()) {
+        if (rs.next()) {
+          String metodo = rs.getString("metodo");
+          irrigazione.setMetodo(metodo != null ? Irrigazione.MetodoIrrigazione.valueOf(metodo) : null);
+          double vol = rs.getDouble("volume_acqua_l");
+          irrigazione.setVolumeAcquaL(rs.wasNull() ? null : vol);
+        }
+      }
+    }
+    return irrigazione;
+  }
+
+  private Attivita createConcimazione(Concimazione concimazione, Connection conn) throws Exception {
+    var sqlInsertConcimazione = """
+        INSERT INTO concimazione (id, tipo_concime, quantita_kg)
+        VALUES (?, ?::t_tipo_concime, ?)
+        RETURNING id, tipo_concime, quantita_kg
+        """;
+
+    try (var stmt = conn.prepareStatement(sqlInsertConcimazione)) {
+      stmt.setLong(1, concimazione.getId());
+      stmt.setString(2, concimazione.getTipoConcime() != null ? concimazione.getTipoConcime().name() : null);
+      stmt.setObject(3, concimazione.getQuantitaKg());
+
+      try (var rs = stmt.executeQuery()) {
+        if (rs.next()) {
+          String tipo = rs.getString("tipo_concime");
+          concimazione.setTipoConcime(tipo != null ? Concimazione.TipoConcime.valueOf(tipo) : null);
+          double qty = rs.getDouble("quantita_kg");
+          concimazione.setQuantitaKg(rs.wasNull() ? null : qty);
+        }
+      }
+    }
+    return concimazione;
+  }
+
+  private Attivita createSemina(Semina semina, Connection conn) throws Exception {
+    var sqlInsertSemina = """
+        INSERT INTO semina (id, quantita_sementi, profondita_semina_cm)
+        VALUES (?, ?, ?)
+        RETURNING id, quantita_sementi, profondita_semina_cm
+        """;
+
+    try (var stmt = conn.prepareStatement(sqlInsertSemina)) {
+      stmt.setLong(1, semina.getId());
+      stmt.setInt(2, semina.getQuantitaSementi());
+      stmt.setObject(3, semina.getProfonditaSeminaCm());
+
+      try (var rs = stmt.executeQuery()) {
+        if (rs.next()) {
+          semina.setQuantitaSementi(rs.getInt("quantita_sementi"));
+          double prof = rs.getDouble("profondita_semina_cm");
+          semina.setProfonditaSeminaCm(rs.wasNull() ? null : prof);
+        }
+      }
+    }
+    return semina;
+  }
+
+  public Attivita create(Attivita attivita, Long coltivazioneId) {
+    // la creazione avviene in due fasi: prima creo l'attivita generica (tabella
+    // attivita) e poi creo l'attivita specifica (tabella irrigazione, concimazione,
+    // semina, raccolta o trattamento)
+    // Entrambe le fasi avvengono nella stessa transazione.
+
+    try (var conn = database.getConnection()) {
+      conn.setAutoCommit(false);
+      try {
+        createAttivitaGenerica(attivita, coltivazioneId, conn);
+
+        if (attivita instanceof Raccolta raccolta) {
+          createRaccolta(raccolta, conn);
+        } else if (attivita instanceof Trattamento trattamento) {
+          createTrattamento(trattamento, conn);
+        } else if (attivita instanceof Irrigazione irrigazione) {
+          createIrrigazione(irrigazione, conn);
+        } else if (attivita instanceof Concimazione concimazione) {
+          createConcimazione(concimazione, conn);
+        } else if (attivita instanceof Semina semina) {
+          createSemina(semina, conn);
+        }
+
+        conn.commit();
+      } catch (Exception e) {
+        conn.rollback();
+        throw e;
+      }
+    } catch (Exception e) {
+      System.err.println("Errore durante la creazione dell'attività: " + e.getMessage());
+      throw new RuntimeException(e);
+    }
+    return attivita;
+  }
 }

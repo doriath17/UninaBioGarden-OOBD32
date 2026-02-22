@@ -19,6 +19,10 @@ public class AttivitaController {
     this.databaseController = DatabaseController.getInstance();
   }
 
+  // ==============================================================================================
+  // Validazione
+  // ==============================================================================================
+
   private String validateUpdate(Attivita dto, Attivita original, Coltivazione coltivazione) {
     String validationError = dto.validate();
     if (validationError != null) {
@@ -70,6 +74,40 @@ public class AttivitaController {
 
     return null;
 
+  }
+
+  private String validateCreate(Attivita attivita, Coltivazione coltivazione) {
+    String validationError = attivita.validate();
+    if (validationError != null) {
+      return validationError;
+    }
+
+    // se la coltivazione e in raccolta o conclusa, non si possono aggiungere nuove
+    // attivita
+    if (coltivazione.getStato() == Coltivazione.Stato.IN_RACCOLTA
+        || coltivazione.getStato() == Coltivazione.Stato.CONCLUSA) {
+      return "Non è possibile aggiungere nuove attività a una coltivazione "
+          + coltivazione.getStato().name().toLowerCase().replace("_", " ") + ".";
+    }
+
+    return null;
+  }
+
+  // ==============================================================================================
+  // Sezione: CRUD
+  // ==============================================================================================
+
+  public Attivita create(Attivita attivita, Coltivazione coltivazione) {
+    String validationError = validateCreate(attivita, coltivazione);
+    if (validationError != null) {
+      throw new ValidationException(validationError);
+    }
+
+    var newAttivita = databaseController.getAttivitaDao().create(attivita, coltivazione.getId());
+    coltivazione.getAttivita().add(newAttivita);
+    System.out.println("Attività creata: " + newAttivita.getId());
+
+    return newAttivita;
   }
 
   public void update(Attivita dto, Attivita original, Coltivazione coltivazione) {

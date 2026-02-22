@@ -496,6 +496,10 @@ public class MainController {
   // Sezione: Attivita
   // ==============================================================================================
 
+  public void createAttivita(Attivita attivita, Coltivazione coltivazione) {
+    attivitaController.create(attivita, coltivazione);
+  }
+
   public void updateAttivita(Attivita dto, Attivita original, Coltivazione coltivazione) {
     attivitaController.update(dto, original, coltivazione);
   }
