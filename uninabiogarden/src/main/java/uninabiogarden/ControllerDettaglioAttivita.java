@@ -192,7 +192,7 @@ public class ControllerDettaglioAttivita {
   // Initialization upon opening
   // ==============================================================================================
 
-  public void init(Progetto progetto, Coltivazione coltivazione, Label errorLabel) {
+  public void init(Progetto progetto, Coltivazione coltivazione) {
     this.progetto = progetto;
     this.coltivazione = coltivazione;
     this.attivita = null;
@@ -597,7 +597,7 @@ public class ControllerDettaglioAttivita {
 
   @FXML
   private void pianificaAttivita(ActionEvent event) {
-    Utils.showError(errorLabel, "Funzionalità non ancora implementata");
+    UIController.getInstance().openPianificazioneAttivita(progetto, coltivazione);
   }
 
   // ==============================================================================================

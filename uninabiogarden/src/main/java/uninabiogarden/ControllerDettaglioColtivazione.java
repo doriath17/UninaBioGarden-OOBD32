@@ -40,7 +40,6 @@ public class ControllerDettaglioColtivazione {
 
   @FXML
   private Label errorLabel;
-  private Label errorLabelTornaIndietro;
 
   @FXML
   private Button editButton;
@@ -53,13 +52,12 @@ public class ControllerDettaglioColtivazione {
     Utils.addCharacterLimit(noteTecnicheField, 500);
   }
 
-  public void init(Progetto progetto, Coltivazione coltivazione, Label errorLabel) {
+  public void init(Progetto progetto, Coltivazione coltivazione) {
     this.coltivazione = coltivazione;
     this.progetto = progetto;
-    this.errorLabelTornaIndietro = errorLabel;
     loadColtivazioneInfo();
     toggleEditMode(false);
-    errorLabel.setText("");
+    Utils.hideMessage(errorLabel);
   }
 
   private void loadColtivazioneInfo() {
@@ -135,6 +133,6 @@ public class ControllerDettaglioColtivazione {
 
   @FXML
   private void openAttivita() {
-    UIController.getInstance().openDettaglioAttivitaView(progetto, coltivazione, errorLabelTornaIndietro);
+    UIController.getInstance().openDettaglioAttivitaView(progetto, coltivazione);
   }
 }

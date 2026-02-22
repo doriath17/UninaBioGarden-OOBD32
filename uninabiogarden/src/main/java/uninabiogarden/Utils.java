@@ -7,7 +7,9 @@ import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -103,6 +105,35 @@ public class Utils {
     };
 
     textField.setTextFormatter(new TextFormatter<>(filter));
+  }
+
+  public static <T> ObjectProperty<T> setupCheckBoxColumnExclusive(TableColumn<T, Void> column) {
+    SimpleObjectProperty<T> selectedItem = new SimpleObjectProperty<>(null);
+    column.setCellFactory(col -> new TableCell<T, Void>() {
+      private final CheckBox checkBox = new CheckBox();
+
+      {
+        checkBox.setOnAction(event -> {
+          T value = getTableRow().getItem();
+          if (value != null) {
+            selectedItem.set(checkBox.isSelected() ? value : null);
+            getTableView().refresh();
+          }
+        });
+      }
+
+      @Override
+      protected void updateItem(Void item, boolean empty) {
+        super.updateItem(item, empty);
+        if (empty || getTableRow() == null || getTableRow().getItem() == null) {
+          setGraphic(null);
+        } else {
+          checkBox.setSelected(getTableRow().getItem().equals(selectedItem.get()));
+          setGraphic(checkBox);
+        }
+      }
+    });
+    return selectedItem;
   }
 
   public static <T> void setupCheckBoxColumn(TableColumn<T, Void> column,

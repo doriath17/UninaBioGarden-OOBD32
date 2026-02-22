@@ -68,7 +68,7 @@ public class ControllerProgettoColtivazioni {
   private void openDettaglioColtivazione(Coltivazione coltivazione) {
     System.out.println("Apertura dettagli coltivazione: " +
         (coltivazione.getColtura() != null ? coltivazione.getColtura().getNomeComune() : "N/A"));
-    UIController.getInstance().openDettaglioColtivazioneView(progetto, coltivazione, errorLabel);
+    UIController.getInstance().openDettaglioColtivazioneView(progetto, coltivazione);
   }
 
 }

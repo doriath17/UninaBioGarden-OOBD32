@@ -293,22 +293,31 @@ public class UIController {
     openProgettoColtivazioni(progetto, dettaglioController.getErrorLabel());
   }
 
-  public void openDettaglioColtivazioneView(Progetto progetto, Coltivazione coltivazione, Label errorLabel) {
+  public void openDettaglioColtivazioneView(Progetto progetto, Coltivazione coltivazione) {
     ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
     loadViewIntoContent(FxmlView.DETTAGLIO_COLTIVAZIONE, homeController.getSelectedContent());
 
     ControllerDettaglioColtivazione dettaglioColtivazioneController = (ControllerDettaglioColtivazione) controllers
         .get(FxmlView.DETTAGLIO_COLTIVAZIONE);
-    dettaglioColtivazioneController.init(progetto, coltivazione, errorLabel);
+    dettaglioColtivazioneController.init(progetto, coltivazione);
   }
 
-  public void openDettaglioAttivitaView(Progetto progetto, Coltivazione coltivazione, Label errorLabel) {
+  public void openDettaglioAttivitaView(Progetto progetto, Coltivazione coltivazione) {
     ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
     loadViewIntoContent(FxmlView.DETTAGLIO_ATTIVITA, homeController.getSelectedContent());
 
     ControllerDettaglioAttivita dettaglioAttivitaController = (ControllerDettaglioAttivita) controllers
         .get(FxmlView.DETTAGLIO_ATTIVITA);
-    dettaglioAttivitaController.init(progetto, coltivazione, errorLabel);
+    dettaglioAttivitaController.init(progetto, coltivazione);
+  }
+
+  public void openPianificazioneAttivita(Progetto progetto, Coltivazione coltivazione) {
+    ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
+    loadViewIntoContent(FxmlView.PIANIFICAZIONE_ATTIVITA, homeController.getSelectedContent());
+
+    ControllerCreaAttivita creaAttivitaController = (ControllerCreaAttivita) controllers
+        .get(FxmlView.PIANIFICAZIONE_ATTIVITA);
+    creaAttivitaController.init(progetto, coltivazione);
   }
 
 }
