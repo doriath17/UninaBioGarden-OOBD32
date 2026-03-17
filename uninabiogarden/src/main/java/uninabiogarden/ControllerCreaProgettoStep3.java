@@ -130,9 +130,10 @@ public class ControllerCreaProgettoStep3 {
             UIController.getInstance().openProgettiView();
           } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
+            System.err.println("Errore durante la creazione del progetto: " + e.getMessage());
             alert.setTitle("Errore");
             alert.setHeaderText("Errore durante la creazione del progetto");
-            alert.setContentText(e.getMessage());
+            alert.setContentText("Errore durante la creazione del progetto");
             alert.showAndWait();
           }
         });

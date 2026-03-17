@@ -91,10 +91,12 @@ public class ControllerDettaglioColtivazione {
 
   private void toggleEditMode(boolean editMode) {
     boolean isReadOnly = progetto.getStato() == Progetto.Stato.CONCLUSO
-        || coltivazione.getStato() == Coltivazione.Stato.CONCLUSA;
+        || coltivazione.getStato() == Coltivazione.Stato.CONCLUSA
+        || coltivazione.getStato() == Coltivazione.Stato.IN_RACCOLTA;
 
     if (isReadOnly) {
       setEditable(false);
+      editButton.setText("Modifica");
       editButton.setDisable(true);
     } else {
       setEditable(editMode);

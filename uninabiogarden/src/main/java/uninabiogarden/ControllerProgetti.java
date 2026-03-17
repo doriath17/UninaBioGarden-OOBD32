@@ -39,6 +39,9 @@ public class ControllerProgetti {
   @FXML
   private TableColumn<Progetto, Void> actionsColumn;
 
+  @FXML
+  private TableColumn<Progetto, Void> deleteColumn;
+
   private ObservableList<Progetto> progettiObservableList;
 
   @FXML
@@ -53,6 +56,7 @@ public class ControllerProgetti {
         cellData.getValue().getDataFine() != null ? cellData.getValue().getDataFine().toString() : ""));
 
     Utils.addButtonToColumn(actionsColumn, "View", this::openDettaglioProgetto);
+    Utils.addButtonToColumn(deleteColumn, "Elimina", this::deleteProgetto);
   }
 
   public void init() {
@@ -79,6 +83,26 @@ public class ControllerProgetti {
 
   private void openDettaglioProgetto(Progetto progetto) {
     UIController.getInstance().openDettaglioProgettoView(progetto);
+  }
+
+  private void deleteProgetto(Progetto progetto) {
+    Utils.mostraDialogConfermaConAzione(
+        "Sei sicuro di voler eliminare il progetto \"" + progetto.getNomeProgetto() + "\"?",
+        progetto,
+        p -> {
+          try {
+            MainController.getInstance().deleteProgetto(p);
+            progettiTable.refresh();
+          } catch (Exception e) {
+            javafx.scene.control.Alert alert = new javafx.scene.control.Alert(
+                javafx.scene.control.Alert.AlertType.ERROR);
+            System.err.println("Errore durante l'eliminazione del progetto: " + e.getMessage());
+            alert.setTitle("Errore");
+            alert.setHeaderText(null);
+            alert.setContentText("Errore durante l'eliminazione del progetto. Riprova più tardi.");
+            alert.showAndWait();
+          }
+        });
   }
 
 }

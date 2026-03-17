@@ -26,7 +26,8 @@ public class ControllerDettaglioProgetto {
 
   public void init(Progetto progetto) {
     this.currentProgetto = progetto;
-
+    errorLabel.setText("");
+    errorLabel.setVisible(false);
   }
 
   VBox getDettaglioContent() {
@@ -55,11 +56,6 @@ public class ControllerDettaglioProgetto {
   @FXML
   private void openAttivitaProgetto(ActionEvent event) {
     UIController.getInstance().openProgettoAttivita(currentProgetto, errorLabel);
-  }
-
-  @FXML
-  private void openNotificheProgetto(ActionEvent event) {
-    UIController.getInstance().openProgettoNotifiche(currentProgetto, errorLabel);
   }
 
   @FXML

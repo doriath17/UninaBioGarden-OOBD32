@@ -49,4 +49,10 @@ public class Proprietario extends Utente {
     this.progetti.add(progetto);
   }
 
+  public void removeProgetto(Progetto progetto) {
+    if (this.progetti != null) {
+      this.progetti.remove(progetto);
+    }
+  }
+
 }

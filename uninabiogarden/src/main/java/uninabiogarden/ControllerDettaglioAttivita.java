@@ -193,14 +193,15 @@ public class ControllerDettaglioAttivita {
   // ==============================================================================================
 
   public void init(Progetto progetto, Coltivazione coltivazione) {
+    clearData();
     this.progetto = progetto;
     this.coltivazione = coltivazione;
     this.attivita = null;
-    this.errorLabel.setText("");
-    System.out.println(
-        "Coltivazione dell'attività: " + coltivazione.getColtura().getNomeComune() + " - ID: " + coltivazione.getId());
-    attivitaTable.setItems(FXCollections.observableArrayList(coltivazione.getAttivita()));
-    clearData();
+    nomeProgettoLabel.setText(progetto.getNomeProgetto());
+    attivitaTable.setItems(FXCollections.observableList(coltivazione.getAttivita()));
+    System.out
+        .println("Caricamento attività per coltivazione " + coltivazione.getId() + " - "
+            + coltivazione.getColtura().getNomeComune());
   }
 
   public void init(Progetto progetto, Coltivazione coltivazione, Attivita selectedAttivita) {
@@ -212,6 +213,12 @@ public class ControllerDettaglioAttivita {
   }
 
   private void clearData() {
+    this.progetto = null;
+    this.coltivazione = null;
+    this.attivita = null;
+    this.errorLabel.setText("");
+
+    nomeProgettoLabel.setText("");
     tipologiaLabel.setText("");
     nomeAttivitaLabel.setText("");
     dataPianificazioneLabel.setText("");
@@ -223,6 +230,7 @@ public class ControllerDettaglioAttivita {
     specificAttributesContent.getChildren().clear();
     editButton.setDisable(true);
     editButton.setText("Modifica");
+    attivitaTable.setItems(FXCollections.observableArrayList());
   }
 
   private void loadAttivitaInfo() {

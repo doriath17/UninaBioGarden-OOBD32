@@ -346,10 +346,11 @@ public class MainController {
     nuovoProgetto = databaseController.getProgettoDao().saveProgetto(nuovoProgetto);
     risolviProxiesProgetto(nuovoProgetto, proprietario);
 
-    System.out.println("Progetto creato: " + nuovoProgetto);
-
-    // aggiungi alla lista del proprietario
+    // aggiungi alla lista del proprietario prima del println per evitare
+    // che un eventuale NPE in toString() lasci lo stato inconsistente
     proprietario.addProgetto(nuovoProgetto);
+
+    System.out.println("Progetto creato con successo: " + nuovoProgetto.getId());
   }
 
   public void caricaColtivatori() {
@@ -504,6 +505,16 @@ public class MainController {
     progetto.setStato(Progetto.Stato.valueOf(nuovoStato));
     System.out
         .println("Stato del progetto aggiornato con successo: " + progetto.getId() + " nuovo stato: " + nuovoStato);
+  }
+
+  // ==============================================================================================
+  // Sezione: Delete del Progetto
+  // ==============================================================================================
+
+  public void deleteProgetto(Progetto progetto) {
+    databaseController.getProgettoDao().deleteProgetto(progetto.getId());
+    ((Proprietario) utenteLoggato).removeProgetto(progetto);
+    System.out.println("Progetto eliminato con successo: " + progetto.getId());
   }
 
   // ==============================================================================================

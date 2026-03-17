@@ -39,11 +39,6 @@ public class ControllerHome {
   }
 
   @FXML
-  private void attivitaAction(ActionEvent event) {
-    // TODO: implement activities navigation
-  }
-
-  @FXML
   private void notificheAction(ActionEvent event) {
     UIController.getInstance().openNotificheView(false);
   }

@@ -56,24 +56,6 @@ public class Progetto {
     return null; // Dati validi
   }
 
-  @Override
-  public String toString() {
-    long coltivazioniCount = coltivazioni != null ? coltivazioni.size() : 0;
-    long coltivatoriCount = coltivatori != null ? coltivatori.size() : 0;
-    return "Progetto{" +
-        "id=" + id +
-        ", nomeProgetto='" + nomeProgetto + '\'' +
-        ", descrizione='" + descrizione + '\'' +
-        ", stato=" + stato +
-        ", dataInizio=" + dataInizio +
-        ", dataFine=" + dataFine +
-        ", proprietario=" + proprietario.getUsername() +
-        ", lotto=" + lotto +
-        ", count coltivazioni=" + coltivazioniCount +
-        ", count coltivatori=" + coltivatoriCount +
-        '}';
-  }
-
   public Long getId() {
     return id;
   }

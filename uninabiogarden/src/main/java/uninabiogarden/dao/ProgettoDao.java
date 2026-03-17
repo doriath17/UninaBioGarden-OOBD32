@@ -216,4 +216,17 @@ public class ProgettoDao {
       throw new RuntimeException("Errore durante il recupero dei coltivatori del progetto. Riprova più tardi.");
     }
   }
+
+  public void deleteProgetto(Long progettoId) {
+    var sql = "DELETE FROM progetto WHERE id = ?";
+    try (Connection conn = database.getConnection();
+        PreparedStatement pstmt = conn.prepareStatement(sql)) {
+      pstmt.setLong(1, progettoId);
+      pstmt.executeUpdate();
+    } catch (Exception e) {
+      System.err.println("Errore durante l'eliminazione del progetto: " + e.getMessage());
+      throw new RuntimeException("Errore durante l'eliminazione del progetto. Riprova più tardi.");
+    }
+  }
+
 }

@@ -39,7 +39,7 @@
       </HBox>
    </top>
    <left>
-      <VBox alignment="CENTER" prefWidth="200" spacing="5.0" styleClass="sidebar">
+      <VBox alignment="TOP_CENTER" prefWidth="200" spacing="5.0" styleClass="sidebar">
          <padding>
             <Insets bottom="20" left="10" right="10" top="20" />
          </padding>
@@ -60,11 +60,6 @@
                </VBox.margin>
             </Button>
             <Button onAction="#progettiAction" prefHeight="50" prefWidth="180" styleClass="menu-button" text="Progetti" textAlignment="CENTER">
-               <VBox.margin>
-                  <Insets bottom="5" />
-               </VBox.margin>
-            </Button>
-            <Button onAction="#attivitaAction" prefHeight="50" prefWidth="180" styleClass="menu-button" text="Attivita'">
                <VBox.margin>
                   <Insets bottom="5" />
                </VBox.margin>

@@ -44,6 +44,10 @@ public class UIController {
   EnumMap<FxmlView, Pane> loadedViews = new EnumMap<>(FxmlView.class);
   EnumMap<FxmlView, Object> controllers = new EnumMap<>(FxmlView.class);
 
+  // ==============================================================================================
+  // Sezione: Inizializzazione
+  // ==============================================================================================
+
   public void init(Stage primaryStage, Pane root) {
     this.primaryStage = primaryStage;
     UIController.instance = this;
@@ -56,6 +60,10 @@ public class UIController {
     primaryStage.setScene(scene);
     primaryStage.show();
   }
+
+  // ==============================================================================================
+  // Sezione: Metodi principali per la gestione delle view
+  // ==============================================================================================
 
   Pane getView(FxmlView view) {
     if (!loadedViews.containsKey(view)) {
@@ -79,6 +87,10 @@ public class UIController {
     }
   }
 
+  // ==============================================================================================
+  // Sezione: View principali
+  // ==============================================================================================
+
   public void openLoginView() {
     loadViewIntoContent(FxmlView.LOGIN_VIEW, mainPane);
   }
@@ -101,13 +113,9 @@ public class UIController {
     loadViewIntoContent(FxmlView.DASHBOARD_VIEW, homeController.getSelectedContent());
   }
 
-  public void openProgettiView() {
-    ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
-    loadViewIntoContent(FxmlView.PROGETTI_VIEW, homeController.getSelectedContent());
-
-    ControllerProgetti progettiController = (ControllerProgetti) controllers.get(FxmlView.PROGETTI_VIEW);
-    progettiController.init(); // per avere la lista aggiornata dei progetti ogni volta che si apre la view
-  }
+  // ==============================================================================================
+  // Sezione: View specifiche per Orto
+  // ==============================================================================================
 
   public void openOrtiView() {
     ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
@@ -122,6 +130,10 @@ public class UIController {
     loadViewIntoContent(FxmlView.CREA_ORTO_VIEW, homeController.getSelectedContent());
   }
 
+  // ==============================================================================================
+  // Sezione: View specifiche per Lotto
+  // ==============================================================================================
+
   public void openLottiView() {
     ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
     loadViewIntoContent(FxmlView.LOTTI_VIEW, homeController.getSelectedContent());
@@ -135,10 +147,33 @@ public class UIController {
     loadViewIntoContent(FxmlView.CREA_LOTTO_VIEW, homeController.getSelectedContent());
   }
 
+  // ==============================================================================================
+  // Sezione: View specifiche per Progetto
+  // ==============================================================================================
+
+  public void openProgettiView() {
+    ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
+    loadViewIntoContent(FxmlView.PROGETTI_VIEW, homeController.getSelectedContent());
+
+    ControllerProgetti progettiController = (ControllerProgetti) controllers.get(FxmlView.PROGETTI_VIEW);
+    progettiController.init(); // per avere la lista aggiornata dei progetti ogni volta che si apre la view
+  }
+
   public void openProfiloView() {
     ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
     loadViewIntoContent(FxmlView.PROFILO_VIEW, homeController.getSelectedContent());
   }
+
+  // ==============================================================================================
+  // Sezione: View specifiche per la creazione del progetto
+  //
+  // Nota: queste view seguono un flusso diviso in 3 step differenti che
+  // concludono con la possibilità di confermare la creazione del progetto. Le
+  // view tra loro si passano un istanza del progetto da creare (un dto) che man
+  // mano viene popolata con le informazioni inserite dall'utente. In questo modo,
+  // alla fine del processo, si ha un progetto completo da poter salvare nel
+  // database.
+  // ==============================================================================================
 
   public void openCreaProgettoStep1View(Progetto nuovoProgetto, boolean init) {
     ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
@@ -172,6 +207,10 @@ public class UIController {
       step3Controller.init(nuovoProgetto);
     }
   }
+
+  // ==============================================================================================
+  // Sezione: View specifiche per visualizzare i dettagli del progetto
+  // ==============================================================================================
 
   public void openDettaglioProgettoView(Progetto progetto) {
     ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
@@ -225,14 +264,59 @@ public class UIController {
     attivitaController.init(progetto, errorLabel);
   }
 
-  public void openProgettoNotifiche(Progetto progetto, javafx.scene.control.Label errorLabel) {
+  // ==============================================================================================
+  // Sezione: View specifiche per visualizzare i dettagli delle coltivazioni del
+  // progetto
+  // ==============================================================================================
+
+  public void backToProgettoColtivazioni(Progetto progetto) {
+    ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
+    loadViewIntoContent(FxmlView.DETTAGLIO_PROGETTO_VIEW, homeController.getSelectedContent());
     ControllerDettaglioProgetto dettaglioController = (ControllerDettaglioProgetto) controllers
         .get(FxmlView.DETTAGLIO_PROGETTO_VIEW);
-    loadViewIntoContent(FxmlView.PROGETTO_NOTIFICHE, dettaglioController.getDettaglioContent());
+    dettaglioController.init(progetto);
+    openProgettoColtivazioni(progetto, dettaglioController.getErrorLabel());
+  }
 
-    ControllerProgettoNotifiche notificheController = (ControllerProgettoNotifiche) controllers
-        .get(FxmlView.PROGETTO_NOTIFICHE);
-    notificheController.init(progetto, errorLabel);
+  public void openDettaglioColtivazioneView(Progetto progetto, Coltivazione coltivazione) {
+    ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
+    loadViewIntoContent(FxmlView.DETTAGLIO_COLTIVAZIONE, homeController.getSelectedContent());
+
+    ControllerDettaglioColtivazione dettaglioColtivazioneController = (ControllerDettaglioColtivazione) controllers
+        .get(FxmlView.DETTAGLIO_COLTIVAZIONE);
+    dettaglioColtivazioneController.init(progetto, coltivazione);
+  }
+
+  // ==============================================================================================
+  // Sezione: View specifiche per visualizzare i dettagli delle attività del
+  // progetto (relative ad una specifica coltivazione)
+  // ==============================================================================================
+
+  public void openDettaglioAttivitaView(Progetto progetto, Coltivazione coltivazione) {
+    ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
+    loadViewIntoContent(FxmlView.DETTAGLIO_ATTIVITA, homeController.getSelectedContent());
+
+    ControllerDettaglioAttivita dettaglioAttivitaController = (ControllerDettaglioAttivita) controllers
+        .get(FxmlView.DETTAGLIO_ATTIVITA);
+    dettaglioAttivitaController.init(progetto, coltivazione);
+  }
+
+  public void openDettaglioAttivitaView(Progetto progetto, Coltivazione coltivazione, Attivita attivita) {
+    ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
+    loadViewIntoContent(FxmlView.DETTAGLIO_ATTIVITA, homeController.getSelectedContent());
+
+    ControllerDettaglioAttivita dettaglioAttivitaController = (ControllerDettaglioAttivita) controllers
+        .get(FxmlView.DETTAGLIO_ATTIVITA);
+    dettaglioAttivitaController.init(progetto, coltivazione, attivita);
+  }
+
+  public void openPianificazioneAttivita(Progetto progetto, Coltivazione coltivazione) {
+    ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
+    loadViewIntoContent(FxmlView.PIANIFICAZIONE_ATTIVITA, homeController.getSelectedContent());
+
+    ControllerCreaAttivita creaAttivitaController = (ControllerCreaAttivita) controllers
+        .get(FxmlView.PIANIFICAZIONE_ATTIVITA);
+    creaAttivitaController.init(progetto, coltivazione);
   }
 
   // --
@@ -284,58 +368,15 @@ public class UIController {
     }
   }
 
-  // -- =======================================================================================================
+  // --
+  // =======================================================================================================
   // -- Report
-  // -- =======================================================================================================
+  // --
+  // =======================================================================================================
 
   public void openReportView() {
     ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
     loadViewIntoContent(FxmlView.REPORT_VIEW, homeController.getSelectedContent());
-  }
-
-  public void backToProgettoColtivazioni(Progetto progetto) {
-    ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
-    loadViewIntoContent(FxmlView.DETTAGLIO_PROGETTO_VIEW, homeController.getSelectedContent());
-    ControllerDettaglioProgetto dettaglioController = (ControllerDettaglioProgetto) controllers
-        .get(FxmlView.DETTAGLIO_PROGETTO_VIEW);
-    dettaglioController.init(progetto);
-    openProgettoColtivazioni(progetto, dettaglioController.getErrorLabel());
-  }
-
-  public void openDettaglioColtivazioneView(Progetto progetto, Coltivazione coltivazione) {
-    ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
-    loadViewIntoContent(FxmlView.DETTAGLIO_COLTIVAZIONE, homeController.getSelectedContent());
-
-    ControllerDettaglioColtivazione dettaglioColtivazioneController = (ControllerDettaglioColtivazione) controllers
-        .get(FxmlView.DETTAGLIO_COLTIVAZIONE);
-    dettaglioColtivazioneController.init(progetto, coltivazione);
-  }
-
-  public void openDettaglioAttivitaView(Progetto progetto, Coltivazione coltivazione) {
-    ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
-    loadViewIntoContent(FxmlView.DETTAGLIO_ATTIVITA, homeController.getSelectedContent());
-
-    ControllerDettaglioAttivita dettaglioAttivitaController = (ControllerDettaglioAttivita) controllers
-        .get(FxmlView.DETTAGLIO_ATTIVITA);
-    dettaglioAttivitaController.init(progetto, coltivazione);
-  }
-
-  public void openDettaglioAttivitaView(Progetto progetto, Coltivazione coltivazione, Attivita attivita) {
-    ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
-    loadViewIntoContent(FxmlView.DETTAGLIO_ATTIVITA, homeController.getSelectedContent());
-
-    ControllerDettaglioAttivita dettaglioAttivitaController = (ControllerDettaglioAttivita) controllers
-        .get(FxmlView.DETTAGLIO_ATTIVITA);
-    dettaglioAttivitaController.init(progetto, coltivazione, attivita);
-  }
-
-  public void openPianificazioneAttivita(Progetto progetto, Coltivazione coltivazione) {
-    ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
-    loadViewIntoContent(FxmlView.PIANIFICAZIONE_ATTIVITA, homeController.getSelectedContent());
-
-    ControllerCreaAttivita creaAttivitaController = (ControllerCreaAttivita) controllers
-        .get(FxmlView.PIANIFICAZIONE_ATTIVITA);
-    creaAttivitaController.init(progetto, coltivazione);
   }
 
 }
