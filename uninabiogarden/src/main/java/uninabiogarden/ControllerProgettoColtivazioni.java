@@ -63,6 +63,7 @@ public class ControllerProgettoColtivazioni {
     this.errorLabel = errorLabel;
     coltivazioniObsList = FXCollections.observableArrayList(progetto.getColtivazioni());
     coltivazioniTable.setItems(coltivazioniObsList);
+    errorLabel.setText("");
   }
 
   private void openDettaglioColtivazione(Coltivazione coltivazione) {

@@ -16,6 +16,7 @@ import uninabiogarden.entities.Orto;
 import uninabiogarden.entities.Progetto;
 import uninabiogarden.entities.Proprietario;
 import uninabiogarden.entities.Utente;
+import uninabiogarden.exceptions.ValidationException;
 import uninabiogarden.entities.Notifica;
 import java.util.ArrayList;
 
@@ -466,6 +467,21 @@ public class MainController {
   }
 
   public void updateProgetto(String nuovoStato, Progetto progetto) {
+    System.out.println("Update stato progetto: nuovo stato: " + nuovoStato + " progetto: " + progetto.getId()
+        + " stato attuale: " + progetto.getStato());
+    if (progetto.getStato() == Progetto.Stato.ATTIVO && nuovoStato.equals(Progetto.Stato.CONCLUSO.name())) {
+      System.out.println("valutazione coltivazioni concluse per progetto: " + progetto.getId());
+      List<Coltivazione> coltivazioniConcluse = progetto.getColtivazioni()
+          .stream()
+          .filter(c -> c.getStato() == Coltivazione.Stato.CONCLUSA)
+          .toList();
+      System.out.println(
+          "Coltivazioni concluse: " + coltivazioniConcluse.size() + " su " + progetto.getColtivazioni().size());
+      if (coltivazioniConcluse.size() < progetto.getColtivazioni().size()) {
+        System.out.println("Errore intercettato");
+        throw new ValidationException("Non è possibile completare un progetto con coltivazioni non concluse");
+      }
+    }
     databaseController.getProgettoDao().updateProgetto(nuovoStato, progetto.getId());
     progetto.setStato(Progetto.Stato.valueOf(nuovoStato));
     System.out

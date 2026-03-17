@@ -40,6 +40,7 @@ public class ControllerProgettoNotifiche {
   public void init(Progetto progetto, Label errorLabel) {
     this.progetto = progetto;
     this.errorLabel = errorLabel;
+    errorLabel.setText("");
   }
 
 }

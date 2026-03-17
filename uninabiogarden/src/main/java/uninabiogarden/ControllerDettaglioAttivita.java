@@ -197,6 +197,8 @@ public class ControllerDettaglioAttivita {
     this.coltivazione = coltivazione;
     this.attivita = null;
     this.errorLabel.setText("");
+    System.out.println(
+        "Coltivazione dell'attività: " + coltivazione.getColtura().getNomeComune() + " - ID: " + coltivazione.getId());
     attivitaTable.setItems(FXCollections.observableArrayList(coltivazione.getAttivita()));
     clearData();
   }
@@ -285,7 +287,7 @@ public class ControllerDettaglioAttivita {
       return true;
     return progetto.getStato() == Progetto.Stato.CONCLUSO
         || coltivazione.getStato() == Coltivazione.Stato.CONCLUSA
-        || coltivazione.getStato() == Coltivazione.Stato.IN_RACCOLTA
+        || (coltivazione.getStato() == Coltivazione.Stato.IN_RACCOLTA && !(attivita instanceof Raccolta))
         || attivita.getStato() == Attivita.Stato.COMPLETATA;
   }
 

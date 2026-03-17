@@ -67,6 +67,7 @@ public class ControllerProgettoAttivita {
     this.progetto = progetto;
     this.errorLabel = errorLabel;
     refreshAttivita();
+    errorLabel.setText("");
   }
 
   private void refreshAttivita() {

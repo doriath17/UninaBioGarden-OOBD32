@@ -168,6 +168,8 @@ public class ControllerCreaAttivita {
     clearData();
     this.progetto = progetto;
     this.coltivazione = coltivazione;
+    System.out.println(
+        "Coltivazione dell'attività: " + coltivazione.getColtura().getNomeComune() + " - ID: " + coltivazione.getId());
 
     nomeProgettoLabel.setText("Progetto: " + progetto.getNomeProgetto() + " (Coltivazione: "
         + coltivazione.getColtura().getNomeComune() + ")");
@@ -384,6 +386,7 @@ public class ControllerCreaAttivita {
     Attivita attivita = fetchUserInput();
     if (attivita == null)
       return;
+    attivita.setColtivazione(coltivazione);
 
     try {
       MainController.getInstance().createAttivita(attivita, coltivazione);

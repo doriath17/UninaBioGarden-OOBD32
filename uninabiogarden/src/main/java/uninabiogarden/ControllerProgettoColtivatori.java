@@ -49,6 +49,7 @@ public class ControllerProgettoColtivatori {
     this.errorLabel = errorLabel;
     coltivatoriObsList = FXCollections.observableArrayList(progetto.getColtivatori());
     coltivatoriProgettoTable.setItems(coltivatoriObsList);
+    errorLabel.setText("");
   }
 
 }

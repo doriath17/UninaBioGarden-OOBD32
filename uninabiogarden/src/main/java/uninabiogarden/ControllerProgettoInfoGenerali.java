@@ -9,6 +9,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import uninabiogarden.entities.Progetto;
+import uninabiogarden.exceptions.ValidationException;
 
 public class ControllerProgettoInfoGenerali {
 
@@ -48,6 +49,7 @@ public class ControllerProgettoInfoGenerali {
     loadProgettoInfo();
     configureStatoChoiceBox();
     toggleEditMode(false);
+    errorLabel.setText("");
   }
 
   private void loadProgettoInfo() {
@@ -99,13 +101,17 @@ public class ControllerProgettoInfoGenerali {
 
     try {
       // Aggiorna nome e descrizione
+      System.out.println("Salvataggio progetto: " + nomeField.getText() + ", " + descrizioneField.getText());
       MainController.getInstance().updateProgettoInfo(nomeField.getText(), descrizioneField.getText(), progetto);
+      System.out.println("Progetto aggiornato: " + progetto.getNomeProgetto() + ", " + progetto.getDescrizione());
 
       // Aggiorna lo stato se è stato selezionato un nuovo stato
+      System.out.println("Stato selezionato: " + statoChoiceBox.getSelectionModel().getSelectedItem());
       String selectedStato = statoChoiceBox.getSelectionModel().getSelectedItem();
       if (selectedStato != null && !selectedStato.isEmpty()) {
         MainController.getInstance().updateProgetto(selectedStato, progetto);
       }
+      System.out.println("Progetto dopo aggiornamento stato: " + progetto.getStato());
 
       // Ricarica le info e riconfigura il choicebox
       loadProgettoInfo();
@@ -113,6 +119,8 @@ public class ControllerProgettoInfoGenerali {
       toggleEditMode(false);
 
       Utils.showSuccess(errorLabel, "Progetto aggiornato con successo");
+    } catch (ValidationException ve) {
+      Utils.showError(errorLabel, ve.getMessage());
     } catch (Exception e) {
       Utils.showError(errorLabel, "Errore durante il salvataggio");
     }
