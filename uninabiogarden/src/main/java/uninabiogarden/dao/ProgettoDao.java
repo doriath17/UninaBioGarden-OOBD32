@@ -155,8 +155,8 @@ public class ProgettoDao {
       return progetti;
 
     } catch (Exception e) {
-      System.err.println("Errore durante l'aggiornamento del progetto: " + e.getMessage());
-      throw new RuntimeException("Errore durante l'aggiornamento del progetto. Riprova più tardi.");
+      System.err.println("Errore durante il recupero dei progetti: " + e.getMessage());
+      throw new RuntimeException("Errore durante il recupero dei progetti. Riprova più tardi.");
     }
   }
 
@@ -191,8 +191,8 @@ public class ProgettoDao {
     var sql = """
           SELECT c.*
           FROM (
-            SELECT * 
-            FROM utente 
+            SELECT *
+            FROM utente
             WHERE tipo = 'COLTIVATORE'
           ) c
           JOIN lavora_per lp ON c.id = lp.id_coltivatore

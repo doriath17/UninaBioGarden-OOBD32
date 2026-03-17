@@ -35,6 +35,13 @@ public class Lotto {
     this.estensioneMq = dto.estensioneMq;
   }
 
+  @Override
+  public String toString() {
+    return "Lotto [id=" + id + ", codiceLotto=" + codiceLotto + ", tipologiaTerreno=" + tipologiaTerreno
+        + ", estensioneMq=" + estensioneMq + ", proprietario=" + proprietario.getUsername() + " "
+        + ", orto=" + orto.getNomeOrto() + "]";
+  }
+
   public String getNomeOrto() {
     return orto.getNomeOrto();
   }

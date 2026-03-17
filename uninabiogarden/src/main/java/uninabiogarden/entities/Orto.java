@@ -44,6 +44,10 @@ public class Orto {
     return proprietario.getNome() + " " + proprietario.getCognome();
   }
 
+  public String toString() {
+    return nomeOrto + " - " + getFullAddress();
+  }
+
   public Long getId() {
     return id;
   }

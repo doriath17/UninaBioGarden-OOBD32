@@ -332,20 +332,24 @@ public class MainController {
   // ==============================================================================================
 
   public void creaProgetto(Progetto nuovoProgetto) {
-    System.out.println("Crea progetto arriva qui nel MainController");
+    System.out.println("Main Controller: creaProgetto");
     // validazione del progetto
     var validationError = nuovoProgetto.validate();
     if (validationError != null) {
       throw new IllegalArgumentException(validationError);
     }
-    nuovoProgetto.setProprietario((Proprietario) utenteLoggato);
+
+    Proprietario proprietario = (Proprietario) utenteLoggato;
+    nuovoProgetto.setProprietario(proprietario);
 
     // salva nel database e ottieni l'ID generato
     nuovoProgetto = databaseController.getProgettoDao().saveProgetto(nuovoProgetto);
-    System.out.println("Progetto creato con ID: " + nuovoProgetto.getId());
+    risolviProxiesProgetto(nuovoProgetto, proprietario);
+
+    System.out.println("Progetto creato: " + nuovoProgetto);
 
     // aggiungi alla lista del proprietario
-    ((Proprietario) utenteLoggato).addProgetto(nuovoProgetto);
+    proprietario.addProgetto(nuovoProgetto);
   }
 
   public void caricaColtivatori() {
@@ -423,6 +427,29 @@ public class MainController {
         + " coltivatori trovati per progetto: " + progetto.getId());
   }
 
+  /**
+   * Il progetto passato come argomento deve avere:
+   * - proxy del lotto (lotto con solo id)
+   * - proxy delle coltivazioni (coltivazioni con solo id e coltura con solo id)
+   * - proxy dei coltivatori (coltivatori con solo id)
+   * 
+   * Questo metodo risolve tutti i proxy con gli oggetti gia caricati in memoria o
+   * li carica se necessario.
+   */
+  private void risolviProxiesProgetto(Progetto progetto, Proprietario proprietario) {
+    progetto.setProprietario(proprietario);
+
+    // risolvi il proxy del lotto
+    var resolvedLotto = proprietario.getLotti().stream()
+        .filter(lotto -> lotto.getId().equals(progetto.getLotto().getId())).findFirst()
+        .orElseThrow(() -> new RuntimeException("Lotto non trovato"));
+    progetto.setLotto(resolvedLotto);
+
+    // risolvi i proxy dei coltivatori e delle coltivazioni
+    caricaColtivatori(progetto);
+    caricaColtivazioni(progetto);
+  }
+
   // il proprietario deve avere i lotti caricati
   // le colture devono essere gia caricate
   // i coltivatori vengono caricati su necessita (vedi getColtivatori())
@@ -430,16 +457,7 @@ public class MainController {
     List<Progetto> progetti = databaseController.getProgettoDao().findAll(proprietario.getId());
 
     progetti.forEach(progetto -> {
-      progetto.setProprietario(proprietario);
-
-      // risolvi il proxy del lotto
-      var resolvedLotto = proprietario.getLotti().stream()
-          .filter(lotto -> lotto.getId().equals(progetto.getLotto().getId())).findFirst()
-          .orElseThrow(() -> new RuntimeException("Lotto non trovato"));
-      progetto.setLotto(resolvedLotto);
-
-      caricaColtivatori(progetto);
-      caricaColtivazioni(progetto);
+      risolviProxiesProgetto(progetto, proprietario);
     });
 
     proprietario.setProgetti(progetti);

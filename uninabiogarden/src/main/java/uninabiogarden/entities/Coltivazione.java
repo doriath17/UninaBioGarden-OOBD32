@@ -59,6 +59,21 @@ public class Coltivazione {
         .plusDays(this.getColtura().getTempoMaturazione());
   }
 
+  @Override
+  public String toString() {
+    long attivitaCount = attivita != null ? attivita.size() : 0;
+    return "Coltivazione{" +
+        "id=" + id +
+        ", statoSalute=" + statoSalute +
+        ", stato=" + stato +
+        ", dataInizio=" + dataInizio +
+        ", dataFine=" + dataFine +
+        ", noteTecniche='" + noteTecniche + '\'' +
+        ", coltura=" + coltura +
+        ", count attivita=" + attivitaCount +
+        '}';
+  }
+
   public Long getId() {
     return id;
   }
