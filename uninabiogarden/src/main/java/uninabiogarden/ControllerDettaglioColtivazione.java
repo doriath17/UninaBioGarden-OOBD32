@@ -11,6 +11,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import uninabiogarden.entities.Coltivazione;
 import uninabiogarden.entities.Progetto;
+import uninabiogarden.entities.Proprietario;
 
 public class ControllerDettaglioColtivazione {
 
@@ -53,6 +54,10 @@ public class ControllerDettaglioColtivazione {
   }
 
   public void init(Progetto progetto, Coltivazione coltivazione) {
+    var isProprietario = MainController.getInstance().getUtenteLoggato() instanceof Proprietario;
+    editButton.setVisible(isProprietario);
+    editButton.setManaged(isProprietario);
+
     this.coltivazione = coltivazione;
     this.progetto = progetto;
     loadColtivazioneInfo();

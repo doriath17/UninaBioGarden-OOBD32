@@ -9,6 +9,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import uninabiogarden.entities.Coltivazione;
 import uninabiogarden.entities.Progetto;
+import uninabiogarden.entities.Proprietario;
 
 public class ControllerProgettoColtivazioni {
 

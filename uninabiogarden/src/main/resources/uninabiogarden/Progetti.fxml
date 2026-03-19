@@ -72,7 +72,7 @@
                   <Insets />
                </GridPane.margin>
             </Button>
-            <Button mnemonicParsing="false" onAction="#creaProgettoAction" text="Crea Nuovo Progetto" GridPane.columnIndex="1" />
+            <Button fx:id="creaProgettoButton" mnemonicParsing="false" onAction="#creaProgettoAction" text="Crea Nuovo Progetto" GridPane.columnIndex="1" />
          </children>
       </GridPane>
    </children>

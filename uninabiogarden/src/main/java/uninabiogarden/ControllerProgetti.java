@@ -13,6 +13,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.event.ActionEvent;
 import uninabiogarden.entities.Progetto;
+import uninabiogarden.entities.Proprietario;
 
 public class ControllerProgetti {
 
@@ -49,6 +50,9 @@ public class ControllerProgetti {
   @FXML
   private TableColumn<Progetto, Void> deleteColumn;
 
+  @FXML
+  private Button creaProgettoButton;
+
   private ObservableList<Progetto> progettiObservableList;
 
   @FXML
@@ -73,6 +77,13 @@ public class ControllerProgetti {
   }
 
   public void init() {
+    boolean isProprietario = MainController.getInstance().getUtenteLoggato() instanceof Proprietario;
+
+    // disabilita per il coltivatore
+    creaProgettoButton.setVisible(isProprietario);
+    creaProgettoButton.setManaged(isProprietario);
+    deleteColumn.setVisible(isProprietario);
+
     // Crea ObservableList dal model - sincronizzato con la lista del model
     progettiObservableList = FXCollections.observableList(MainController.getInstance().getProgetti());
     progettiTable.setItems(progettiObservableList);

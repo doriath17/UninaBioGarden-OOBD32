@@ -9,6 +9,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import uninabiogarden.entities.Progetto;
+import uninabiogarden.entities.Proprietario;
 import uninabiogarden.exceptions.ValidationException;
 
 public class ControllerProgettoInfoGenerali {
@@ -44,6 +45,12 @@ public class ControllerProgettoInfoGenerali {
   }
 
   public void init(Progetto progetto, Label errorLabel) {
+    var isProprietario = MainController.getInstance().getUtenteLoggato() instanceof Proprietario;
+
+    // disabilita per il coltivatore
+    editButton.setVisible(isProprietario);
+    editButton.setManaged(isProprietario);
+
     this.progetto = progetto;
     this.errorLabel = errorLabel;
     loadProgettoInfo();

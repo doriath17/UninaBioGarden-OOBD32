@@ -24,6 +24,7 @@ import uninabiogarden.entities.Coltivazione;
 import uninabiogarden.entities.Concimazione;
 import uninabiogarden.entities.Irrigazione;
 import uninabiogarden.entities.Progetto;
+import uninabiogarden.entities.Proprietario;
 import uninabiogarden.entities.Raccolta;
 import uninabiogarden.entities.Semina;
 import uninabiogarden.entities.Trattamento;
@@ -75,6 +76,9 @@ public class ControllerDettaglioAttivita {
 
   @FXML
   private TableColumn<Attivita, String> colStato;
+
+  @FXML
+  private Button pianificaAttivitaButton;
 
   private Progetto progetto;
   private Coltivazione coltivazione;
@@ -194,6 +198,15 @@ public class ControllerDettaglioAttivita {
 
   public void init(Progetto progetto, Coltivazione coltivazione) {
     clearData();
+
+    var isProprietario = MainController.getInstance().getUtenteLoggato() instanceof Proprietario;
+
+    // disabilita per il coltivatore
+    editButton.setVisible(isProprietario);
+    editButton.setManaged(isProprietario);
+    pianificaAttivitaButton.setVisible(isProprietario);
+    pianificaAttivitaButton.setManaged(isProprietario);
+
     this.progetto = progetto;
     this.coltivazione = coltivazione;
     this.attivita = null;

@@ -71,6 +71,8 @@ public class MainController {
   public List<Progetto> getProgetti() {
     if (utenteLoggato instanceof Proprietario) {
       return ((Proprietario) utenteLoggato).getProgetti();
+    } else if (utenteLoggato instanceof Coltivatore) {
+      return ((Coltivatore) utenteLoggato).getProgetti();
     }
     return null;
   }
