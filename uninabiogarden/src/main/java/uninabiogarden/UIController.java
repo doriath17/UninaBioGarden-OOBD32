@@ -3,6 +3,7 @@ package uninabiogarden;
 import java.io.IOException;
 import java.lang.ModuleLayer.Controller;
 import java.util.EnumMap;
+import java.util.ResourceBundle.Control;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -105,6 +106,8 @@ public class UIController {
 
   public void openColtivatoreHomeView() {
     loadViewIntoContent(FxmlView.HOME_VIEW, mainPane);
+    ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
+    homeController.openForColtivatore();
   }
 
   public void openProprietarioHomeView() {

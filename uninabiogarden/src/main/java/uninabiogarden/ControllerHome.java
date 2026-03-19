@@ -2,10 +2,12 @@ package uninabiogarden;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import uninabiogarden.entities.Coltivatore;
+import uninabiogarden.entities.Proprietario;
 
 public class ControllerHome {
 
@@ -14,6 +16,35 @@ public class ControllerHome {
 
   @FXML
   private VBox selectedContent;
+
+  @FXML
+  private Button dashboardButton;
+
+  @FXML
+  private Button ortiButton;
+
+  @FXML
+  private Button lottiButton;
+
+  @FXML
+  private Button progettiButton;
+
+  @FXML
+  private Button notificheButton;
+
+  @FXML
+  private Button reportButton;
+
+  public void openForColtivatore() {
+    dashboardButton.setVisible(false);
+    dashboardButton.setManaged(false);
+    ortiButton.setVisible(false);
+    ortiButton.setManaged(false);
+    lottiButton.setVisible(false);
+    lottiButton.setManaged(false);
+    reportButton.setVisible(false);
+    reportButton.setManaged(false);
+  }
 
   Pane getSelectedContent() {
     return selectedContent;
