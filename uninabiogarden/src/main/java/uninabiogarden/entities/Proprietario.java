@@ -55,4 +55,12 @@ public class Proprietario extends Utente {
     }
   }
 
+  public List<Notifica> getNotificheInviate() {
+    return notificheInviate;
+  }
+
+  public void setNotificheInviate(ArrayList<Notifica> notificheInviate) {
+    this.notificheInviate = notificheInviate;
+  }
+
 }

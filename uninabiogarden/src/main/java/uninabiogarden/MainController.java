@@ -93,7 +93,12 @@ public class MainController {
   }
 
   public List<Notifica> getNotifiche() {
-    return notifiche;
+    if (utenteLoggato instanceof Proprietario proprietario) {
+      return proprietario.getNotificheInviate();
+    } else if (utenteLoggato instanceof Coltivatore coltivatore) {
+      return coltivatore.getNotificheRicevute();
+    }
+    return null;
   }
 
   // ==============================================================================================

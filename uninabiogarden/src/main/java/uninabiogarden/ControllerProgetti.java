@@ -53,6 +53,9 @@ public class ControllerProgetti {
   @FXML
   private Button creaProgettoButton;
 
+  @FXML
+  private Button indietroButton;
+
   private ObservableList<Progetto> progettiObservableList;
 
   @FXML
@@ -83,6 +86,8 @@ public class ControllerProgetti {
     creaProgettoButton.setVisible(isProprietario);
     creaProgettoButton.setManaged(isProprietario);
     deleteColumn.setVisible(isProprietario);
+    indietroButton.setVisible(isProprietario);
+    indietroButton.setManaged(isProprietario);
 
     // Crea ObservableList dal model - sincronizzato con la lista del model
     progettiObservableList = FXCollections.observableList(MainController.getInstance().getProgetti());

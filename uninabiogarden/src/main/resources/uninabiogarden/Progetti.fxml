@@ -67,7 +67,7 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
-            <Button mnemonicParsing="false" onAction="#indietroAction" text="Indietro">
+            <Button fx:id="indietroButton" mnemonicParsing="false" onAction="#indietroAction" text="Indietro">
                <GridPane.margin>
                   <Insets />
                </GridPane.margin>

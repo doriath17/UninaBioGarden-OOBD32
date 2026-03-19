@@ -8,121 +8,148 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.VBox;
 import uninabiogarden.entities.Notifica;
+import uninabiogarden.entities.Proprietario;
 
 public class ControllerNotifiche {
 
-    @FXML private TableColumn<Notifica, String> attivitaNotificaColonna;
+  @FXML
+  private TableColumn<Notifica, String> attivitaNotificaColonna;
 
-    @FXML private TableColumn<Notifica, LocalDate> dataInvioNotificaColonna;
+  @FXML
+  private TableColumn<Notifica, LocalDate> dataInvioNotificaColonna;
 
-    @FXML private TableColumn<Notifica, String> descrizioneNotificaColonna;
+  @FXML
+  private TableColumn<Notifica, String> descrizioneNotificaColonna;
 
-    @FXML private VBox mainContent;
+  @FXML
+  private VBox mainContent;
 
-    @FXML private TableColumn<Notifica, String> nomeNotificaColonna;
+  @FXML
+  private TableColumn<Notifica, String> nomeNotificaColonna;
 
-    @FXML private TableView<Notifica> notificheTable;
+  @FXML
+  private TableView<Notifica> notificheTable;
 
-    @FXML private TableColumn<Notifica, String> progettoNotificaColonna;
+  @FXML
+  private TableColumn<Notifica, String> progettoNotificaColonna;
 
-    @FXML private TableColumn<Notifica, String> urgenzaNotificaColonna;
+  @FXML
+  private TableColumn<Notifica, String> urgenzaNotificaColonna;
 
-    @FXML private TableColumn<Notifica, String> tipoNotificaColonna;
+  @FXML
+  private TableColumn<Notifica, String> tipoNotificaColonna;
 
-    @FXML private TableColumn<Notifica, Integer> giorniMancantiColonna;
+  @FXML
+  private TableColumn<Notifica, Integer> giorniMancantiColonna;
 
-    @FXML private TableColumn<Notifica, String> mittenteNotificaColonna;
+  @FXML
+  private TableColumn<Notifica, String> mittenteNotificaColonna;
 
+  @FXML
+  private Button creaNotificaAttivitaButton;
 
+  @FXML
+  private Button creaNotificaGeneraleButton;
 
-    private final ObservableList<Notifica> notifiche = FXCollections.observableArrayList();
+  @FXML
+  private Button indietroButton;
 
+  private final ObservableList<Notifica> notifiche = FXCollections.observableArrayList();
 
-    
-    @FXML
-    void initialize() {
+  @FXML
+  void initialize() {
 
-        nomeNotificaColonna.setCellValueFactory(cellData -> {
-            String a = cellData.getValue().getNome();
-            return new SimpleStringProperty(a);
-        });
+    nomeNotificaColonna.setCellValueFactory(cellData -> {
+      String a = cellData.getValue().getNome();
+      return new SimpleStringProperty(a);
+    });
 
-        descrizioneNotificaColonna.setCellValueFactory(cellData -> {
-            String a = cellData.getValue().getDescrizione(); 
-            return new SimpleStringProperty(a);
-        });
+    descrizioneNotificaColonna.setCellValueFactory(cellData -> {
+      String a = cellData.getValue().getDescrizione();
+      return new SimpleStringProperty(a);
+    });
 
-        urgenzaNotificaColonna.setCellValueFactory(cellData -> {
-            String a = cellData.getValue().getUrgenza().toString();
-            return new SimpleStringProperty(a);
-        });
-        
-        progettoNotificaColonna.setCellValueFactory(cellData -> {
-            String a = cellData.getValue().getProgetto().getNomeProgetto();
-            return new SimpleStringProperty(a.isEmpty() || (a==null) ? "No Data" : a);
-        });
+    urgenzaNotificaColonna.setCellValueFactory(cellData -> {
+      String a = cellData.getValue().getUrgenza().toString();
+      return new SimpleStringProperty(a);
+    });
 
-        dataInvioNotificaColonna.setCellValueFactory(cellData -> {
-            LocalDate timestamp = cellData.getValue().getDataInvio();
-            return new SimpleObjectProperty<>(timestamp);
-        });
+    progettoNotificaColonna.setCellValueFactory(cellData -> {
+      String a = cellData.getValue().getProgetto().getNomeProgetto();
+      return new SimpleStringProperty(a.isEmpty() || (a == null) ? "No Data" : a);
+    });
 
-        attivitaNotificaColonna.setCellValueFactory(cellData -> {
-            String a = cellData.getValue().getAttivita() != null ? cellData.getValue().getAttivita().getNome() : "No Data";
-            return new SimpleStringProperty(a);
-        });
+    dataInvioNotificaColonna.setCellValueFactory(cellData -> {
+      LocalDate timestamp = cellData.getValue().getDataInvio();
+      return new SimpleObjectProperty<>(timestamp);
+    });
 
-        tipoNotificaColonna.setCellValueFactory(cellData -> {
-            String a = cellData.getValue().getTipo().toString();
-            return new SimpleStringProperty(a);
-        });
+    attivitaNotificaColonna.setCellValueFactory(cellData -> {
+      String a = cellData.getValue().getAttivita() != null ? cellData.getValue().getAttivita().getNome() : "No Data";
+      return new SimpleStringProperty(a);
+    });
 
-        giorniMancantiColonna.setCellValueFactory(cellData -> {
-            Integer a = cellData.getValue().getGiorniMancanti();
-            return new SimpleObjectProperty<>(a);
-        });
+    tipoNotificaColonna.setCellValueFactory(cellData -> {
+      String a = cellData.getValue().getTipo().toString();
+      return new SimpleStringProperty(a);
+    });
 
-        mittenteNotificaColonna.setCellValueFactory(cellData -> {
-            String a = cellData.getValue().getMittente().getNome();
-            return new SimpleStringProperty(a);
-        });
+    giorniMancantiColonna.setCellValueFactory(cellData -> {
+      Integer a = cellData.getValue().getGiorniMancanti();
+      return new SimpleObjectProperty<>(a);
+    });
 
-        // loadData(); 
-        init();
+    mittenteNotificaColonna.setCellValueFactory(cellData -> {
+      String a = cellData.getValue().getMittente().getNome();
+      return new SimpleStringProperty(a);
+    });
 
-        notificheTable.setItems(notifiche);
-    }
+    // loadData();
+    init();
 
-    public void init(){
-        notifiche.clear();
-        notifiche.addAll(MainController.getInstance().getNotifiche());
-        // notificheTable.setItems(notifiche);
-        notificheTable.refresh();
-    }
+    notificheTable.setItems(notifiche);
+  }
 
-    // public void loadData() {
-    //     notifiche.clear();
-    //     notifiche.addAll(MainController.getInstance().getNotifiche());
-    // }
+  public void init() {
+    var isProprietario = MainController.getInstance().getUtenteLoggato() instanceof Proprietario;
 
+    // disabilita per il coltivatore
+    creaNotificaAttivitaButton.setVisible(isProprietario);
+    creaNotificaAttivitaButton.setManaged(isProprietario);
+    creaNotificaGeneraleButton.setVisible(isProprietario);
+    creaNotificaGeneraleButton.setManaged(isProprietario);
+    indietroButton.setVisible(isProprietario);
+    indietroButton.setManaged(isProprietario);
 
-    @FXML
-    void creaNotificaAction(ActionEvent event) {
-        UIController.getInstance().openCreaNotificheView(new Notifica(), true);
-    }
+    notifiche.clear();
+    notifiche.addAll(MainController.getInstance().getNotifiche());
+    // notificheTable.setItems(notifiche);
+    notificheTable.refresh();
+  }
 
-    @FXML
-    void creaNotificaAttivitaAction(ActionEvent event) {
-        UIController.getInstance().openCreaNotificheAttivitaView(new Notifica(), true);
-    }
+  // public void loadData() {
+  // notifiche.clear();
+  // notifiche.addAll(MainController.getInstance().getNotifiche());
+  // }
 
-    @FXML
-    void indietroAction(ActionEvent event) {
-        UIController.getInstance().openProprietarioHomeView();
-    }
+  @FXML
+  void creaNotificaAction(ActionEvent event) {
+    UIController.getInstance().openCreaNotificheView(new Notifica(), true);
+  }
+
+  @FXML
+  void creaNotificaAttivitaAction(ActionEvent event) {
+    UIController.getInstance().openCreaNotificheAttivitaView(new Notifica(), true);
+  }
+
+  @FXML
+  void indietroAction(ActionEvent event) {
+    UIController.getInstance().openProprietarioHomeView();
+  }
 
 }

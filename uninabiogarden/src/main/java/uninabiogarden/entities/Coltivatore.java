@@ -8,7 +8,7 @@ import uninabiogarden.dto.UtenteDto;
 
 public class Coltivatore extends Utente {
 
-  private List<Riceve> notificheRicevute = new ArrayList<>();
+  private List<Notifica> notificheRicevute = new ArrayList<>();
   private List<Progetto> progetti = new ArrayList<>(); // i progetti di cui è coltivatore
 
   public Coltivatore() {
@@ -33,11 +33,11 @@ public class Coltivatore extends Utente {
     this.progetti = progetti;
   }
 
-  public List<Riceve> getNotificheRicevute() {
+  public List<Notifica> getNotificheRicevute() {
     return notificheRicevute;
   }
 
-  public void setNotificheRicevute(List<Riceve> notificheRicevute) {
+  public void setNotificheRicevute(List<Notifica> notificheRicevute) {
     this.notificheRicevute = notificheRicevute;
   }
 
