@@ -238,6 +238,34 @@ public class Utils {
   public static <T> void addButtonToColumn(
       TableColumn<T, Void> column,
       String buttonText,
+      String buttonStyle,
+      Consumer<T> rowAction) {
+    column.setCellFactory(param -> new TableCell<T, Void>() {
+      private final Button btn = new Button(buttonText);
+
+      {
+        btn.setStyle(buttonStyle);
+        btn.setOnAction(event -> {
+          T rowData = getTableView().getItems().get(getIndex());
+          rowAction.accept(rowData);
+        });
+      }
+
+      @Override
+      protected void updateItem(Void item, boolean empty) {
+        super.updateItem(item, empty);
+        if (empty || getTableRow() == null || getTableRow().getItem() == null) {
+          setGraphic(null);
+        } else {
+          setGraphic(btn);
+        }
+      }
+    });
+  }
+
+  public static <T> void addButtonToColumn(
+      TableColumn<T, Void> column,
+      String buttonText,
       Consumer<T> rowAction) {
     column.setCellFactory(param -> new TableCell<T, Void>() {
       private final Button btn = new Button(buttonText);

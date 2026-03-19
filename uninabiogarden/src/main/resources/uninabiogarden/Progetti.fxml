@@ -45,12 +45,12 @@
             </HBox>
             <TableView fx:id="progettiTable" maxWidth="1.7976931348623157E308" prefHeight="419.0" prefWidth="1049.0">
                <columns>
-                  <TableColumn fx:id="nomeColumn" prefWidth="390.0" text="Nome" />
-                  <TableColumn fx:id="statoColumn" prefWidth="135.0" text="Stato" />
-                  <TableColumn fx:id="dataInizioColumn" prefWidth="104.0" text="Data Inizio" />
-                  <TableColumn fx:id="lottoColumn" prefWidth="353.0" text="Lotto" />
-                  <TableColumn fx:id="actionsColumn" minWidth="0.0" prefWidth="43.0" />
-                  <TableColumn fx:id="deleteColumn" prefWidth="44.0" />
+                  <TableColumn fx:id="nomeColumn" editable="false" prefWidth="390.0" text="Nome" />
+                  <TableColumn fx:id="statoColumn" editable="false" prefWidth="135.0" text="Stato" />
+                  <TableColumn fx:id="dataInizioColumn" editable="false" prefWidth="104.0" text="Data Inizio" />
+                  <TableColumn fx:id="lottoColumn" editable="false" prefWidth="326.0" text="Lotto" />
+                  <TableColumn fx:id="actionsColumn" editable="false" minWidth="0.0" prefWidth="70.0" />
+                  <TableColumn fx:id="deleteColumn" editable="false" prefWidth="44.0" />
                </columns>
                <VBox.margin>
                   <Insets bottom="20.0" />

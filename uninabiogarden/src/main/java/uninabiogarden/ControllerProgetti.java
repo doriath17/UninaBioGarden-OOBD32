@@ -64,8 +64,12 @@ public class ControllerProgetti {
       return new SimpleStringProperty(lotto != null ? lotto.getFullname() : "");
     });
 
-    Utils.addButtonToColumn(actionsColumn, "View", this::openDettaglioProgetto);
-    Utils.addButtonToColumn(deleteColumn, "Elimina", this::deleteProgetto);
+    Utils.addButtonToColumn(actionsColumn, "Vedi",
+        "-fx-font-size: 14px; -fx-background-color: transparent; -fx-cursor: hand;",
+        this::openDettaglioProgetto);
+    Utils.addButtonToColumn(deleteColumn, "\uD83D\uDDD1",
+        "-fx-font-size: 14px; -fx-background-color: transparent; -fx-cursor: hand; -fx-text-fill: #c0392b;",
+        this::deleteProgetto);
   }
 
   public void init() {
@@ -78,12 +82,10 @@ public class ControllerProgetti {
   @FXML
   private void search(ActionEvent event) {
     String query = searchQueryField.getText().trim().toLowerCase();
-    System.out.println("Ricerca progetti per codice lotto con query: \"" + query + "\"");
+    System.out.println("Ricerca progetti per lotto con query: \"" + query + "\"");
     if (query.isEmpty()) {
-      System.out.println("Campo di ricerca vuoto, mostra tutti i progetti.");
       return;
     } else {
-      System.out.println("Cercando progetti con codice lotto che contiene: " + query);
       ObservableList<Progetto> filtered = FXCollections.observableList(
           MainController.getInstance().getProgetti().stream()
               .filter(p -> p.getLotto() != null && p.getLotto().getFullname() != null &&
@@ -98,6 +100,7 @@ public class ControllerProgetti {
   private void resetSearch(ActionEvent event) {
     searchQueryField.clear();
     progettiTable.setItems(FXCollections.observableList(MainController.getInstance().getProgetti()));
+    progettiTable.refresh();
   }
 
   @FXML
