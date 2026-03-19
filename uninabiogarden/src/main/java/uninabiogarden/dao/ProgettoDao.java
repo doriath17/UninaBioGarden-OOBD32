@@ -229,4 +229,43 @@ public class ProgettoDao {
     }
   }
 
+  public List<Progetto> findAllProgettiOfColtivatore(Long coltivatoreId) {
+    var sql = """
+          SELECT p.*
+          FROM progetto p
+          JOIN lavora_per lp ON p.id = lp.id_progetto
+          WHERE lp.id_coltivatore = ?
+        """;
+
+    try (Connection conn = database.getConnection();
+        PreparedStatement pstmt = conn.prepareStatement(sql)) {
+      pstmt.setLong(1, coltivatoreId);
+
+      ResultSet rs = pstmt.executeQuery();
+      List<Progetto> progetti = new ArrayList<>();
+      while (rs.next()) {
+        Progetto progetto = new Progetto();
+        progetto.setId(rs.getLong("id"));
+        progetto.setNomeProgetto(rs.getString("nome"));
+        progetto.setDescrizione(rs.getString("descrizione"));
+        progetto.setStato(Progetto.Stato.valueOf(rs.getString("stato")));
+        var dataInizio = rs.getDate("data_inizio");
+        progetto.setDataInizio(dataInizio != null ? dataInizio.toLocalDate() : null);
+        var dataFine = rs.getDate("data_fine");
+        progetto.setDataFine(dataFine != null ? dataFine.toLocalDate() : null);
+
+        // proxy del lotto (gia caricato nel proprietario)
+        var lotto = new Lotto();
+        lotto.setId(rs.getLong("id_lotto"));
+        progetto.setLotto(lotto);
+
+        progetti.add(progetto);
+      }
+      return progetti;
+
+    } catch (Exception e) {
+      System.err.println("Errore durante il recupero dei progetti del coltivatore: " + e.getMessage());
+      throw new RuntimeException("Errore durante il recupero dei progetti del coltivatore. Riprova più tardi.");
+    }
+
 }
