@@ -14,7 +14,9 @@ import uninabiogarden.entities.Coltivatore;
 import uninabiogarden.entities.Coltivazione;
 import uninabiogarden.entities.Coltura;
 import uninabiogarden.entities.Lotto;
+import uninabiogarden.entities.Orto;
 import uninabiogarden.entities.Progetto;
+import uninabiogarden.entities.Proprietario;
 
 public class ProgettoDao {
 
@@ -229,10 +231,38 @@ public class ProgettoDao {
     }
   }
 
-  public List<Progetto> findAllProgettiOfColtivatore(Long coltivatoreId) {
+  public List<Progetto> findAllByColtivatoreId(Long coltivatoreId) {
     var sql = """
-          SELECT p.*
+          SELECT
+            p.id            AS progetto_id,
+            p.nome          AS progetto_nome,
+            p.descrizione   AS progetto_descrizione,
+            p.stato         AS progetto_stato,
+            p.data_inizio   AS progetto_data_inizio,
+            p.data_fine     AS progetto_data_fine,
+            l.id            AS lotto_id,
+            l.codice_lotto,
+            l.estensione_mq,
+            l.tipologia_terreno,
+            o.id            AS orto_id,
+            o.nome_orto,
+            o.citta,
+            o.cap,
+            o.via,
+            o.civico,
+            prop.id             AS prop_id,
+            prop.username       AS prop_username,
+            prop.email          AS prop_email,
+            prop.nome           AS prop_nome,
+            prop.cognome        AS prop_cognome,
+            prop.b_day          AS prop_b_day,
+            prop.gender         AS prop_gender,
+            prop.bio            AS prop_bio,
+            prop.codice_fiscale AS prop_codice_fiscale
           FROM progetto p
+          JOIN lotto l      ON p.id_lotto = l.id
+          JOIN orto o       ON l.id_orto = o.id
+          JOIN utente prop  ON p.id_proprietario = prop.id
           JOIN lavora_per lp ON p.id = lp.id_progetto
           WHERE lp.id_coltivatore = ?
         """;
@@ -244,20 +274,49 @@ public class ProgettoDao {
       ResultSet rs = pstmt.executeQuery();
       List<Progetto> progetti = new ArrayList<>();
       while (rs.next()) {
+        // Progetto
         Progetto progetto = new Progetto();
-        progetto.setId(rs.getLong("id"));
-        progetto.setNomeProgetto(rs.getString("nome"));
-        progetto.setDescrizione(rs.getString("descrizione"));
-        progetto.setStato(Progetto.Stato.valueOf(rs.getString("stato")));
-        var dataInizio = rs.getDate("data_inizio");
+        progetto.setId(rs.getLong("progetto_id"));
+        progetto.setNomeProgetto(rs.getString("progetto_nome"));
+        progetto.setDescrizione(rs.getString("progetto_descrizione"));
+        progetto.setStato(Progetto.Stato.valueOf(rs.getString("progetto_stato")));
+        var dataInizio = rs.getDate("progetto_data_inizio");
         progetto.setDataInizio(dataInizio != null ? dataInizio.toLocalDate() : null);
-        var dataFine = rs.getDate("data_fine");
+        var dataFine = rs.getDate("progetto_data_fine");
         progetto.setDataFine(dataFine != null ? dataFine.toLocalDate() : null);
 
-        // proxy del lotto (gia caricato nel proprietario)
+        // Orto
+        var orto = new Orto();
+        orto.setId(rs.getLong("orto_id"));
+        orto.setNomeOrto(rs.getString("nome_orto"));
+        orto.setCitta(rs.getString("citta"));
+        orto.setCap(rs.getString("cap"));
+        orto.setVia(rs.getString("via"));
+        orto.setCivico(rs.getString("civico"));
+
+        // Lotto
         var lotto = new Lotto();
-        lotto.setId(rs.getLong("id_lotto"));
+        lotto.setId(rs.getLong("lotto_id"));
+        lotto.setCodiceLotto(rs.getString("codice_lotto"));
+        lotto.setEstensioneMq(rs.getDouble("estensione_mq"));
+        lotto.setTipologiaTerreno(Lotto.TipologiaTerreno.valueOf(rs.getString("tipologia_terreno")));
+        lotto.setOrto(orto);
+
+        // Proprietario
+        var proprietario = new Proprietario();
+        proprietario.setId(rs.getLong("prop_id"));
+        proprietario.setUsername(rs.getString("prop_username"));
+        proprietario.setEmail(rs.getString("prop_email"));
+        proprietario.setNome(rs.getString("prop_nome"));
+        proprietario.setCognome(rs.getString("prop_cognome"));
+        var bDay = rs.getDate("prop_b_day");
+        proprietario.setbDay(bDay != null ? bDay.toLocalDate() : null);
+        proprietario.setGender(rs.getString("prop_gender"));
+        proprietario.setBio(rs.getString("prop_bio"));
+        proprietario.setCodiceFiscale(rs.getString("prop_codice_fiscale"));
+
         progetto.setLotto(lotto);
+        progetto.setProprietario(proprietario);
 
         progetti.add(progetto);
       }

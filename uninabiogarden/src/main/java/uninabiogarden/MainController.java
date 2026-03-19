@@ -51,7 +51,7 @@ public class MainController {
   private List<Orto> orti;
   private List<Coltura> colture;
   private List<Coltivatore> coltivatori;
-  private ArrayList<Notifica> notifiche;
+  private List<Notifica> notifiche;
 
   // ==============================================================================================
   // Sezione: Accessors
@@ -90,7 +90,7 @@ public class MainController {
     return coltivatori;
   }
 
-  public ArrayList<Notifica> getNotifiche() {
+  public List<Notifica> getNotifiche() {
     return notifiche;
   }
 
@@ -179,15 +179,22 @@ public class MainController {
   }
 
   private void caricamentoDatiUtente(Utente utente) {
+    caricaColture(); // deve essere caricato prima dei progetti (richiesto da caricaProgetti)
+    caricaColtivatori(); // deve essere caricato prima dei progetti (richiesto da caricaProgetti)
+
     if (utente instanceof Proprietario) {
       var proprietario = (Proprietario) utente;
 
-      caricaColture(); // deve essere caricato prima dei progetti (richiesto da caricaProgetti)
       caricaOrti(); // deve essere caricato prima dei lotti
       caricaLotti(proprietario);
-      caricaColtivatori(); // deve essere caricato prima dei progetti (richiesto da caricaProgetti)
       caricaProgetti(proprietario);
       caricaNotifiche();
+    } else if (utente instanceof Coltivatore) {
+      var coltivatore = (Coltivatore) utente;
+      // caricaNotifiche(coltivatore);
+      caricaProgetti(coltivatore);
+    } else {
+      throw new IllegalArgumentException("Tipo utente non riconosciuto");
     }
   }
 
@@ -466,6 +473,19 @@ public class MainController {
         progetti.size() + " progetti trovati");
   }
 
+  private void caricaProgetti(Coltivatore coltivatore) {
+    List<Progetto> progetti = databaseController.getProgettoDao().findAllByColtivatoreId(coltivatore.getId());
+
+    progetti.forEach(progetto -> {
+      caricaColtivatori(progetto);
+      caricaColtivazioni(progetto);
+    });
+
+    coltivatore.setProgetti(progetti);
+    System.out.println("Caricamento progetti effettuato con successo: " +
+        progetti.size() + " progetti trovati");
+  }
+
   public Progetto updateProgettoInfo(String nome, String descrizione, Progetto progetto) {
     // validazione del progetto
     if (nome == null || nome.isEmpty()) {
@@ -556,7 +576,7 @@ public class MainController {
   public void logout() {
     utenteLoggato = null;
     orti = null;
-    colture = null;
+    notifiche = null;
   }
 
   // ==============================================================================================
