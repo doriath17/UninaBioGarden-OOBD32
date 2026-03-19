@@ -268,4 +268,6 @@ public class ProgettoDao {
       throw new RuntimeException("Errore durante il recupero dei progetti del coltivatore. Riprova più tardi.");
     }
 
+  }
+
 }
