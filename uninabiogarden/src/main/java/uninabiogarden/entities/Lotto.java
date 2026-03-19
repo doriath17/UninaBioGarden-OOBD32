@@ -50,6 +50,10 @@ public class Lotto {
     return orto.getFullAddress();
   }
 
+  public String getFullname() {
+    return orto.getNomeOrto() + " - " + this.codiceLotto;
+  }
+
   public Long getId() {
     return id;
   }

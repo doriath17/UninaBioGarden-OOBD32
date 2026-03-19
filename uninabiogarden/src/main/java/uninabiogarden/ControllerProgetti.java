@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.scene.layout.VBox;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableColumn;
@@ -19,7 +20,13 @@ public class ControllerProgetti {
   private VBox mainContent;
 
   @FXML
-  private TextField searchField;
+  private TextField searchQueryField;
+
+  @FXML
+  private Button cercaPerCodiceLotto;
+
+  @FXML
+  private Button resetRicerca;
 
   @FXML
   private TableView<Progetto> progettiTable;
@@ -34,7 +41,7 @@ public class ControllerProgetti {
   private TableColumn<Progetto, String> dataInizioColumn;
 
   @FXML
-  private TableColumn<Progetto, String> dataFineColumn;
+  private TableColumn<Progetto, String> lottoColumn;
 
   @FXML
   private TableColumn<Progetto, Void> actionsColumn;
@@ -52,8 +59,10 @@ public class ControllerProgetti {
         cellData.getValue().getStato() != null ? cellData.getValue().getStato().name() : ""));
     dataInizioColumn.setCellValueFactory(cellData -> new SimpleStringProperty(
         cellData.getValue().getDataInizio() != null ? cellData.getValue().getDataInizio().toString() : ""));
-    dataFineColumn.setCellValueFactory(cellData -> new SimpleStringProperty(
-        cellData.getValue().getDataFine() != null ? cellData.getValue().getDataFine().toString() : ""));
+    lottoColumn.setCellValueFactory(cellData -> {
+      var lotto = cellData.getValue().getLotto();
+      return new SimpleStringProperty(lotto != null ? lotto.getFullname() : "");
+    });
 
     Utils.addButtonToColumn(actionsColumn, "View", this::openDettaglioProgetto);
     Utils.addButtonToColumn(deleteColumn, "Elimina", this::deleteProgetto);
@@ -68,7 +77,27 @@ public class ControllerProgetti {
 
   @FXML
   private void search(ActionEvent event) {
-    // TODO: da rimuovere probabilmente
+    String query = searchQueryField.getText().trim().toLowerCase();
+    System.out.println("Ricerca progetti per codice lotto con query: \"" + query + "\"");
+    if (query.isEmpty()) {
+      System.out.println("Campo di ricerca vuoto, mostra tutti i progetti.");
+      return;
+    } else {
+      System.out.println("Cercando progetti con codice lotto che contiene: " + query);
+      ObservableList<Progetto> filtered = FXCollections.observableList(
+          MainController.getInstance().getProgetti().stream()
+              .filter(p -> p.getLotto() != null && p.getLotto().getFullname() != null &&
+                  p.getLotto().getFullname().toLowerCase().contains(query))
+              .toList());
+      progettiTable.setItems(filtered);
+      progettiTable.refresh();
+    }
+  }
+
+  @FXML
+  private void resetSearch(ActionEvent event) {
+    searchQueryField.clear();
+    progettiTable.setItems(FXCollections.observableList(MainController.getInstance().getProgetti()));
   }
 
   @FXML
