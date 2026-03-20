@@ -1,7 +1,5 @@
 package uninabiogarden.entities;
 
-import uninabiogarden.dto.OrtoDto;
-
 public class Orto {
 
   private Long id;
@@ -25,15 +23,23 @@ public class Orto {
     this.proprietario = proprietario;
   }
 
-  public Orto(OrtoDto ortoDto) {
-    this.nomeOrto = ortoDto.nomeOrto;
-    this.citta = ortoDto.citta;
-    this.cap = ortoDto.cap;
-    this.civico = ortoDto.civico;
-    this.via = ortoDto.via;
-    if (ortoDto.proprietario != null) {
-      this.proprietario = new Proprietario(ortoDto.proprietario);
+  public String validate() {
+    if (nomeOrto == null || nomeOrto.isEmpty()) {
+      return "Nome orto mancante";
     }
+    if (citta == null || citta.isEmpty()) {
+      return "Città mancante";
+    }
+    if (cap == null || cap.isEmpty()) {
+      return "CAP mancante";
+    }
+    if (!cap.matches("^[0-9]{5}$")) {
+      return "CAP non valido o mancante";
+    }
+    if (via == null || via.isEmpty()) {
+      return "Via mancante";
+    }
+    return null;
   }
 
   public String getFullAddress() {

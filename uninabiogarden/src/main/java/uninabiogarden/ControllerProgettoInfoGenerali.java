@@ -116,7 +116,7 @@ public class ControllerProgettoInfoGenerali {
       System.out.println("Stato selezionato: " + statoChoiceBox.getSelectionModel().getSelectedItem());
       String selectedStato = statoChoiceBox.getSelectionModel().getSelectedItem();
       if (selectedStato != null && !selectedStato.isEmpty()) {
-        MainController.getInstance().updateProgetto(selectedStato, progetto);
+        MainController.getInstance().updateProgettoStato(selectedStato, progetto);
       }
       System.out.println("Progetto dopo aggiornamento stato: " + progetto.getStato());
 

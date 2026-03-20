@@ -3,7 +3,6 @@ package uninabiogarden.dao;
 import java.util.ArrayList;
 import java.util.List;
 
-import uninabiogarden.dto.UtenteDto;
 import uninabiogarden.entities.Coltivatore;
 import uninabiogarden.entities.Proprietario;
 import uninabiogarden.entities.Utente;
@@ -49,6 +48,25 @@ public class UtenteDao {
     return id;
   }
 
+  private Utente buildUtente(java.sql.ResultSet result) throws java.sql.SQLException {
+    String tipo = result.getString("tipo");
+    String bDay = result.getDate("b_day") != null ? result.getDate("b_day").toString() : null;
+    Utente utente;
+    if ("COLTIVATORE".equals(tipo)) {
+      utente = new Coltivatore(
+          result.getString("username"), result.getString("password"), result.getString("email"),
+          result.getString("codice_fiscale"), result.getString("nome"), result.getString("cognome"),
+          bDay, result.getString("gender"), result.getString("bio"));
+    } else {
+      utente = new Proprietario(
+          result.getString("username"), result.getString("password"), result.getString("email"),
+          result.getString("codice_fiscale"), result.getString("nome"), result.getString("cognome"),
+          bDay, result.getString("gender"), result.getString("bio"));
+    }
+    utente.setId(result.getLong("id"));
+    return utente;
+  }
+
   public Utente getUtenteByUsername(String username) {
     var sql = "SELECT * FROM utente WHERE username = '" + username + "'";
 
@@ -58,24 +76,7 @@ public class UtenteDao {
 
       var result = stmt.executeQuery(sql);
       if (result.next()) { // utente trovato
-        UtenteDto dto = new UtenteDto();
-        dto.username = result.getString("username");
-        dto.password = result.getString("password");
-        dto.email = result.getString("email");
-        dto.nome = result.getString("nome");
-        dto.cognome = result.getString("cognome");
-        dto.bDay = result.getDate("b_day") != null ? result.getDate("b_day").toString() : null;
-        dto.codiceFiscale = result.getString("codice_fiscale");
-        dto.gender = result.getString("gender");
-        dto.bio = result.getString("bio");
-        dto.tipo = result.getString("tipo");
-
-        if ("COLTIVATORE".equals(dto.tipo)) {
-          foundUtente = new Coltivatore(dto);
-        } else {
-          foundUtente = new Proprietario(dto);
-        }
-        foundUtente.setId(result.getLong("id"));
+        foundUtente = buildUtente(result);
       }
     } catch (Exception e) {
       System.err.println("Errore durante la ricerca utente: " + e.getMessage());
@@ -94,27 +95,7 @@ public class UtenteDao {
 
       var result = stmt.executeQuery(sql);
       while (result.next()) {
-        UtenteDto dto = new UtenteDto();
-        dto.username = result.getString("username");
-        dto.password = result.getString("password");
-        dto.email = result.getString("email");
-        dto.nome = result.getString("nome");
-        dto.cognome = result.getString("cognome");
-        dto.bDay = result.getDate("b_day") != null ? result.getDate("b_day").toString() : null;
-        dto.codiceFiscale = result.getString("codice_fiscale");
-        dto.gender = result.getString("gender");
-        dto.bio = result.getString("bio");
-        dto.tipo = result.getString("tipo");
-
-        Utente utente;
-        if ("COLTIVATORE".equals(dto.tipo)) {
-          utente = new Coltivatore(dto);
-        } else {
-          utente = new Proprietario(dto);
-        }
-
-        utente.setId(result.getLong("id"));
-        utenti.add(utente);
+        utenti.add(buildUtente(result));
       }
     } catch (Exception e) {
       System.err.println("Errore durante la ricerca utenti: " + e.getMessage());
