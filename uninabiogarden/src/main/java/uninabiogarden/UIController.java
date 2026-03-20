@@ -113,6 +113,11 @@ public class UIController {
   public void openProprietarioHomeView() {
     openHomeView();
     ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
+    homeController.openForProprietario();
+  }
+
+  public void openDashboardView() {
+    ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
     loadViewIntoContent(FxmlView.DASHBOARD_VIEW, homeController.getSelectedContent());
   }
 
@@ -328,14 +333,12 @@ public class UIController {
   // --
   // =======================================================================================================
 
-  public void openNotificheView(boolean init) {
+  public void openNotificheView() {
     ControllerHome homeController = (ControllerHome) controllers.get(FxmlView.HOME_VIEW);
     loadViewIntoContent(FxmlView.NOTIFICHE_VIEW, homeController.getSelectedContent());
 
-    if (init) {
-      ControllerNotifiche notificheController = (ControllerNotifiche) controllers.get(FxmlView.NOTIFICHE_VIEW);
-      notificheController.init(); // per avere la lista aggiornata delle notifiche ogni volta che si apre la view
-    }
+    ControllerNotifiche notificheController = (ControllerNotifiche) controllers.get(FxmlView.NOTIFICHE_VIEW);
+    notificheController.init();
   }
 
   public void openCreaNotificheView(Notifica nuovaNotifica, boolean init) {

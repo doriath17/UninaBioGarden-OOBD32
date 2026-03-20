@@ -49,7 +49,16 @@ public class ControllerHome {
   }
 
   public void openForProprietario() {
-    dashboardAction(null);
+    dashboardButton.setVisible(true);
+    dashboardButton.setManaged(true);
+    ortiButton.setVisible(true);
+    ortiButton.setManaged(true);
+    lottiButton.setVisible(true);
+    lottiButton.setManaged(true);
+    reportButton.setVisible(true);
+    reportButton.setManaged(true);
+
+    UIController.getInstance().openDashboardView();
   }
 
   Pane getSelectedContent() {
@@ -77,7 +86,7 @@ public class ControllerHome {
 
   @FXML
   private void notificheAction(ActionEvent event) {
-    UIController.getInstance().openNotificheView(false);
+    UIController.getInstance().openNotificheView();
   }
 
   @FXML

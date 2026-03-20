@@ -141,7 +141,7 @@ public class ControllerCreaNotifica {
 
   @FXML
   void indietroAction(ActionEvent event) {
-    UIController.getInstance().openNotificheView(true);
+    UIController.getInstance().openNotificheView();
   }
 
   @FXML
