@@ -58,6 +58,7 @@ public class UIController {
     openLoginView();
 
     this.scene = new Scene(root, 1280, 720);
+    this.scene.getStylesheets().add(App.class.getResource("style.css").toExternalForm());
     primaryStage.setScene(scene);
     primaryStage.show();
   }
