@@ -1,0 +1,5 @@
+Nel modellare le classi del sistema si è seguito il pattern Entity-Boundary-Control (EBC), che prevede la suddivisione delle classi in tre categorie principali: Entity, Boundary e Control. L'utilizzo di questo modello ha favorito una più facile e naturale individuazione di quali fossero le classi principali del sistema e di separare più facilmente le responsabilità di ciascuna classe:
+
+- Le classi Entity rappresentano le entità del dominio, ovvero gli oggetti che rappresentano i concetti chiave del sistema, come ad esempio il coltivatore, l’orto, il progetto, ecc. Queste classi contengono principalmente dati e logica di business associata a tali dati.
+- Le classi Boundary rappresentano l’interfaccia tra il sistema e l’esterno, come ad esempio l’interfaccia utente o il database. Queste classi si occupano di gestire l’interazione con l’utente o con il database, ma non contengono logica di business.
+- Le classi Control rappresentano la logica di controllo del sistema, ovvero la logica che coordina le interazioni tra le classi Entity e Boundary. Tra queste classi rappresentano il cuore del sistema, gestendo il flusso di esecuzione e lo stato dell'applicazione.
