@@ -1,6 +1,8 @@
 package uninabiogarden;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -16,14 +18,47 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.control.TextInputControl;
+import javafx.util.StringConverter;
 
 public class Utils {
+
+  private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+  public static void setupDatePicker(DatePicker... pickers) {
+    StringConverter<LocalDate> converter = new StringConverter<>() {
+      @Override
+      public String toString(LocalDate date) {
+        return date != null ? DATE_FMT.format(date) : "";
+      }
+
+      @Override
+      public LocalDate fromString(String text) {
+        if (text == null || text.isBlank())
+          return null;
+        try {
+          return LocalDate.parse(text, DATE_FMT);
+        } catch (Exception e) {
+          return null;
+        }
+      }
+    };
+    for (DatePicker picker : pickers) {
+      picker.setConverter(converter);
+      picker.getEditor().focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
+        if (!isNowFocused) {
+          LocalDate v = picker.getValue();
+          picker.getEditor().setText(v != null ? DATE_FMT.format(v) : "");
+        }
+      });
+    }
+  }
 
   public static String extractSQLErrorMessage(SQLException e) {
     if (e == null) {

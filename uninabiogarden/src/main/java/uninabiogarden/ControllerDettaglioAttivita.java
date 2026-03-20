@@ -116,6 +116,11 @@ public class ControllerDettaglioAttivita {
   private void initialize() {
     setupTable();
     initDynamicFields();
+    setupDatePickers();
+  }
+
+  private void setupDatePickers() {
+    Utils.setupDatePicker(dataInizioField, scadenzaField);
   }
 
   private void initDynamicFields() {

@@ -40,6 +40,9 @@ public class Semina extends Attivita {
     if (quantitaSementi == null || quantitaSementi <= 0) {
       return "La quantità di sementi deve essere positiva ed è obbligatoria.";
     }
+    if (profonditaSeminaCm == null || profonditaSeminaCm <= 0 || profonditaSeminaCm > 40) {
+      return "La profondità di semina deve essere compresa tra 0 e 40 cm ed è obbligatoria.";
+    }
     return null;
   }
 

@@ -38,6 +38,9 @@ public class Trattamento extends Attivita {
     if (nomeProdotto == null || nomeProdotto.isBlank()) {
       return "Il nome del prodotto è obbligatorio per i trattamenti.";
     }
+    if (tempoCarenza != null && tempoCarenza < 0) {
+      return "Il tempo di carenza deve essere positivo se specificato.";
+    }
     return null;
   }
 

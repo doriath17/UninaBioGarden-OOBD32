@@ -55,6 +55,7 @@ public class ControllerSignUp {
     errorLabel.setText("");
     tipoUtenteField.getItems().addAll("COLTIVATORE", "PROPRIETARIO");
     tipoUtenteField.setValue("PROPRIETARIO");
+    Utils.setupDatePicker(bdayField);
 
     // character limits for text fields
     Utils.addCharacterLimit(usernameField, 50);

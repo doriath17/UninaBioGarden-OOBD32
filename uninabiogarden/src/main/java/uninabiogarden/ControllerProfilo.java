@@ -56,6 +56,7 @@ public class ControllerProfilo {
     clearFields();
 
     errorLabel.setText("");
+    Utils.setupDatePicker(bdayField);
 
     tipoUtenteField.getItems().addAll("COLTIVATORE", "PROPRIETARIO");
 

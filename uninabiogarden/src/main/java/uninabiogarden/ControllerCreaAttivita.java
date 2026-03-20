@@ -108,6 +108,7 @@ public class ControllerCreaAttivita {
         "Semina", "Irrigazione", "Trattamento", "Raccolta", "Concimazione"));
     setupTable();
     initDynamicFields();
+    Utils.setupDatePicker(dataInizioField, dataScadenzaField);
 
     // Auto-refresh the specifici panel when the tipologia changes
     tipologiaChoiceBox.getSelectionModel().selectedItemProperty().addListener(
