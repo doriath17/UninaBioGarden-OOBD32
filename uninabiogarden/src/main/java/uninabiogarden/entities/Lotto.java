@@ -1,7 +1,5 @@
 package uninabiogarden.entities;
 
-import uninabiogarden.dto.LottoDto;
-
 public class Lotto {
 
   public enum TipologiaTerreno {
@@ -29,10 +27,17 @@ public class Lotto {
     this.orto = orto;
   }
 
-  public Lotto(LottoDto dto) {
-    this.codiceLotto = dto.codiceLotto;
-    this.tipologiaTerreno = dto.tipologiaTerreno;
-    this.estensioneMq = dto.estensioneMq;
+  public String validate() {
+    if (codiceLotto == null || codiceLotto.isEmpty()) {
+      return "Codice lotto mancante";
+    }
+    if (estensioneMq == null || estensioneMq <= 0) {
+      return "Estensione del lotto mancante o non valida, (deve essere un numero positivo)";
+    }
+    if (orto == null) {
+      return "Orto per il lotto non selezionato";
+    }
+    return null;
   }
 
   @Override

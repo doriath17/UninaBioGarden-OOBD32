@@ -3,7 +3,7 @@ package uninabiogarden;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import uninabiogarden.dto.OrtoDto;
+import uninabiogarden.entities.Orto;
 
 public class ControllerCreaOrto {
 
@@ -51,21 +51,21 @@ public class ControllerCreaOrto {
     civicoInputField.setText("10");
   }
 
-  private OrtoDto getData() {
-    OrtoDto ortoDto = new OrtoDto();
-    ortoDto.nomeOrto = nomeOrtoInputField.getText().trim();
-    ortoDto.citta = cittaInputField.getText().trim();
-    ortoDto.cap = capInputField.getText().trim();
-    ortoDto.via = viaInputField.getText().trim();
-    ortoDto.civico = civicoInputField.getText().trim();
-    return ortoDto;
+  private Orto getData() {
+    Orto orto = new Orto();
+    orto.setNomeOrto(nomeOrtoInputField.getText().trim());
+    orto.setCitta(cittaInputField.getText().trim());
+    orto.setCap(capInputField.getText().trim());
+    orto.setVia(viaInputField.getText().trim());
+    orto.setCivico(civicoInputField.getText().trim());
+    return orto;
   }
 
   @FXML
   public void confermaAction() {
-    OrtoDto ortoDto = getData();
+    Orto orto = getData();
     try {
-      MainController.getInstance().creaOrto(ortoDto);
+      MainController.getInstance().creaOrto(orto);
       UIController.getInstance().openOrtiView();
     } catch (IllegalArgumentException e) {
       errorLabel.setText(e.getMessage());

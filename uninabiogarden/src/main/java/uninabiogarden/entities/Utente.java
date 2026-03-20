@@ -43,6 +43,40 @@ public abstract class Utente {
     this.bio = bio;
   }
 
+  public String validate() {
+    if (getUsername() == null || getUsername().isEmpty()) {
+      return "Username mancante";
+    }
+    if (getPassword() == null || getPassword().isEmpty()) {
+      return "Password mancante";
+    }
+    if (getEmail() == null || getEmail().isEmpty()) {
+      return "Email mancante";
+    }
+    if (!getEmail().matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$")) {
+      return "Email non valida";
+    }
+    if (getCodiceFiscale() == null || getCodiceFiscale().isEmpty()) {
+      return "Codice fiscale mancante";
+    }
+    if (!getCodiceFiscale().matches("[A-Za-z0-9]+")) {
+      return "Codice fiscale non valido";
+    }
+    if (getNome() == null || getNome().isEmpty()) {
+      return "Nome mancante";
+    }
+    if (getCognome() == null || getCognome().isEmpty()) {
+      return "Cognome mancante";
+    }
+    if (getbDay() == null) {
+      return "Data di nascita mancante";
+    }
+    if (getbDay().isAfter(LocalDate.now().minusYears(18))) {
+      return "L'utente deve essere maggiorenne";
+    }
+    return null;
+  }
+
   public String getFullName() {
     return nome + " " + cognome;
   }

@@ -1,7 +1,5 @@
 package uninabiogarden;
 
-import java.util.Date;
-
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
@@ -9,7 +7,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import uninabiogarden.dto.UtenteDto;
+import uninabiogarden.entities.Coltivatore;
+import uninabiogarden.entities.Proprietario;
+import uninabiogarden.entities.Utente;
 
 public class ControllerSignUp {
 
@@ -69,19 +69,19 @@ public class ControllerSignUp {
 
   }
 
-  private UtenteDto getData() {
-    var dto = new UtenteDto();
-    dto.username = usernameField.getText();
-    dto.password = passwordField.getText();
-    dto.email = emailField.getText();
-    dto.codiceFiscale = codiceFiscaleField.getText();
-    dto.nome = nomeField.getText();
-    dto.cognome = cognomeField.getText();
-    dto.bDay = bdayField.getValue() != null ? bdayField.getValue().toString() : null;
-    dto.gender = genderField.getText();
-    dto.bio = bioField.getText();
-    dto.tipo = tipoUtenteField.getValue();
-    return dto;
+  private Utente getData() {
+    String tipo = tipoUtenteField.getValue();
+    Utente utente = "COLTIVATORE".equals(tipo) ? new Coltivatore() : new Proprietario();
+    utente.setUsername(usernameField.getText());
+    utente.setPassword(passwordField.getText());
+    utente.setEmail(emailField.getText());
+    utente.setCodiceFiscale(codiceFiscaleField.getText());
+    utente.setNome(nomeField.getText());
+    utente.setCognome(cognomeField.getText());
+    utente.setbDay(bdayField.getValue());
+    utente.setGender(genderField.getText());
+    utente.setBio(bioField.getText());
+    return utente;
   }
 
   private void loadTestData() {
@@ -98,11 +98,11 @@ public class ControllerSignUp {
 
   @FXML
   public void signUpAction() {
-    var dto = getData();
+    var utente = getData();
     try {
-      MainController.getInstance().registraUtente(dto);
+      MainController.getInstance().registraUtente(utente);
       clearForm();
-      if ("COLTIVATORE".equals(dto.tipo)) {
+      if (utente instanceof Coltivatore) {
         UIController.getInstance().openColtivatoreHomeView();
       } else {
         UIController.getInstance().openProprietarioHomeView();

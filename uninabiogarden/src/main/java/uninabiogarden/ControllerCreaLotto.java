@@ -10,7 +10,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
-import uninabiogarden.dto.LottoDto;
 import uninabiogarden.entities.Lotto;
 import uninabiogarden.entities.Orto;
 import uninabiogarden.entities.Lotto.TipologiaTerreno;
@@ -101,33 +100,33 @@ public class ControllerCreaLotto {
     UIController.getInstance().openLottiView();
   }
 
-  private LottoDto getData() {
-    LottoDto lottoDto = new LottoDto();
-    lottoDto.codiceLotto = codiceLottoInputField.getText();
+  private Lotto getData() {
+    Lotto lotto = new Lotto();
+    lotto.setCodiceLotto(codiceLottoInputField.getText());
     try {
-      lottoDto.estensioneMq = Double.parseDouble(estensioneLottoInputField.getText());
+      lotto.setEstensioneMq(Double.parseDouble(estensioneLottoInputField.getText()));
     } catch (NumberFormatException e) {
-      lottoDto.estensioneMq = null; // lascialo null per far fallire la validazione
+      // leave null - validation will catch it
     }
-    lottoDto.ortoId = selectedOrtoId;
-    lottoDto.tipologiaTerreno = Lotto.TipologiaTerreno.valueOf(tipologiaTerrenoChoiceBox.getValue());
-    return lottoDto;
+    if (selectedOrtoId != null) {
+      Orto proxyOrto = new Orto();
+      proxyOrto.setId(selectedOrtoId);
+      lotto.setOrto(proxyOrto);
+    }
+    lotto.setTipologiaTerreno(Lotto.TipologiaTerreno.valueOf(tipologiaTerrenoChoiceBox.getValue()));
+    return lotto;
   }
 
   @FXML
   public void confermaAction() {
-    LottoDto lottoDto = getData();
-    if (lottoDto == null) { // ci fu un errore, non procedere
-      return;
-    }
-
+    Lotto lotto = getData();
     try {
-      MainController.getInstance().creaLotto(lottoDto);
+      MainController.getInstance().creaLotto(lotto);
       clear();
       UIController.getInstance().openLottiView();
     } catch (Exception e) {
       System.err.println("Errore durante la creazione del lotto: " + e.getMessage());
-      errorLabel.setText("Errore durante la creazione del lotto");
+      errorLabel.setText(e.getMessage());
     }
   }
 

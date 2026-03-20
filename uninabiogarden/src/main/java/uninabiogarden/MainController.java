@@ -4,9 +4,6 @@ import java.util.List;
 
 import uninabiogarden.controller.AttivitaController;
 import uninabiogarden.dao.DatabaseController;
-import uninabiogarden.dto.LottoDto;
-import uninabiogarden.dto.OrtoDto;
-import uninabiogarden.dto.UtenteDto;
 import uninabiogarden.entities.Attivita;
 import uninabiogarden.entities.Coltivatore;
 import uninabiogarden.entities.Coltivazione;
@@ -18,7 +15,6 @@ import uninabiogarden.entities.Proprietario;
 import uninabiogarden.entities.Utente;
 import uninabiogarden.exceptions.ValidationException;
 import uninabiogarden.entities.Notifica;
-import java.util.ArrayList;
 
 public class MainController {
   // ==============================================================================================
@@ -105,73 +101,15 @@ public class MainController {
   // Sezione: Validazione dati Utente
   // ==============================================================================================
 
-  private String isValidUtenteDto(UtenteDto utenteDto) {
-    if (utenteDto.username == null || utenteDto.username.isEmpty()) {
-      return "Username mancante";
-    }
-
-    if (utenteDto.password == null || utenteDto.password.isEmpty()) {
-      return "Password mancante";
-    }
-
-    if (utenteDto.email == null || utenteDto.email.isEmpty()) {
-      return "Email mancante";
-    }
-
-    if (!utenteDto.email.matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$")) {
-      return "Email non valida";
-    }
-
-    if (utenteDto.codiceFiscale == null || utenteDto.codiceFiscale.isEmpty()) {
-      return "Codice fiscale mancante";
-    }
-
-    if (!utenteDto.codiceFiscale.matches("[A-Za-z0-9]+")) {
-      return "Codice fiscale non valido";
-    }
-
-    if (utenteDto.nome == null || utenteDto.nome.isEmpty()) {
-      return "Nome mancante";
-    }
-
-    if (utenteDto.cognome == null || utenteDto.cognome.isEmpty()) {
-      return "Cognome mancante";
-    }
-
-    if (utenteDto.bDay == null || utenteDto.bDay.isEmpty()) {
-      return "Data di nascita mancante";
-    }
-
-    // Parse and validate bDay
-    try {
-      java.time.LocalDate birthDate = java.time.LocalDate.parse(utenteDto.bDay);
-      if (birthDate.isAfter(java.time.LocalDate.now().minusYears(18))) {
-        return "L'utente deve essere maggiorenne";
-      }
-    } catch (Exception e) {
-      return "Formato data di nascita non valido";
-    }
-
-    return null; // dati validi
-  }
-
   // ==============================================================================================
   // Sezione: Registrazione e login
   // ==============================================================================================
 
-  public void registraUtente(UtenteDto utenteDto) {
+  public void registraUtente(Utente utente) {
     // validazione dei dati
-    String validationError = isValidUtenteDto(utenteDto);
+    String validationError = utente.validate();
     if (validationError != null) {
       throw new IllegalArgumentException(validationError);
-    }
-
-    // creazione dell'utente
-    Utente utente = null;
-    if (utenteDto.tipo.equals("COLTIVATORE")) {
-      utente = new Coltivatore(utenteDto);
-    } else {
-      utente = new Proprietario(utenteDto);
     }
 
     Long id = databaseController.getUtenteDao().saveUtente(utente);
@@ -232,28 +170,12 @@ public class MainController {
   // Sezione: Validazione e creazione Orto
   // ==============================================================================================
 
-  private void isValidOrto(OrtoDto ortoDto) {
-    if (ortoDto.nomeOrto == null || ortoDto.nomeOrto.isEmpty()) {
-      throw new IllegalArgumentException("Nome orto mancante");
+  public void creaOrto(Orto orto) {
+    var validationError = orto.validate();
+    if (validationError != null) {
+      throw new IllegalArgumentException(validationError);
     }
-    if (ortoDto.citta == null || ortoDto.citta.isEmpty()) {
-      throw new IllegalArgumentException("Città mancante");
-    }
-    if (ortoDto.cap == null || ortoDto.cap.isEmpty()) {
-      throw new IllegalArgumentException("CAP mancante");
-    }
-    if (!ortoDto.cap.matches("^[0-9]{5}$")) {
-      throw new IllegalArgumentException("CAP non valido o mancante");
-    }
-    if (ortoDto.via == null || ortoDto.via.isEmpty()) {
-      throw new IllegalArgumentException("Via mancante");
-    }
-  }
 
-  public void creaOrto(OrtoDto ortoDto) {
-    isValidOrto(ortoDto);
-
-    Orto orto = new Orto(ortoDto);
     orto.setProprietario((Proprietario) utenteLoggato);
     Long id = databaseController.getOrtoDao().saveOrto(orto);
     System.out.println("Orto creato con ID: " + id);
@@ -270,32 +192,17 @@ public class MainController {
   // Sezione: Validazione e creazione Lotto
   // ==============================================================================================
 
-  private String isValidLotto(LottoDto lottoDto) {
-    if (lottoDto.codiceLotto == null || lottoDto.codiceLotto.isEmpty()) {
-      return "Codice lotto mancante";
-    }
-    if (lottoDto.estensioneMq == null || lottoDto.estensioneMq <= 0) {
-      return "Estensione del lotto mancante o non valida, (deve essere un numero positivo)";
-    }
-    if (lottoDto.ortoId == null) {
-      return "Orto per il lotto non selezionato";
-    }
-    return null;
-  }
-
-  public void creaLotto(LottoDto lottoDto) {
+  public void creaLotto(Lotto lotto) {
     // validazione dati lotto
-    var validationError = isValidLotto(lottoDto);
+    var validationError = lotto.validate();
     if (validationError != null) {
       throw new IllegalArgumentException(validationError);
     }
 
-    // recupera il proprietario e l'orto associati al lotto
-    Lotto lotto = new Lotto(lottoDto);
     lotto.setProprietario((Proprietario) utenteLoggato);
     var selectedOrto = orti
         .stream()
-        .filter(orto -> orto.getId().equals(lottoDto.ortoId))
+        .filter(o -> o.getId().equals(lotto.getOrto().getId()))
         .findFirst()
         .orElseThrow(() -> new IllegalArgumentException("Orto non trovato"));
     lotto.setOrto(selectedOrto);
@@ -512,7 +419,7 @@ public class MainController {
     return progetto;
   }
 
-  public void updateProgetto(String nuovoStato, Progetto progetto) {
+  public void updateProgettoStato(String nuovoStato, Progetto progetto) {
     System.out.println("Update stato progetto: nuovo stato: " + nuovoStato + " progetto: " + progetto.getId()
         + " stato attuale: " + progetto.getStato());
     if (progetto.getStato() == Progetto.Stato.ATTIVO && nuovoStato.equals(Progetto.Stato.CONCLUSO.name())) {
