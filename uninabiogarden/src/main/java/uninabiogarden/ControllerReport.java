@@ -7,7 +7,9 @@ import java.util.List;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.data.statistics.DefaultBoxAndWhiskerCategoryDataset;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.renderer.category.BarRenderer;
+import org.jfree.data.category.DefaultCategoryDataset;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -15,6 +17,7 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import java.awt.Color;
 import uninabiogarden.entities.Lotto;
 import uninabiogarden.entities.Report;
 import javafx.util.StringConverter;
@@ -43,6 +46,7 @@ public class ControllerReport {
   private Label errorLabel;
 
   ArrayList<Report> reports = new ArrayList<>();
+  Lotto lottoSelezionato;
 
   @FXML
   void initialize() {
@@ -74,6 +78,7 @@ public class ControllerReport {
 
     // prendiamo il lotto selezionato
     Lotto lottoSelezionato = lottiBox.getValue();
+    this.lottoSelezionato = lottoSelezionato;
 
     if (lottoSelezionato == null) {
       errorLabel.setText("Bisogna selezionare un lotto");
@@ -99,30 +104,38 @@ public class ControllerReport {
     }
     ultimaRaccoltaLabel.setText("Ultima raccolta: " + (ultimaData != null ? ultimaData.toString() : "N/A"));
 
-    JFreeChart chart = createBoxPlot(reports);
+    JFreeChart chart = createBarChart(reports);
     displayChart(chart);
 
   }
 
-  private JFreeChart createBoxPlot(List<Report> reports) {
+  private JFreeChart createBarChart(List<Report> reports) {
 
-    DefaultBoxAndWhiskerCategoryDataset dataset = new DefaultBoxAndWhiskerCategoryDataset();
+    DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
-    for (Report report : reports) {
+    for (Report r : reports) {
+      String nomeColtura = r.getNomeColtura();
 
-      List<Double> values = List.of(
-          report.getMin(),
-          report.getMedia(),
-          report.getMax());
-      dataset.add(values, "Quantità (kg)", report.getNomeColtura());
+      dataset.addValue(r.getMin(), "Minimo", nomeColtura);
+      dataset.addValue(r.getMedia(), "Media", nomeColtura);
+      dataset.addValue(r.getMax(), "Massimo", nomeColtura);
     }
 
-    JFreeChart chart = ChartFactory.createBoxAndWhiskerChart(
-        "Report Raccolte - " + lottiBox.getValue(),
+    JFreeChart chart = ChartFactory.createBarChart(
+        "Report Dettagliato Lotto: " + lottoSelezionato.getCodiceLotto(),
         "Coltura",
         "Quantità (kg)",
-        dataset,
-        true);
+        dataset);
+
+    // Styling
+    CategoryPlot plot = chart.getCategoryPlot();
+    BarRenderer renderer = (BarRenderer) plot.getRenderer();
+
+    renderer.setSeriesPaint(0, Color.RED);
+    renderer.setSeriesPaint(1, Color.BLUE);
+    renderer.setSeriesPaint(2, Color.GREEN);
+
+    renderer.setItemMargin(0.05);
 
     return chart;
   }

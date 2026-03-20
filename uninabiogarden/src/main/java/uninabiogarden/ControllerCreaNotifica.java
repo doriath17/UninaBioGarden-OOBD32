@@ -130,7 +130,6 @@ public class ControllerCreaNotifica {
     notifica.setNome(nomeField.getText());
     notifica.setDescrizione(descrizioneField.getText());
     notifica.setUrgenza((Notifica.Urgenza) urgenzaField.getValue());
-    notifica.setTipo(Notifica.Tipo.NOTIFICA_PROGETTO);
     notifica.setMittente((Proprietario) MainController.getInstance().getUtenteLoggato());
 
     Progetto prg = progettoTable.getSelectionModel().getSelectedItem();
@@ -155,7 +154,7 @@ public class ControllerCreaNotifica {
 
     UIController.getInstance().openCreaNotificaStep2View(nuovaNotifica, true);
 
-    // for testign
+    // for testing
     System.out.println(nuovaNotifica.toString());
   }
 
