@@ -91,29 +91,29 @@ public class ControllerNotifiche {
     });
 
     attivitaNotificaColonna.setCellValueFactory(cellData -> {
-        Notifica n = cellData.getValue();
-        String nomeAtt = "No Data";
-        if (n instanceof NotificaAttivita) {
-            NotificaAttivita na = (NotificaAttivita) n;
-            nomeAtt = na.getAttivita().getNome();
-        }
-        return new SimpleStringProperty(nomeAtt);
+      Notifica n = cellData.getValue();
+      String nomeAtt = "No Data";
+      if (n instanceof NotificaAttivita) {
+        NotificaAttivita na = (NotificaAttivita) n;
+        nomeAtt = na.getAttivita().getNome();
+      }
+      return new SimpleStringProperty(nomeAtt);
     });
 
     tipoNotificaColonna.setCellValueFactory(cellData -> {
-        Notifica n = cellData.getValue();
-        String tipo = (n instanceof NotificaAttivita) ? "NOTIFICA_ATTIVITA_IMMINENTE" : "NOTIFICA_PROGETTO";
-        return new SimpleStringProperty(tipo);
+      Notifica n = cellData.getValue();
+      String tipo = (n instanceof NotificaAttivita) ? "NOTIFICA_ATTIVITA_IMMINENTE" : "NOTIFICA_PROGETTO";
+      return new SimpleStringProperty(tipo);
     });
 
     giorniMancantiColonna.setCellValueFactory(cellData -> {
-        Notifica n = cellData.getValue();
-        Integer giorni = null;
-        if (n instanceof NotificaAttivita) {
-            NotificaAttivita na = (NotificaAttivita) n;
-            giorni = na.getGiorniMancanti();
-        }
-        return new SimpleObjectProperty<>(giorni);
+      Notifica n = cellData.getValue();
+      Integer giorni = null;
+      if (n instanceof NotificaAttivita) {
+        NotificaAttivita na = (NotificaAttivita) n;
+        giorni = na.getGiorniMancanti();
+      }
+      return new SimpleObjectProperty<>(giorni);
     });
 
     mittenteNotificaColonna.setCellValueFactory(cellData -> {
