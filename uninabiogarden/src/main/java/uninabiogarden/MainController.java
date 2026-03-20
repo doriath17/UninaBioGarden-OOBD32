@@ -39,7 +39,11 @@ public class MainController {
   // Sezione: Dipendenze e stato dell'applicazione
   // ==============================================================================================
 
-  private DatabaseController databaseController = DatabaseController.getInstance();
+  private DatabaseController databaseController = new DatabaseController();
+
+  public DatabaseController getDatabaseController() {
+    return databaseController;
+  }
 
   private Utente utenteLoggato;
 
@@ -463,7 +467,7 @@ public class MainController {
       nuoveNoteTecniche = "";
     }
 
-    DatabaseController.getInstance().getColtivazioneDao().update(nuovoStatoSalute.name(), nuoveNoteTecniche,
+    databaseController.getColtivazioneDao().update(nuovoStatoSalute.name(), nuoveNoteTecniche,
         coltivazione.getId());
     coltivazione.setStatoSalute(nuovoStatoSalute);
     coltivazione.setNoteTecniche(nuoveNoteTecniche);

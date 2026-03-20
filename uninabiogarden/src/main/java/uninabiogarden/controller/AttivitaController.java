@@ -16,7 +16,7 @@ public class AttivitaController {
 
   public AttivitaController(MainController mainController) {
     this.mainController = mainController;
-    this.databaseController = DatabaseController.getInstance();
+    this.databaseController = mainController.getDatabaseController();
   }
 
   // ==============================================================================================

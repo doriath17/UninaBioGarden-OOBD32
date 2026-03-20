@@ -2,20 +2,6 @@ package uninabiogarden.dao;
 
 public class DatabaseController {
 
-  private static DatabaseController instance;
-
-  public static DatabaseController getInstance() {
-    if (instance == null) {
-      instance = new DatabaseController();
-    }
-    return instance;
-  }
-
-  private DatabaseController() {
-  }
-
-  private Database database = Database.getInstance();
-
   private UtenteDao utenteDao = new UtenteDao();
   private OrtoDao ortoDao = new OrtoDao();
   private LottoDao lottoDao = new LottoDao();
@@ -46,10 +32,6 @@ public class DatabaseController {
     return progettoDao;
   }
 
-  public Database getDatabase() {
-    return database;
-  }
-
   public ColtivazioneDao getColtivazioneDao() {
     return coltivazioneDao;
   }
@@ -65,5 +47,5 @@ public class DatabaseController {
   public ReportDao getReportDao() {
     return reportDao;
   }
-  
+
 }

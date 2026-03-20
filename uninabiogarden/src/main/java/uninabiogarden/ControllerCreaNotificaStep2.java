@@ -158,7 +158,7 @@ public class ControllerCreaNotificaStep2 {
         nuovaNotifica,
         (lambda) -> {
           // Salva la notifica nel database
-          DatabaseController.getInstance().getNotificaDao().saveNotifica(nuovaNotifica);
+          MainController.getInstance().getDatabaseController().getNotificaDao().saveNotifica(nuovaNotifica);
           MainController.getInstance().getNotifiche().add(nuovaNotifica);
           System.out.println("Notifica salvata con successo!");
         });

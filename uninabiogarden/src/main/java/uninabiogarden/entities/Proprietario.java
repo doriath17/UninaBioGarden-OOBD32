@@ -7,7 +7,7 @@ public class Proprietario extends Utente {
 
   private List<Lotto> lotti;
   private List<Progetto> progetti;
-  private ArrayList<Notifica> notificheInviate = new ArrayList<>();
+  private List<Notifica> notificheInviate = new ArrayList<>();
 
   public Proprietario() {
     super();
@@ -64,8 +64,8 @@ public class Proprietario extends Utente {
     return notificheInviate;
   }
 
-  public void setNotificheInviate(ArrayList<Notifica> notificheInviate) {
-    this.notificheInviate = notificheInviate;
+  public void setNotificheInviate(List<Notifica> notifiche) {
+    this.notificheInviate = notifiche;
   }
 
   public void addNotificaInviata(Notifica notifica) {
