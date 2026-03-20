@@ -21,35 +21,50 @@ import java.util.ArrayList;
 
 public class ControllerCreaNotificaAttivita {
 
-  @FXML private TableView<Attivita> attivitaTable;
+  @FXML
+  private TableView<Attivita> attivitaTable;
 
-  @FXML private TableColumn<Attivita, String> dataInizioAttivitaColonna;
+  @FXML
+  private TableColumn<Attivita, String> dataInizioAttivitaColonna;
 
-  @FXML private TableColumn<Progetto, String> dataInizioProgettoColonna;
+  @FXML
+  private TableColumn<Progetto, String> dataInizioProgettoColonna;
 
-  @FXML private TextArea descrizioneField;
+  @FXML
+  private TextArea descrizioneField;
 
-  @FXML private TableColumn<Progetto, String> descrizioneProgettoColonna;
+  @FXML
+  private TableColumn<Progetto, String> descrizioneProgettoColonna;
 
-  @FXML private Label errorLable;
+  @FXML
+  private Label errorLable;
 
-  @FXML private VBox mainContent;
+  @FXML
+  private VBox mainContent;
 
-  @FXML private TextField nomeField;
+  @FXML
+  private TextField nomeField;
 
-  @FXML private TableColumn<Progetto, String> nomeProgettoColonna;
+  @FXML
+  private TableColumn<Progetto, String> nomeProgettoColonna;
 
-  @FXML private TableColumn<Attivita, String> noteTecnicheAttivitaColonna;
+  @FXML
+  private TableColumn<Attivita, String> noteTecnicheAttivitaColonna;
 
-  @FXML private TableView<Progetto> progettoTable;
+  @FXML
+  private TableView<Progetto> progettoTable;
 
-  @FXML private TableColumn<Attivita, String> statoAttivitaColonna;
+  @FXML
+  private TableColumn<Attivita, String> statoAttivitaColonna;
 
-  @FXML private TableColumn<Progetto, String> statoProgettoColonna;
+  @FXML
+  private TableColumn<Progetto, String> statoProgettoColonna;
 
-  @FXML private TableColumn<Attivita, String> titoloAttivitaColonna;
+  @FXML
+  private TableColumn<Attivita, String> titoloAttivitaColonna;
 
-  @FXML private ChoiceBox<Notifica.Urgenza> urgenzaField;
+  @FXML
+  private ChoiceBox<Notifica.Urgenza> urgenzaField;
 
   ObservableList<Attivita> attivita = javafx.collections.FXCollections.observableArrayList();
   ObservableList<Progetto> progetti = javafx.collections.FXCollections.observableArrayList();
@@ -68,43 +83,44 @@ public class ControllerCreaNotificaAttivita {
 
     // tabella progetti
     dataInizioProgettoColonna.setCellValueFactory(cellData -> {
-      String a = cellData.getValue().getDataInizio().toString();
-      return new SimpleStringProperty(a);
+      java.time.LocalDate d = cellData.getValue().getDataInizio();
+      return new SimpleStringProperty(d != null ? d.toString() : "");
     });
 
     descrizioneProgettoColonna.setCellValueFactory(cellData -> {
       String a = cellData.getValue().getDescrizione();
-      return new SimpleStringProperty(a);
+      return new SimpleStringProperty(a != null ? a : "");
     });
 
     nomeProgettoColonna.setCellValueFactory(cellData -> {
       String a = cellData.getValue().getNomeProgetto();
-      return new SimpleStringProperty(a);
+      return new SimpleStringProperty(a != null ? a : "");
     });
 
     statoProgettoColonna.setCellValueFactory(cellData -> {
-      String a = cellData.getValue().getStato().toString();
-      return new SimpleStringProperty(a);
+      Progetto.Stato s = cellData.getValue().getStato();
+      return new SimpleStringProperty(s != null ? s.toString() : "");
     });
 
     // tabella attivita
     titoloAttivitaColonna.setCellValueFactory(cellData -> {
       String a = cellData.getValue().getNome();
-      return new SimpleStringProperty(a);
+      return new SimpleStringProperty(a != null ? a : "");
     });
 
     noteTecnicheAttivitaColonna.setCellValueFactory(cellData -> {
       String a = cellData.getValue().getNoteTecniche();
-      return new SimpleStringProperty(a);
+      return new SimpleStringProperty(a != null ? a : "");
     });
 
     statoAttivitaColonna.setCellValueFactory(cellData -> {
-      String a = cellData.getValue().getStato().toString();
-      return new SimpleStringProperty(a);
+      Attivita.Stato s = cellData.getValue().getStato();
+      return new SimpleStringProperty(s != null ? s.toString() : "");
     });
 
     dataInizioAttivitaColonna.setCellValueFactory(cellData -> {
-      String a = cellData.getValue().getDataInizio().toString();
+      java.time.LocalDate d = cellData.getValue().getDataInizio();
+      String a = d != null ? d.toString() : "";
       return new SimpleStringProperty(a);
     });
 
@@ -125,9 +141,9 @@ public class ControllerCreaNotificaAttivita {
   public void init(Notifica notifica) {
 
     if (notifica instanceof NotificaAttivita) {
-        this.nuovaNotifica = (NotificaAttivita) notifica;
+      this.nuovaNotifica = (NotificaAttivita) notifica;
     } else {
-        this.nuovaNotifica = new NotificaAttivita();
+      this.nuovaNotifica = new NotificaAttivita();
     }
 
     clear();
@@ -138,12 +154,12 @@ public class ControllerCreaNotificaAttivita {
     progettoTable.refresh();
   }
 
-  
-  // carica tutte le attività dei progetti e filtra solo quelle in stato PIANIFICATA o IN_CORSO
+  // carica tutte le attività dei progetti e filtra solo quelle in stato
+  // PIANIFICATA o IN_CORSO
   private void loadAttivitaDisponibili(Progetto progetto) {
 
     attivita.clear();
-    
+
     if (progetto == null) {
       return;
     }
@@ -155,7 +171,7 @@ public class ControllerCreaNotificaAttivita {
       if (c.getAttivita() != null) {
         allAttivita.addAll(c.getAttivita());
       }
-      
+
     }
 
     // esclude tutte eccetto quelle in stato PIANIFICATA o IN_CORSO
@@ -166,7 +182,7 @@ public class ControllerCreaNotificaAttivita {
       boolean isInCorso = (a.getStato() == Attivita.Stato.IN_CORSO);
 
       if (isPianificata || isInCorso) {
-          attFiltrate.add(a);
+        attFiltrate.add(a);
       }
 
     }
@@ -244,6 +260,5 @@ public class ControllerCreaNotificaAttivita {
     }
 
   }
-
 
 }

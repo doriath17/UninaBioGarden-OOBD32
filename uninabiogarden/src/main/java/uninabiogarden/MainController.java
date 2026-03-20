@@ -139,8 +139,8 @@ public class MainController {
       caricaNotifiche();
     } else if (utente instanceof Coltivatore) {
       var coltivatore = (Coltivatore) utente;
-      // caricaNotifiche(coltivatore);
       caricaProgetti(coltivatore);
+      caricaNotifiche();
     } else {
       throw new IllegalArgumentException("Tipo utente non riconosciuto");
     }
