@@ -1,0 +1,561 @@
+\documentclass[12pt,a4paper]{article}
+
+% ============================================================================
+% PACKAGES
+% ============================================================================
+
+% Language and encoding
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[italian]{babel}
+
+% Page layout
+\usepackage[margin=2.5cm, headheight=15pt]{geometry}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+
+% Graphics and figures
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+
+% Tables
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{tabularx}
+
+% Colors and hyperlinks
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+% Code listings (for Java)
+\usepackage{listings}
+
+% Math (if needed)
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+% Others
+\usepackage{enumitem}
+\usepackage{parskip}
+\usepackage{microtype}
+
+% ============================================================================
+% CONFIGURATION
+% ============================================================================
+
+% Hyperref settings
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan,
+    citecolor=blue,
+    pdftitle={Documentazione OO - UninaBioGarden},
+    pdfauthor={Alessandro Fusco, Daniele Caimano},
+    pdfsubject={Object-Oriented Design Documentation},
+    pdfkeywords={OOP, UML, JavaFX, DAO, EBC},
+}
+
+% Header and footer
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\leftmark}
+\fancyhead[R]{UninaBioGarden}
+\fancyfoot[C]{\thepage\ di \pageref{LastPage}}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+% Figure settings
+\graphicspath{{../uninabiogarden/asset/}}
+\setkeys{Gin}{width=\linewidth,height=\textheight,keepaspectratio}
+\floatplacement{figure}{H}
+
+% Java Listing style
+\definecolor{javakeyword}{rgb}{0.13,0.29,0.53}
+\definecolor{javagray}{rgb}{0.5,0.5,0.5}
+\definecolor{javastring}{rgb}{0,0.5,0}
+\definecolor{javacomment}{rgb}{0.4,0.4,0.4}
+
+\lstdefinestyle{javastyle}{
+    language=Java,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{javakeyword}\bfseries,
+    stringstyle=\color{javastring},
+    commentstyle=\color{javacomment}\itshape,
+    numbers=left,
+    numberstyle=\tiny\color{javagray},
+    numbersep=5pt,
+    frame=single,
+    breaklines=true,
+    breakatwhitespace=true,
+    tabsize=4,
+    showstringspaces=false,
+    captionpos=b
+}
+
+% Table style
+\renewcommand{\arraystretch}{1.3}
+
+% ============================================================================
+% TITLE PAGE DATA
+% ============================================================================
+
+\title{
+    \vspace{-2cm}
+    \includegraphics[width=0.3\textwidth]{Federico_II_University_Logo.pdf} \\
+    \vspace{0.5cm}
+    \Large Università degli Studi di Napoli Federico II \\
+    \large Dipartimento di Ingegneria Elettrica e delle Tecnologie dell'Informazione \\
+    \vspace{1cm}
+    \Large Corso di Programmazione Orientata agli Oggetti \\
+    \large Prof. [Nome Cognome] \\
+    \vspace{1.5cm}
+    \Large\textbf{Progettazione e sviluppo di un'applicazione orientata agli oggetti} \\
+    \Large\textbf{per il sistema di gestione di orti urbani condivisi} \\
+    \Large\textbf{UninaBioGarden} \\
+    \vspace{0.5cm}
+    \large Gruppo OOBD32 \\
+    \vspace{1cm}
+}
+
+\author{
+    Alessandro Fusco - Matr. N86004947 \\
+    \small alessandro.fusco3@studenti.unina.it \\
+    \vspace{0.3cm}
+    Daniele Caimano - Matr. N86004547 \\
+    \small dan.caimano@studenti.unina.it
+}
+
+\date{
+    \vspace{1cm}
+    Anno Accademico 2024/2025
+}
+
+% ============================================================================
+% DOCUMENT
+% ============================================================================
+
+\begin{document}
+
+% Title page
+\maketitle
+\thispagestyle{empty}
+\newpage
+
+% Table of contents
+\tableofcontents
+\newpage
+
+% ============================================================================
+% CONTENT
+% ============================================================================
+
+\section{Introduzione}
+
+\subsection{Scopo del Documento}
+
+Questo documento presenta la progettazione orientata agli oggetti del sistema UninaBioGarden,
+un'applicazione per la gestione di orti urbani condivisi. Verranno illustrate le scelte
+architetturali e di design adottate, con particolare attenzione al paradigma
+Entity-Boundary-Control, all'utilizzo di JavaFX per l'interfaccia grafica e
+all'implementazione del pattern DAO per l'accesso ai dati.
+
+\subsection{Descrizione del Dominio}
+
+La piattaforma UninaBioGarden è un sistema software progettato per la gestione di orti
+urbani condivisi. Il sistema è utilizzato principalmente da due tipologie di utenti: i
+\textbf{proprietari} dei lotti su cui si svolgono le coltivazioni e i \textbf{coltivatori}
+che svolgono le diverse attività necessarie a tali coltivazioni. Lo scopo principale della
+piattaforma è fornire un ambiente di gestione sia per i proprietari che per i coltivatori,
+facilitando la collaborazione e il tracciamento delle attività agricole.
+
+\subsubsection{Attori del Sistema}
+
+\paragraph{Il Ruolo del Proprietario}
+
+Il proprietario può registrare un orto urbano condiviso ed eventualmente andare a registrare
+dei lotti, da egli posseduti, al suo interno. La presenza dei lotti è fondamentale alla
+pianificazione di un progetto in quanto questo prende luogo su un lotto specifico. Il
+proprietario deve essere in grado di pianificare un progetto specificando su quale lotto
+questo si svolge.
+
+Inoltre il proprietario deve essere in grado di notificare i coltivatori del progetto di
+eventi che riguardano il progetto, come ad esempio un'anomalia o una carestia, o che
+riguardano attività imminenti, ad esempio un'irrigazione programmata per il giorno dopo.
+
+\paragraph{Il Ruolo del Coltivatore}
+
+Nel sistema il coltivatore è un'entità abbastanza passiva, in quanto non può pianificare un
+progetto, una coltivazione, un'attività e non può inviare notifiche. Il coltivatore tuttavia
+è fondamentale per lo svolgimento generale dei progetti perché è colui che è responsabile
+delle attività che vi sono assegnate e lui ne può gestire il ciclo di vita.
+
+\subsubsection{Entità del Dominio}
+
+\paragraph{L'Orto}
+
+Il sistema prevede la gestione di orti urbani condivisi. Un proprietario è l'utente che può
+registrare un orto nel sistema ma non ne detiene la proprietà esclusiva: una volta registrato
+anche altri proprietari potranno registrare i propri lotti nell'orto. Un orto è caratterizzato
+da un nome, un indirizzo e dalla data in cui esso è registrato.
+
+\paragraph{Il Lotto}
+
+Un lotto è un'area fisica all'interno di un orto urbano condiviso su cui si svolgono le
+coltivazioni di un certo progetto. Un lotto è caratterizzato da un'estensione (in metri
+quadrati) e da un codice identificativo del lotto, internamente all'orto urbano in cui si
+trova (ad esempio il lotto 017A all'interno di un certo orto).
+
+Un lotto è associato ad un proprietario, che è colui che lo ha registrato.
+\textbf{Vincolo importante}: Un lotto può ospitare più progetti del proprietario che lo ha
+registrato ma soltanto un progetto attivo per volta.
+
+\paragraph{Il Progetto}
+
+Il progetto è l'entità centrale del sistema. Esso, come anticipato precedentemente, occupa
+uno dei lotti del proprietario che lo ha pianificato. Un progetto è caratterizzato da un
+nome, una descrizione, una data di inizio e una data di fine e può trovarsi in due stati
+differenti a seconda del suo ciclo vita:
+
+\begin{description}
+    \item[Attivo] Il progetto è stato pianificato ma non è ancora concluso. In questa fase
+        è possibile programmare e completare tutte le attività che caratterizzano le
+        coltivazioni associate al progetto.
+    \item[Concluso] Non è più possibile programmare o completare nessuna attività associata
+        al progetto.
+\end{description}
+
+Un progetto non può essere pianificato se non è associato ad un lotto, necessario per
+definire lo spazio fisico in cui si svolgeranno le coltivazioni. Diversi coltivatori possono
+essere associati ad un progetto, definendo l'insieme di persone che potranno essere
+selezionate per lo svolgimento delle attività.
+
+\paragraph{Il Catalogo delle Colture}
+
+Il sistema fornisce di default un catalogo delle colture che possono essere coltivate nei
+progetti. Ogni coltura è caratterizzata da un nome, una descrizione e un tempo di maturazione
+previsto (in giorni). Il catalogo è fondamentale per la pianificazione di un progetto in
+quanto quando si pianifica un progetto è necessario specificare quali colture si vogliono
+coltivare e quindi quali coltivazioni si vogliono creare.
+
+\paragraph{La Coltivazione}
+
+Un progetto può prevedere una o più coltivazioni, ognuna caratterizzata da una specifica
+coltura presente nel catalogo. Una coltivazione è caratterizzata da una data di inizio e di
+fine, uno stato di salute (ottimo, stabile, sofferente, critico e compromesso) e uno stato
+che ne descrive il ciclo vita:
+
+\begin{enumerate}
+    \item \textbf{Attiva}: Una coltivazione si può definire attiva se non è ancora iniziata
+        la fase di raccolta. In questa fase è possibile programmare e completare tutte le
+        attività che poi porteranno finalmente alla raccolta.
+    \item \textbf{In Raccolta}: Quando inizia la raccolta, la coltivazione entra in una fase
+        in cui è possibile solo completare l'attività di raccolta.
+    \item \textbf{Conclusa}: Quando la raccolta è completata, la coltivazione è conclusa e
+        non è più possibile programmare o completare nessuna attività.
+\end{enumerate}
+
+\paragraph{Le Attività}
+
+Quando una coltivazione è attiva è possibile programmare e completare tutte le attività che
+la caratterizzano. Ci sono diverse tipologie di attività:
+
+\begin{description}
+    \item[Semina] Una semina è caratterizzata dalla quantità di semi disponibili e dalla
+        profondità a cui devono essere piantati i semi.
+    \item[Irrigazione] È caratterizzata dalla quantità di acqua da utilizzare e dal metodo
+        da usare per irrigare. I metodi di irrigazione possono essere: a goccia, a pioggia,
+        a scorrimento, manuale e nebulizzazione.
+    \item[Concimazione] È caratterizzata dalla tipologia di concime da usare (organico,
+        minerale o compost) e dalla quantità di concime da utilizzare.
+    \item[Trattamento] È caratterizzato dal nome del prodotto da usare e dal tempo di
+        carenza che deve essere indicativo per il coltivatore.
+    \item[Raccolta] È caratterizzata da una quantità prevista (in kg) della raccolta e da
+        una quantità effettiva (in kg) della raccolta.
+\end{description}
+
+Un'attività è svolta da uno specifico coltivatore che lavora per il progetto a cui la
+coltivazione è associata. Anch'essa ha un ciclo vita che si suddivide in tre fasi:
+
+\begin{enumerate}
+    \item Pianificazione
+    \item Svolgimento
+    \item Completamento
+\end{enumerate}
+
+In particolare il proprietario può dare una scadenza ad un'attività che, sebbene non sia
+obbligatoria e l'attività può essere completata anche se la scadenza è passata, permette di
+tenere traccia di quando tale attività diventa imminente.
+
+\paragraph{Le Notifiche}
+
+Una notifica è un messaggio che il proprietario può inviare ai coltivatori associati ad un
+progetto. Le notifiche sono caratterizzate da un nome descrittivo dell'evento, una
+descrizione più o meno dettagliata dell'evento, un livello di urgenza (bassa, media, alta,
+critica) e una data di invio.
+
+Le notifiche possono essere di due tipi:
+
+\begin{description}
+    \item[Notifiche di Eventi] Riguardano eventi che possono accadere durante il ciclo vita
+        di un progetto, ad esempio un'anomalia o una carestia. Possono essere inviate ad uno
+        o più coltivatori del progetto, a seconda di chi il proprietario vuole informare.
+    \item[Notifiche di Attività Imminenti] Riguardano attività imminenti e sono dirette al
+        coltivatore che svolge l'attività. Sono caratterizzate dai giorni mancanti alla
+        scadenza dell'attività nel momento in cui la notifica viene inviata.
+\end{description}
+
+Il sistema tiene traccia dello stato di lettura di una notifica da parte del coltivatore,
+permettendo di distinguere tra notifiche lette e non lette nell'interfaccia utente.
+
+\subsection{Utilizzo del Paradigma Entity-Boundary-Control}
+
+Nel modellare le classi del sistema si è seguito il pattern \textbf{Entity-Boundary-Control}
+(EBC), che prevede la suddivisione delle classi in tre categorie principali:
+
+\begin{description}
+    \item[Entity] Le classi Entity rappresentano le entità del dominio, ovvero gli oggetti
+        che rappresentano i concetti chiave del sistema, come ad esempio il coltivatore,
+        l'orto, il progetto, ecc. Queste classi contengono principalmente dati e logica di
+        business associata a tali dati.
+    \item[Boundary] Le classi Boundary rappresentano l'interfaccia tra il sistema e
+        l'esterno, come ad esempio l'interfaccia utente o il database. Queste classi si
+        occupano di gestire l'interazione con l'utente o con il database, ma non contengono
+        logica di business.
+    \item[Control] Le classi Control rappresentano la logica di controllo del sistema,
+        ovvero la logica che coordina le interazioni tra le classi Entity e Boundary. Queste
+        classi rappresentano il cuore del sistema, gestendo il flusso di esecuzione e lo
+        stato dell'applicazione.
+\end{description}
+
+L'utilizzo di questo modello ha favorito una più facile e naturale individuazione di quali
+fossero le classi principali del sistema e di separare più facilmente le responsabilità di
+ciascuna classe.
+
+\subsection{Scelta di JavaFX per l'Interfaccia Grafica}
+
+Per l'interfaccia grafica si è scelto di utilizzare \textbf{JavaFX} principalmente per due
+motivi:
+
+\begin{enumerate}
+    \item La divisione netta tra la definizione dell'interfaccia grafica tramite i file
+        \texttt{.fxml} e la logica di controllo di ogni singola schermata. Come per il
+        paradigma EBC, questo favorisce un lavoro più ordinato e mirato e permette di
+        distinguere più facilmente la responsabilità di ogni classe.
+    \item La possibilità di poter utilizzare il dialetto CSS per JavaFX per definire
+        chiaramente e in modo abbastanza facile lo stile dell'interfaccia grafica.
+\end{enumerate}
+
+\newpage
+
+\section{Modellazione}
+
+\subsection{Diagramma delle Classi Entity}
+
+Il diagramma delle classi Entity mostra le principali entità del dominio e le loro relazioni.
+Le classi Entity contengono principalmente dati e logica di business e sono il punto di
+partenza per la progettazione dell'intero sistema.
+
+\begin{figure}[H]
+    \centering
+    % TODO: sostituire con il percorso corretto del diagramma
+    % \includegraphics[width=0.95\textwidth]{diagramma-classi-entity.pdf}
+    \fbox{\parbox{0.9\textwidth}{%
+        \centering\vspace{3cm}%
+        \textit{Diagramma delle classi Entity --- da inserire}%
+        \vspace{3cm}%
+    }}
+    \caption{Diagramma delle Classi Entity}
+    \label{fig:entity}
+\end{figure}
+
+\subsubsection{Il Ruolo del MainController}
+
+Il \texttt{MainController} è la classe di controllo centrale, il cui ruolo è fare da tramite
+tra le classi dell'interfaccia grafica e il database sottostante. Per poter svolgere questo
+compito esso mantiene uno stato interno che riflette la sessione utente attualmente attiva.
+
+\paragraph{Accesso al Database}
+
+Per accedere al database, questo controller utilizza un'istanza di
+\texttt{DatabaseController} il quale, a sua volta, mantiene un'istanza delle classi DAO
+ed espone dei getters che ne permettono l'utilizzo. Quindi, essenzialmente, per eseguire le
+operazioni di lettura e scrittura sul database, il \texttt{MainController} utilizza i metodi
+esposti dalle classi DAO attraverso l'istanza di \texttt{DatabaseController}.
+
+\paragraph{Caricamento Dati}
+
+Appena l'utente esegue correttamente il login, il \texttt{MainController} carica tutti i
+dati associati a quell'utente, più eventualmente altri dati necessari per il funzionamento
+dell'applicazione. Ad esempio, al login del proprietario, vengono prima caricati in memoria
+i dati generali per permettere il funzionamento come il catalogo delle colture e gli orti
+registrati. Successivamente sono caricati i dati specifici del proprietario.
+
+\paragraph{Stato Interno}
+
+Il \texttt{MainController} mantiene uno stato interno che riflette il database sottostante
+e che permette di gestire le operazioni di lettura in modo efficiente senza dover accedere
+direttamente al database.
+
+\paragraph{Scrittura Dati}
+
+Quando si fanno operazioni di scrittura sul database come inserimenti, update o
+cancellazioni, il \texttt{MainController} adotta questa strategia:
+
+\begin{enumerate}
+    \item Se necessario, soprattutto per operazioni di update e inserimento, i nuovi dati
+        vengono prima validati.
+    \item Se la validazione va a buon fine, il controller cerca di eseguire l'operazione di
+        scrittura sul database.
+    \item Se l'operazione di scrittura va a buon fine, viene aggiornato lo stato interno
+        del \texttt{MainController} per riflettere i nuovi dati. Eventualmente il risultato
+        è restituito all'interfaccia grafica (ad esempio facendo il return dell'istanza
+        appena modificata o creata) o semplicemente si assume che, se non vengono sollevate
+        eccezioni, l'operazione è andata a buon fine.
+\end{enumerate}
+
+\paragraph{Logout}
+
+Quando la sessione dell'utente termina in seguito ad un logout, il
+\texttt{MainController} si occupa di pulire il suo stato interno per prepararsi ad una
+nuova sessione utente.
+
+\paragraph{Utilizzo da Parte dell'Interfaccia Grafica}
+
+Il \texttt{MainController} utilizza il pattern \textbf{singleton}: nel sistema è presente
+una sola istanza e questa è accessibile a chiunque. In questo modo, tutti i controller
+dell'interfaccia grafica possono accedere al \texttt{MainController}.
+
+\subsection{Diagramma delle DAO (Data Access Object)}
+
+\begin{figure}[H]
+    \centering
+    % TODO: sostituire con il percorso corretto del diagramma
+    % \includegraphics[width=0.95\textwidth]{diagramma-classi-dao.pdf}
+    \fbox{\parbox{0.9\textwidth}{%
+        \centering\vspace{3cm}%
+        \textit{Diagramma delle classi DAO --- da inserire}%
+        \vspace{3cm}%
+    }}
+    \caption{Diagramma delle Classi DAO}
+    \label{fig:dao}
+\end{figure}
+
+\subsubsection{Il Pattern DAO}
+
+Il pattern \textbf{DAO} (\textit{Data Access Object}) è un pattern architetturale che si
+occupa di separare la logica di accesso ai dati dalla logica di business dell'applicazione.
+In questo modo, si favorisce una maggiore modularità e manutenibilità del codice, poiché le
+classi DAO si occupano esclusivamente di gestire l'accesso al database, mentre le classi di
+controllo e di business logic possono concentrarsi sulle funzionalità specifiche
+dell'applicazione senza doversi preoccupare dei dettagli di accesso ai dati.
+
+\subsubsection{Il DatabaseController}
+
+Come già accennato in precedenza durante la descrizione del ruolo e del funzionamento del
+\texttt{MainController}, il \texttt{DatabaseController} ha il ruolo di offrire accesso alle
+varie classi DAO che forniscono il punto di accesso al database.
+
+\subsubsection{La Classe Database}
+
+Questa classe particolare permette di connettersi al database. Essa è un
+\textbf{singleton}, quindi è facilmente accessibile a tutte le classi DAO al bisogno. In
+particolare, lo scopo fondamentale di questa classe è aprire una connessione con il
+database. Al suo interno possiede tutti i parametri per iniziare la connessione come l'URL
+del database, il nome utente e la password. Espone quindi un unico metodo pubblico, oltre
+a quello per accedere alla sua istanza, che è \texttt{getConnection()}: questo è il cuore
+di questa classe e la base di tutte le classi DAO.
+
+\subsection{Diagramma delle Classi UI}
+
+\begin{figure}[H]
+    \centering
+    % TODO: sostituire con il percorso corretto del diagramma
+    % \includegraphics[width=0.95\textwidth]{diagramma-classi-ui.pdf}
+    \fbox{\parbox{0.9\textwidth}{%
+        \centering\vspace{3cm}%
+        \textit{Diagramma delle classi UI --- da inserire}%
+        \vspace{3cm}%
+    }}
+    \caption{Diagramma delle Classi UI}
+    \label{fig:ui}
+\end{figure}
+
+\subsubsection{Il Ruolo di UIController}
+
+Il \texttt{UIController} ha lo scopo fondamentale di offrire a tutte le classi
+dell'interfaccia un insieme di metodi di navigazione che permettono di passare da una
+schermata all'altra.
+
+\paragraph{L'enum FXMLView}
+
+Questo enum è fondamentale per tracciare in modo comodo ed efficiente tutti i file
+\texttt{.fxml} che descrivono le diverse schermate. Questo permette di riferirsi a questi
+file senza dover specificare direttamente il loro percorso, risultando in un codice più
+pulito e facile da comprendere.
+
+\paragraph{Funzione di Cache}
+
+Per evitare di effettuare pesanti operazioni di caricamento dei file \texttt{.fxml}, questo
+controller implementa una cache semplice che salva le schermate appena queste sono caricate
+la prima volta. Successivamente, invece di ricaricarle da zero, queste sono recuperate dalla
+cache. Le schermate sono caricate in modo \textbf{lazy}, ovvero soltanto quando sono
+effettivamente necessarie, riducendo così i tempi di caricamento iniziale.
+
+\paragraph{Utilizzo da Parte dell'Interfaccia Grafica}
+
+I metodi esposti da questo controller permettono di caricare le diverse schermate nella
+finestra principale (o anche in sottofinestre) sfruttando il vantaggio offerto dalla cache.
+Questa classe, come il \texttt{MainController}, utilizza il pattern \textbf{singleton} così
+che tutti i suoi metodi siano facilmente accessibili a tutte le classi dell'interfaccia
+grafica.
+
+\subsubsection{Come UIController Utilizza il MainController}
+
+Ogni classe dell'interfaccia grafica, ad eccezione di \texttt{UIController} e dell'enum
+\texttt{FXMLView}, corrisponde ad un file \texttt{.fxml} che ne descrive la struttura
+visuale. Tali classi sono i controller delle rispettive schermate e sono responsabili di
+gestire l'interazione con l'utente e di comunicare con il \texttt{MainController} per
+eseguire le operazioni necessarie. Per la logica di navigazione tra schermate o per aprire
+sottofinestre utilizzano i metodi esposti dal \texttt{UIController}.
+
+\subsubsection{Scelta di Non Usare DTO e Gestione della Validazione}
+
+Si è scelto di non utilizzare il pattern \textbf{DTO} (\textit{Data Transfer Object}) nella
+comunicazione tra i controller dell'interfaccia grafica e il \texttt{MainController}. Le
+classi Entity vengono utilizzate direttamente sia come oggetti di dominio che come oggetti
+di trasferimento tra i layer dell'applicazione. Questa scelta è motivata dalla semplicità
+del dominio e dalla volontà di evitare la duplicazione di classi che avrebbero avuto una
+struttura molto simile alle Entity.
+
+La validazione dei dati viene gestita direttamente dal \texttt{MainController} prima di
+eseguire operazioni di scrittura sul database. In questo modo si garantisce la correttezza
+dei dati prima che vengano persistiti, e il layer dell'interfaccia grafica può affidarsi al
+\texttt{MainController} per la validazione, ricevendo un esito chiaro dell'operazione
+richiesta.
+
+\newpage
+
+\section{Interfaccia Grafica}
+
+In questa sezione sono presentati alcuni esempi dell'interfaccia grafica dell'applicazione
+UninaBioGarden, realizzata con JavaFX.
+
+\begin{figure}[H]
+    \centering
+    % TODO: sostituire con screenshot o mockup reali
+    % \includegraphics[width=0.95\textwidth]{screenshot-ui.png}
+    \fbox{\parbox{0.9\textwidth}{%
+        \centering\vspace{3cm}%
+        \textit{Screenshot / Mockup dell'interfaccia grafica --- da inserire}%
+        \vspace{3cm}%
+    }}
+    \caption{Interfaccia Grafica dell'Applicazione}
+    \label{fig:ui-screenshot}
+\end{figure}
+
+\end{document}

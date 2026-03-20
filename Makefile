@@ -33,3 +33,9 @@ latex-compile:
 
 latex-clean:
 	cd docs/latex-template && rm -f *.aux *.log *.out *.toc *.lof *.lot *.fls *.fdb_latexmk *.synctex.gz
+
+oo-latex-compile:
+	cd docs/oo-latex && pdflatex main.tex && pdflatex main.tex
+
+oo-latex-clean:
+	cd docs/oo-latex && rm -f *.aux *.log *.out *.toc *.lof *.lot *.fls *.fdb_latexmk *.synctex.gz
