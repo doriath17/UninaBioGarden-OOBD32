@@ -44,6 +44,12 @@ public class ControllerHome {
     lottiButton.setManaged(false);
     reportButton.setVisible(false);
     reportButton.setManaged(false);
+
+    progettiAction(null);
+  }
+
+  public void openForProprietario() {
+    dashboardAction(null);
   }
 
   Pane getSelectedContent() {
