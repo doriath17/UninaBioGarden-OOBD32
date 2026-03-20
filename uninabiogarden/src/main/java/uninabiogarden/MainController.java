@@ -51,7 +51,6 @@ public class MainController {
   private List<Orto> orti;
   private List<Coltura> colture;
   private List<Coltivatore> coltivatori;
-  private List<Notifica> notifiche;
 
   // ==============================================================================================
   // Sezione: Accessors
@@ -583,7 +582,6 @@ public class MainController {
   public void logout() {
     utenteLoggato = null;
     orti = null;
-    notifiche = null;
   }
 
   // ==============================================================================================
@@ -591,7 +589,12 @@ public class MainController {
   // ==============================================================================================
 
   public void caricaNotifiche() {
-    notifiche = databaseController.getNotificaDao().getAllNotificheOfUtente(utenteLoggato);
+    var notifiche = databaseController.getNotificaDao().getAllNotificheOfUtente(utenteLoggato);
+    if (utenteLoggato instanceof Proprietario proprietario) {
+      proprietario.setNotificheInviate(notifiche);
+    } else if (utenteLoggato instanceof Coltivatore coltivatore) {
+      coltivatore.setNotificheRicevute(notifiche);
+    }
     System.out.println("Notifiche caricate con successo: " + notifiche.size() + " notifiche trovate");
   }
 

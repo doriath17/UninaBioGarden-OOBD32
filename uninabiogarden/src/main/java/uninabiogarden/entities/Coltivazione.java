@@ -41,11 +41,6 @@ public class Coltivazione {
     this.noteTecniche = noteTecniche;
   }
 
-  public String validateUpdate(Coltivazione updatedColtivazione) {
-
-    return null;
-  }
-
   public Raccolta getRaccolta() {
     return attivita.stream()
         .filter(a -> a instanceof Raccolta)
@@ -72,6 +67,14 @@ public class Coltivazione {
         ", coltura=" + coltura +
         ", count attivita=" + attivitaCount +
         '}';
+  }
+
+  public void addAttivita(Attivita attivita) {
+    this.attivita.add(attivita);
+  }
+
+  public void removeAttivita(Attivita attivita) {
+    this.attivita.remove(attivita);
   }
 
   public Long getId() {

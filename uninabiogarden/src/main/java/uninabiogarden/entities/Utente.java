@@ -30,7 +30,6 @@ public abstract class Utente {
     this.nome = nome;
     this.cognome = cognome;
 
-    // Parse bDay string to LocalDate with error handling
     try {
       if (bDay != null && !bDay.isEmpty()) {
         this.bDay = LocalDate.parse(bDay);
@@ -41,6 +40,56 @@ public abstract class Utente {
 
     this.gender = gender;
     this.bio = bio;
+  }
+
+  public String validate() {
+    if (username == null || username.isEmpty()) {
+      return "Username mancante";
+    }
+
+    if (password == null || password.isEmpty()) {
+      return "Password mancante";
+    }
+
+    if (email == null || email.isEmpty()) {
+      return "Email mancante";
+    }
+
+    if (!email.matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$")) {
+      return "Email non valida";
+    }
+
+    if (codiceFiscale == null || codiceFiscale.isEmpty()) {
+      return "Codice fiscale mancante";
+    }
+
+    if (!codiceFiscale.matches("[A-Za-z0-9]+")) {
+      return "Codice fiscale non valido";
+    }
+
+    if (nome == null || nome.isEmpty()) {
+      return "Nome mancante";
+    }
+
+    if (cognome == null || cognome.isEmpty()) {
+      return "Cognome mancante";
+    }
+
+    if (bDay == null) {
+      return "Data di nascita mancante";
+    }
+
+    // Parse and validate bDay
+    try {
+      java.time.LocalDate birthDate = bDay;
+      if (birthDate.isAfter(java.time.LocalDate.now().minusYears(18))) {
+        return "L'utente deve essere maggiorenne";
+      }
+    } catch (Exception e) {
+      return "Formato data di nascita non valido";
+    }
+
+    return null; // dati validi
   }
 
   public String getFullName() {

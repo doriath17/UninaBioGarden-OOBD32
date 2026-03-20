@@ -34,6 +34,19 @@ public class Proprietario extends Utente {
     this.lotti = lotti;
   }
 
+  public void addLotto(Lotto lotto) {
+    if (this.lotti == null) {
+      this.lotti = new ArrayList<>();
+    }
+    this.lotti.add(lotto);
+  }
+
+  public void removeLotto(Lotto lotto) {
+    if (this.lotti != null) {
+      this.lotti.remove(lotto);
+    }
+  }
+
   public List<Progetto> getProgetti() {
     return progetti;
   }
@@ -61,6 +74,14 @@ public class Proprietario extends Utente {
 
   public void setNotificheInviate(ArrayList<Notifica> notificheInviate) {
     this.notificheInviate = notificheInviate;
+  }
+
+  public void addNotificaInviata(Notifica notifica) {
+    this.notificheInviate.add(notifica);
+  }
+
+  public void removeNotificaInviata(Notifica notifica) {
+    this.notificheInviate.remove(notifica);
   }
 
 }
