@@ -90,12 +90,11 @@ public class ControllerCreaNotificaStep2 {
   public void init(Notifica notifica) {
 
     // if (notifica instanceof NotificaAttivita) {
-    //     this.nuovaNotifica = (NotificaAttivita) notifica;
-    //     this.vengoDaAttivita = true;
+    // this.nuovaNotifica = (NotificaAttivita) notifica;
+    // this.vengoDaAttivita = true;
     // } else {
-    //     this.nuovaNotifica = new NotificaAttivita();
+    // this.nuovaNotifica = new NotificaAttivita();
     // }
-
 
     // per capire se vengo da crea notifica attivita o da crea notifica progetto
     this.nuovaNotifica = notifica;
@@ -107,17 +106,18 @@ public class ControllerCreaNotificaStep2 {
   }
 
   // aggiorna l'interfaccia in base al tipo di notifica (attività o progetto)
-   
+
   private void aggiornaUIperNotificaAttivita() {
     if (vengoDaAttivita) {
-      
+
       yesNoBox.setDisable(true);
-      yesNoBox.setValue("No"); 
-      
-      // errorLabel.setText("Verrà selezionato solo il coltivatore in cima alla lista siccome la notifica imminente");
+      yesNoBox.setValue("No");
+
+      // errorLabel.setText("Verrà selezionato solo il coltivatore in cima alla lista
+      // siccome la notifica imminente");
 
     } else {
-      
+
       yesNoBox.setDisable(false);
       errorLabel.setText("");
 
@@ -125,16 +125,16 @@ public class ControllerCreaNotificaStep2 {
   }
 
   private void loadColtivatoriDisponibili() {
-    
+
     availableSelectionMap.clear();
     selectedSelectionMap.clear();
     availableColtivatoriObsList.clear();
     selectedColtivatoriObsList.clear();
 
     List<Coltivatore> coltivatoriDisponibili = new ArrayList<>();
-    
+
     if (nuovaNotifica != null && nuovaNotifica.getProgetto() != null) {
-        coltivatoriDisponibili = nuovaNotifica.getProgetto().getColtivatori();
+      coltivatoriDisponibili = nuovaNotifica.getProgetto().getColtivatori();
     }
     availableColtivatoriObsList.setAll(coltivatoriDisponibili);
   }
@@ -143,7 +143,7 @@ public class ControllerCreaNotificaStep2 {
   private void selezionaDisponibili(ActionEvent event) {
 
     Utils.<Coltivatore>moveSelectionTo(availableColtivatoriObsList, selectedColtivatoriObsList,
-      availableSelectionMap, selectedSelectionMap);
+        availableSelectionMap, selectedSelectionMap);
   }
 
   @FXML
@@ -179,7 +179,6 @@ public class ControllerCreaNotificaStep2 {
       return;
     }
 
-    
     if (vengoDaAttivita) {
 
       // caso notifica attivita
@@ -191,9 +190,8 @@ public class ControllerCreaNotificaStep2 {
         errorLabel.setText("Seleziona un coltivatore per la notifica attività");
         return;
       }
-      
-      nuovaNotifica.setDestinatari(new ArrayList<>(selectedColtivatoriObsList));
 
+      nuovaNotifica.setDestinatari(new ArrayList<>(selectedColtivatoriObsList));
 
     } else {
 

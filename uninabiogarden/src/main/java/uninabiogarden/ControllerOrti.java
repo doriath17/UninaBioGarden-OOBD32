@@ -19,9 +19,6 @@ public class ControllerOrti {
   private VBox mainContent;
 
   @FXML
-  private TextField searchField;
-
-  @FXML
   private TableView<Orto> ortiTable;
 
   @FXML
@@ -46,11 +43,6 @@ public class ControllerOrti {
     // Crea ObservableList dal model - sincronizzato con la lista del model
     ortiObservableList = FXCollections.observableList(MainController.getInstance().getOrti());
     ortiTable.setItems(ortiObservableList);
-  }
-
-  @FXML
-  public void search() {
-    // TODO: implement search logic
   }
 
   @FXML

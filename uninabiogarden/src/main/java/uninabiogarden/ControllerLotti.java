@@ -16,9 +16,6 @@ public class ControllerLotti {
   private VBox mainContent;
 
   @FXML
-  private TextField searchField;
-
-  @FXML
   private TableView<Lotto> lottiTable;
 
   @FXML
@@ -51,11 +48,6 @@ public class ControllerLotti {
     // Crea ObservableList dal model - sincronizzato con la lista del Proprietario
     lottiObservableList = FXCollections.observableList(MainController.getInstance().getLotti());
     lottiTable.setItems(lottiObservableList);
-  }
-
-  @FXML
-  public void search() {
-    // TODO: filter table items based on searchField text
   }
 
   @FXML

@@ -34,6 +34,10 @@
 % Code listings (for Java)
 \usepackage{listings}
 
+% Overlays and annotations on figures
+\usepackage{tikz}
+\usepackage[percent]{overpic}
+
 % Math (if needed)
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -70,7 +74,7 @@
 \renewcommand{\footrulewidth}{0.4pt}
 
 % Figure settings
-\graphicspath{{../uninabiogarden/asset/}}
+\graphicspath{{../uninabiogarden/asset/}{../screenshot/pianifica_attivita/}}
 \setkeys{Gin}{width=\linewidth,height=\textheight,keepaspectratio}
 \floatplacement{figure}{H}
 
@@ -362,13 +366,7 @@ partenza per la progettazione dell'intero sistema.
 
 \begin{figure}[H]
     \centering
-    % TODO: sostituire con il percorso corretto del diagramma
     \includegraphics[width=0.95\textwidth]{../uninabiogarden/asset/OO-Entity-Controller.drawio.pdf}
-    \fbox{\parbox{0.9\textwidth}{%
-        \centering\vspace{3cm}%
-        \textit{Diagramma delle classi Entity --- da inserire}%
-        \vspace{3cm}%
-    }}
     \caption{Diagramma delle Classi Entity}
     \label{fig:entity}
 \end{figure}
@@ -434,13 +432,7 @@ dell'interfaccia grafica possono accedere al \texttt{MainController}.
 
 \begin{figure}[H]
     \centering
-    % TODO: sostituire con il percorso corretto del diagramma
     \includegraphics[width=0.95\textwidth]{../uninabiogarden/asset/OO-DAO.drawio.pdf}
-    \fbox{\parbox{0.9\textwidth}{%
-        \centering\vspace{3cm}%
-        \textit{Diagramma delle classi DAO --- da inserire}%
-        \vspace{3cm}%
-    }}
     \caption{Diagramma delle Classi DAO}
     \label{fig:dao}
 \end{figure}
@@ -474,16 +466,15 @@ di questa classe e la base di tutte le classi DAO.
 
 \begin{figure}[H]
     \centering
-    % TODO: sostituire con il percorso corretto del diagramma
-    % \includegraphics[width=0.95\textwidth]{diagramma-classi-ui.pdf}
-    \fbox{\parbox{0.9\textwidth}{%
-        \centering\vspace{3cm}%
-        \textit{Diagramma delle classi UI --- da inserire}%
-        \vspace{3cm}%
-    }}
+    \includegraphics[width=0.95\textwidth]{../uninabiogarden/asset/OO-UI.drawio.pdf}
     \caption{Diagramma delle Classi UI}
     \label{fig:ui}
 \end{figure}
+
+\textit{Si fa notare che ognuna delle classi in questo diagramma utilizza sia
+\texttt{UIController} che \texttt{MainController} per implementare la propria logica di
+controllo. Per brevità e per non sporcare eccessivamente il diagramma si sono omesse le
+relazioni di dipendenza tra esse con questi due controller.}
 
 \subsubsection{Il Ruolo di UIController}
 
@@ -542,20 +533,65 @@ richiesta.
 
 \section{Interfaccia Grafica}
 
-In questa sezione sono presentati alcuni esempi dell'interfaccia grafica dell'applicazione
-UninaBioGarden, realizzata con JavaFX.
+In questa sezione sono illustrati i principali flussi dell'interfaccia grafica
+dell'applicazione UninaBioGarden, realizzata con JavaFX.
+
+\subsection{Pianificazione di un'Attività}
+
+Aprendo la schermata principale dei progetti, dalla tabella si seleziona il progetto per
+cui si intende pianificare l'attività (Figura~\ref{fig:screen1}). Successivamente si accede
+all'area riservata alle attività tramite la sezione attività o coltivazione
+(Figura~\ref{fig:screen2}). Nell'esempio si mostra come arrivarci dalla sezione
+coltivazione. Qui (vedi Figura~\ref{fig:screen3}), si seleziona il pulsante
+\textit{``Vedi Attività''} che porta alla Figura~\ref{fig:screen4}. In questa schermata
+finalmente si può selezionare \textit{``Pianifica Attività''}, accedendo alla schermata in
+Figura~\ref{fig:screen5}.
 
 \begin{figure}[H]
     \centering
-    % TODO: sostituire con screenshot o mockup reali
-    % \includegraphics[width=0.95\textwidth]{screenshot-ui.png}
-    \fbox{\parbox{0.9\textwidth}{%
-        \centering\vspace{3cm}%
-        \textit{Screenshot / Mockup dell'interfaccia grafica --- da inserire}%
-        \vspace{3cm}%
-    }}
-    \caption{Interfaccia Grafica dell'Applicazione}
-    \label{fig:ui-screenshot}
+    \begin{overpic}[width=0.95\textwidth]{screen_1.png}
+        % TODO: aggiungere cerchio sul pulsante/riga di selezione del progetto
+        % \put(x,y){\tikz\draw[red,ultra thick,rounded corners=2pt] (-1,-0.3) rectangle (1,0.3);}
+    \end{overpic}
+    \caption{Schermata principale dei progetti: selezione del progetto dalla tabella}
+    \label{fig:screen1}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \begin{overpic}[width=0.95\textwidth]{screen_2.png}
+        % TODO: aggiungere cerchio/rettangolo sulla sezione attività o coltivazione
+        % \put(x,y){\tikz\draw[red,ultra thick] (0,0) circle (0.4cm);}
+    \end{overpic}
+    \caption{Dettaglio progetto: accesso tramite la sezione coltivazione}
+    \label{fig:screen2}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \begin{overpic}[width=0.95\textwidth]{screen_3.png}
+        % TODO: aggiungere cerchio sul pulsante "Vedi Attività"
+    \end{overpic}
+    \caption{Sezione coltivazione: pulsante \textit{Vedi Attività}}
+    \label{fig:screen3}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \begin{overpic}[width=0.95\textwidth]{screen_4.png}
+        % TODO: aggiungere cerchio sul pulsante "Pianifica Attività"
+    \end{overpic}
+    \caption{Schermata attività: pulsante \textit{Pianifica Attività}}
+    \label{fig:screen4}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \begin{overpic}[width=0.95\textwidth]{screen_5.png}
+        % Schermata finale -- nessun pulsante specifico da evidenziare
+    \end{overpic}
+    \caption{Schermata di pianificazione dell'attività}
+    \label{fig:screen5}
 \end{figure}
 
 \end{document}
