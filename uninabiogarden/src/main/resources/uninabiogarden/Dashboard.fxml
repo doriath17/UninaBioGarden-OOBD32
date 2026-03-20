@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.chart.CategoryAxis?>
-<?import javafx.scene.chart.LineChart?>
-<?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -35,30 +32,12 @@
          <children>
             <VBox alignment="CENTER_LEFT" prefHeight="485.0" prefWidth="535.0" spacing="5.0">
                <children>
-                  <Label text="Report">
-                     <font>
-                        <Font size="15.0" />
-                     </font>
-                  </Label>
-                  <LineChart fx:id="reportChart" prefHeight="214.0" prefWidth="535.0">
-                     <xAxis>
-                        <CategoryAxis side="BOTTOM" />
-                     </xAxis>
-                     <yAxis>
-                        <NumberAxis side="LEFT" />
-                     </yAxis>
-                  </LineChart>
-                  <Label layoutX="10.0" layoutY="233.0">
-                     <font>
-                        <Font size="15.0" />
-                     </font>
-                  </Label>
                   <Label layoutX="10.0" layoutY="10.0" text="Notifiche">
                      <font>
                         <Font size="15.0" />
                      </font>
                   </Label>
-                  <TableView fx:id="notificheTable" prefHeight="252.0" prefWidth="535.0">
+                  <TableView fx:id="notificheTable" prefHeight="451.0" prefWidth="524.0">
                      <columns>
                         <TableColumn fx:id="nomeNotificaColonna" prefWidth="100.0" text="Nome evento" />
                         <TableColumn fx:id="dataInvioNotificaColonna" prefWidth="93.0" text="Data invio" />
@@ -79,13 +58,13 @@
                         <Font size="15.0" />
                      </font>
                   </Label>
-                  <TableView fx:id="ProgettiTable" prefHeight="486.0" prefWidth="526.0">
+                  <TableView fx:id="ProgettiTable" prefHeight="451.0" prefWidth="526.0">
                      <columns>
-                        <TableColumn prefWidth="100.0" text="Nome" />
-                        <TableColumn prefWidth="87.0" text="Stato" />
-                        <TableColumn prefWidth="120.0" text="Coltivazione" />
-                        <TableColumn prefWidth="74.0" text="Lotto" />
-                        <TableColumn prefWidth="152.0" text="Descrizione" />
+                        <TableColumn fx:id="nomeProgetto" prefWidth="100.0" text="Nome" />
+                        <TableColumn fx:id="statoProgetto" prefWidth="87.0" text="Stato" />
+                        <TableColumn fx:id="coltivazioneProgetto" prefWidth="120.0" text="Coltivazione" />
+                        <TableColumn fx:id="lottoProgetto" prefWidth="74.0" text="Lotto" />
+                        <TableColumn fx:id="descrizioneProgetto" prefWidth="152.0" text="Descrizione" />
                      </columns>
                   </TableView>
                </children>

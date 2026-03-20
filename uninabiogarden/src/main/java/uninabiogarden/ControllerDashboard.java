@@ -34,13 +34,22 @@ public class ControllerDashboard {
 
   @FXML private TableColumn<Notifica, String> progettoNotificaColonna;
 
-  @FXML private LineChart<?, ?> reportChart;
-
   @FXML private TableColumn<Notifica, String> urgenzaNotificaColonna;
 
   @FXML private TableView<Notifica> notificheTable;
 
+  @FXML private TableColumn<Progetto, String> coltivazioneProgetto;
+
+  @FXML private TableColumn<Progetto, String> descrizioneProgetto;
+
+  @FXML private TableColumn<Progetto, String> lottoProgetto;
+
+  @FXML private TableColumn<Progetto, String> nomeProgetto;
+
+  @FXML private TableColumn<Progetto, String> statoProgetto;
+
   private final ObservableList<Notifica> notifiche = FXCollections.observableArrayList();
+  private final ObservableList<Progetto> progetti = FXCollections.observableArrayList();
 
 
   @FXML
@@ -75,16 +84,51 @@ public class ControllerDashboard {
         return new SimpleObjectProperty<>(timestamp);
     });
 
+    // Tabella progetti
+    nomeProgetto.setCellValueFactory(cellData -> 
+        new SimpleStringProperty(cellData.getValue().getNomeProgetto()));
+
+    statoProgetto.setCellValueFactory(cellData -> 
+        new SimpleStringProperty(cellData.getValue().getStato() != null ? cellData.getValue().getStato().name() : ""));
+
+    lottoProgetto.setCellValueFactory(cellData -> {
+        var lotto = cellData.getValue().getLotto();
+        return new SimpleStringProperty(lotto != null ? lotto.getFullname() : "");
+    });
+
+    descrizioneProgetto.setCellValueFactory(cellData -> 
+    new SimpleStringProperty(cellData.getValue().getDescrizione() != null ? cellData.getValue().getDescrizione() : ""));
+
+    coltivazioneProgetto.setCellValueFactory(cellData -> {
+        var coltivazioni = cellData.getValue().getColtivazioni();
+        String count = (coltivazioni != null) ? String.valueOf(coltivazioni.size()) : "0";
+        return new SimpleStringProperty(count);
+    });
+
     loadData();
 
     notificheTable.setItems(notifiche);
+    ProgettiTable.setItems(progetti);
 
     }
 
     public void loadData() {
         notifiche.clear();
         notifiche.addAll(MainController.getInstance().getNotifiche());
+
+        progetti.clear();
+        progetti.addAll(MainController.getInstance().getProgetti());
     }
 
+    public void init() {
+        notifiche.clear();
+        notifiche.addAll(MainController.getInstance().getNotifiche());
+        
+        progetti.clear();
+        progetti.addAll(MainController.getInstance().getProgetti());
+        
+        notificheTable.refresh();
+        ProgettiTable.refresh();
+    }
 
 }
