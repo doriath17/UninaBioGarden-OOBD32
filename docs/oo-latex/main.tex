@@ -74,7 +74,7 @@
 \renewcommand{\footrulewidth}{0.4pt}
 
 % Figure settings
-\graphicspath{{../uninabiogarden/asset/}{../screenshot/pianifica_attivita/}}
+\graphicspath{{../uninabiogarden/asset/}{../screenshot/pianifica_attivita/}{../screenshot/crea_progetto/}{../screenshot/crea_notifica/}}
 \setkeys{Gin}{width=\linewidth,height=\textheight,keepaspectratio}
 \floatplacement{figure}{H}
 
@@ -305,16 +305,13 @@ critica) e una data di invio.
 Le notifiche possono essere di due tipi:
 
 \begin{description}
-    \item[Notifiche di Eventi] Riguardano eventi che possono accadere durante il ciclo vita
+    \item[Notifiche Generali] Riguardano eventi che possono accadere durante il ciclo vita
         di un progetto, ad esempio un'anomalia o una carestia. Possono essere inviate ad uno
         o più coltivatori del progetto, a seconda di chi il proprietario vuole informare.
     \item[Notifiche di Attività Imminenti] Riguardano attività imminenti e sono dirette al
         coltivatore che svolge l'attività. Sono caratterizzate dai giorni mancanti alla
         scadenza dell'attività nel momento in cui la notifica viene inviata.
 \end{description}
-
-Il sistema tiene traccia dello stato di lettura di una notifica da parte del coltivatore,
-permettendo di distinguere tra notifiche lette e non lette nell'interfaccia utente.
 
 \subsection{Utilizzo del Paradigma Entity-Boundary-Control}
 
@@ -592,6 +589,114 @@ Figura~\ref{fig:screen5}.
     \end{overpic}
     \caption{Schermata di pianificazione dell'attività}
     \label{fig:screen5}
+\end{figure}
+
+\subsection{Creazione di un Progetto}
+
+Il punto di partenza per la creazione di un nuovo progetto è la schermata principale dei
+progetti, già mostrata in Figura~\ref{fig:screen1}, dalla quale è possibile avviare la
+procedura tramite il pulsante dedicato.
+
+La procedura guidata di creazione si articola in tre step sequenziali, progettati per
+rendere il processo chiaro e strutturato:
+
+\begin{description}
+    \item[Step 1 --- Dati anagrafici] L'utente inserisce le informazioni di base del
+        progetto: nome, descrizione e il lotto su cui si svolgerà, scelto tra quelli
+        disponibili associati al proprietario (Figura~\ref{fig:cp1}).
+    \item[Step 2 --- Selezione dei coltivatori] L'utente seleziona i coltivatori che
+        parteciperanno al progetto. L'insieme dei coltivatori selezionati definisce il
+        gruppo di persone che potranno essere assegnate alle attività
+        (Figura~\ref{fig:cp2}).
+    \item[Step 3 --- Selezione delle colture] L'utente sceglie le colture per cui
+        verranno create le relative coltivazioni all'interno del progetto
+        (Figura~\ref{fig:cp3}).
+\end{description}
+
+Una volta completati i tre step, il progetto viene creato e reso immediatamente disponibile
+nella schermata principale (Figura~\ref{fig:cp4}).
+
+\begin{figure}[H]
+    \centering
+    \begin{overpic}[width=0.95\textwidth]{cp_1.png}
+    \end{overpic}
+    \caption{Creazione progetto --- Step~1: inserimento del nome, della descrizione e
+        selezione del lotto}
+    \label{fig:cp1}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \begin{overpic}[width=0.95\textwidth]{cp_2.png}
+    \end{overpic}
+    \caption{Creazione progetto --- Step~2: selezione dei coltivatori che parteciperanno
+        al progetto}
+    \label{fig:cp2}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \begin{overpic}[width=0.95\textwidth]{cp_3.png}
+    \end{overpic}
+    \caption{Creazione progetto --- Step~3: selezione delle colture per le coltivazioni
+        del progetto}
+    \label{fig:cp3}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \begin{overpic}[width=0.95\textwidth]{cp_4.png}
+    \end{overpic}
+    \caption{Progetto creato con successo: il nuovo progetto è visibile nella schermata
+        principale}
+    \label{fig:cp4}
+\end{figure}
+
+\subsection{Creazione di una Notifica}
+
+Per creare una notifica è necessario accedere alla schermata principale delle notifiche,
+dalla quale è possibile gestire entrambe le tipologie supportate dal sistema: le
+\textbf{notifiche di evento}, relative al progetto in generale, e le \textbf{notifiche di
+attività imminenti}, dirette al coltivatore responsabile di una specifica attività. Negli
+esempi qui riportati viene illustrato il processo di creazione di una notifica per
+un'attività; il procedimento per una notifica di evento generale è del tutto analogo.
+
+\begin{enumerate}
+    \item Dalla schermata principale delle notifiche si preme il pulsante
+        \textit{``Crea nuova notifica per attività''} (Figura~\ref{fig:cn1}).
+    \item Si compila il form con i dati della notifica --- nome, descrizione e livello di
+        urgenza --- e si seleziona il progetto di riferimento e l'attività a cui essa è
+        associata. Si procede quindi premendo \textit{``Prossimo step''}
+        (Figura~\ref{fig:cn2}).
+    \item Si seleziona il coltivatore destinatario della notifica e si conferma la
+        creazione (Figura~\ref{fig:cn3}).
+\end{enumerate}
+
+\begin{figure}[H]
+    \centering
+    \begin{overpic}[width=0.95\textwidth]{cn_1.png}
+    \end{overpic}
+    \caption{Schermata principale delle notifiche: pulsante \textit{Crea nuova notifica
+        per attività}}
+    \label{fig:cn1}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \begin{overpic}[width=0.95\textwidth]{cn_2.png}
+    \end{overpic}
+    \caption{Creazione notifica --- Step~1: inserimento dei dati, selezione del progetto
+        e dell'attività, pulsante \textit{Prossimo step}}
+    \label{fig:cn2}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \begin{overpic}[width=0.95\textwidth]{cn_3.png}
+    \end{overpic}
+    \caption{Creazione notifica --- Step~2: selezione del coltivatore destinatario e
+        conferma della creazione}
+    \label{fig:cn3}
 \end{figure}
 
 \end{document}

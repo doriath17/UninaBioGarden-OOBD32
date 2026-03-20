@@ -106,7 +106,7 @@ ne sancisce la fine:
    un progetto. Le notifiche sono caratterizzate da un nome descrittivo dell’evento, una
    descrizione più o meno dettagliata dell’evento, un’urgenza e una data di invio.
    Le notifiche possono essere di due tipi:
-   Notifiche di Eventi Sono notifiche che riguardano eventi che possono accadere durante
+   Notifiche Generali Sono notifiche che riguardano eventi che possono accadere durante
    il ciclo vita di un progetto, ad esempio un’anomalia o una carestia, e che quindi
    possono essere inviate in qualsiasi momento. Questo tipo di notifica può essere
    inviata ad uno o più coltivatori del progetto, a seconda di chi il proprietario vuole
@@ -116,8 +116,7 @@ ne sancisce la fine:
    nente. Questa tipologia di notifica è diretta al coltivatore che svolge l’attività ed è
    caratterizzata dai giorni mancanti alla scadenza dell’attività nel momento in cui la
    notifica viene inviata.
-   9 di 63
-   2 ANALISI DEL DOMINIO UninaBioGarden
+
    Riguardo all’urgenza della notifica, il proprietario può assegnare alla notifica un certo
    livello di urgenza:
    •Bassa
