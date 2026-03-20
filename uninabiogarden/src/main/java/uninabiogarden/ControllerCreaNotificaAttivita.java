@@ -10,60 +10,51 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import uninabiogarden.entities.Notifica;
+import uninabiogarden.entities.NotificaAttivita;
 import uninabiogarden.entities.Progetto;
 import uninabiogarden.entities.Proprietario;
 import uninabiogarden.entities.Attivita;
+import uninabiogarden.entities.Coltivazione;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
+import java.util.ArrayList;
 
 public class ControllerCreaNotificaAttivita {
 
-  @FXML
-  private TableView<Attivita> attivitaTable;
+  @FXML private TableView<Attivita> attivitaTable;
 
-  @FXML
-  private TableColumn<Progetto, String> dataInizioProgettoColonna;
+  @FXML private TableColumn<Attivita, String> dataInizioAttivitaColonna;
 
-  @FXML
-  private TextArea descrizioneField;
+  @FXML private TableColumn<Progetto, String> dataInizioProgettoColonna;
 
-  @FXML
-  private TableColumn<Progetto, String> descrizioneProgettoColonna;
+  @FXML private TextArea descrizioneField;
 
-  @FXML
-  private Label errorLable;
+  @FXML private TableColumn<Progetto, String> descrizioneProgettoColonna;
 
-  @FXML
-  private VBox mainContent;
+  @FXML private Label errorLable;
 
-  @FXML
-  private TextField nomeField;
+  @FXML private VBox mainContent;
 
-  @FXML
-  private TableColumn<Progetto, String> nomeProgettoColonna;
+  @FXML private TextField nomeField;
 
-  @FXML
-  private TableColumn<Attivita, String> noteTecnicheAttivitaColonna;
+  @FXML private TableColumn<Progetto, String> nomeProgettoColonna;
 
-  @FXML
-  private TableView<Progetto> progettoTable;
+  @FXML private TableColumn<Attivita, String> noteTecnicheAttivitaColonna;
 
-  @FXML
-  private TableColumn<Attivita, String> statoAttivitaColonna;
+  @FXML private TableView<Progetto> progettoTable;
 
-  @FXML
-  private TableColumn<Progetto, String> statoProgettoColonna;
+  @FXML private TableColumn<Attivita, String> statoAttivitaColonna;
 
-  @FXML
-  private TableColumn<Attivita, String> titoloAttivitaColonna;
+  @FXML private TableColumn<Progetto, String> statoProgettoColonna;
 
-  @FXML
-  private ChoiceBox<Notifica.Urgenza> urgenzaField;
+  @FXML private TableColumn<Attivita, String> titoloAttivitaColonna;
+
+  @FXML private ChoiceBox<Notifica.Urgenza> urgenzaField;
 
   ObservableList<Attivita> attivita = javafx.collections.FXCollections.observableArrayList();
   ObservableList<Progetto> progetti = javafx.collections.FXCollections.observableArrayList();
 
-  Notifica nuovaNotifica;
+  NotificaAttivita nuovaNotifica;
 
   @FXML
   void initialize() {
@@ -112,22 +103,76 @@ public class ControllerCreaNotificaAttivita {
       return new SimpleStringProperty(a);
     });
 
+    dataInizioAttivitaColonna.setCellValueFactory(cellData -> {
+      String a = cellData.getValue().getDataInizio().toString();
+      return new SimpleStringProperty(a);
+    });
+
     progettoTable.setItems(progetti);
+    attivitaTable.setItems(attivita);
+
+    // per aggiornare le attivita del progetto selezionato
+    progettoTable.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+      if (newVal != null) {
+        loadAttivitaDisponibili(newVal);
+      } else {
+        attivita.clear();
+      }
+    });
 
   }
 
-  public void init(Notifica nuovaNotifica) {
-    this.nuovaNotifica = nuovaNotifica != null ? nuovaNotifica : new Notifica();
+  public void init(Notifica notifica) {
+
+    if (notifica instanceof NotificaAttivita) {
+        this.nuovaNotifica = (NotificaAttivita) notifica;
+    } else {
+        this.nuovaNotifica = new NotificaAttivita();
+    }
+
     clear();
     progettoTable.getSelectionModel().clearSelection();
     attivitaTable.getSelectionModel().clearSelection();
     progetti.setAll(MainController.getInstance().getProgetti());
+    attivita.clear();
     progettoTable.refresh();
+  }
 
-    // TODO: da implementare quando attività sarà implementata
-    // attivita.setAll(MainController.getInstance().getAttivita());
-    // attivitaTable.setItems(attivita);
-    // attivitaTable.refresh();
+  
+  // carica tutte le attività dei progetti e filtra solo quelle in stato PIANIFICATA o IN_CORSO
+  private void loadAttivitaDisponibili(Progetto progetto) {
+
+    attivita.clear();
+    
+    if (progetto == null) {
+      return;
+    }
+
+    // estrae tutte le attività da tutte le coltivazioni del progetto
+    ArrayList<Attivita> allAttivita = new ArrayList<>();
+    for (Coltivazione c : progetto.getColtivazioni()) {
+
+      if (c.getAttivita() != null) {
+        allAttivita.addAll(c.getAttivita());
+      }
+      
+    }
+
+    // esclude tutte eccetto quelle in stato PIANIFICATA o IN_CORSO
+    ArrayList<Attivita> attFiltrate = new ArrayList<>();
+
+    for (Attivita a : allAttivita) {
+      boolean isPianificata = (a.getStato() == Attivita.Stato.PIANIFICATA);
+      boolean isInCorso = (a.getStato() == Attivita.Stato.IN_CORSO);
+
+      if (isPianificata || isInCorso) {
+          attFiltrate.add(a);
+      }
+
+    }
+
+    attivita.setAll(attFiltrate);
+    attivitaTable.refresh();
   }
 
   @FXML
@@ -145,7 +190,7 @@ public class ControllerCreaNotificaAttivita {
 
     getData(nuovaNotifica);
 
-    UIController.getInstance().openCreaNotificaStep2View(nuovaNotifica, false);
+    UIController.getInstance().openCreaNotificaStep2View(nuovaNotifica, true);
 
     // for testign
     System.out.println(nuovaNotifica.toString());
@@ -176,22 +221,29 @@ public class ControllerCreaNotificaAttivita {
     descrizioneField.clear();
     urgenzaField.setValue(Notifica.Urgenza.BASSA);
     errorLable.setText("");
+    attivita.clear();
   }
 
-  void getData(Notifica notifica) {
+  void getData(NotificaAttivita notifica) {
     if (notifica == null) {
-      notifica = new Notifica();
+      notifica = new NotificaAttivita();
     }
     notifica.setNome(nomeField.getText());
     notifica.setDescrizione(descrizioneField.getText());
-    notifica.setUrgenza((Notifica.Urgenza) urgenzaField.getValue());
-    notifica.setTipo(Notifica.Tipo.NOTIFICA_ATTIVITA_IMMINENTE);
+    notifica.setUrgenza(urgenzaField.getValue());
     notifica.setMittente((Proprietario) MainController.getInstance().getUtenteLoggato());
 
     Progetto prg = progettoTable.getSelectionModel().getSelectedItem();
     if (prg != null) {
       notifica.setProgetto(prg);
     }
+
+    Attivita att = attivitaTable.getSelectionModel().getSelectedItem();
+    if (att != null) {
+      notifica.setAttivita(att);
+    }
+
   }
+
 
 }

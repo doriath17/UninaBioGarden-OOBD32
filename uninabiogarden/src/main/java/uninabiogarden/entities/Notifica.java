@@ -9,9 +9,6 @@ public class Notifica {
         BASSA, MEDIA, ALTA, CRITICA;
     }
 
-    public enum Tipo {
-        NOTIFICA_PROGETTO, NOTIFICA_ATTIVITA_IMMINENTE;
-    }
     
     private Long id;
 
@@ -20,31 +17,26 @@ public class Notifica {
     private String nome;
     private String descrizione;
     private Urgenza urgenza;
-    private Tipo tipo;
-    
-    private Integer giorniMancanti;
 
     private Proprietario mittente;
     private Progetto progetto;
-    private Attivita attivita;
 
     private ArrayList<Coltivatore> destinatari = new ArrayList<>();
 
-    public Notifica(Long id, LocalDate dataInvio, String nome, String descrizione, Urgenza urgenza, Tipo tipo, Integer giorniMancanti, Proprietario mittente, Progetto progetto, Attivita attivita) {
+    public Notifica(Long id, LocalDate dataInvio, String nome, String descrizione, Urgenza urgenza, Proprietario mittente, Progetto progetto) {
         this.id = id;
-        this.dataInvio = dataInvio;
+        this.dataInvio = LocalDate.now();
         this.nome = nome;
         this.descrizione = descrizione;
         this.urgenza = urgenza;
-        this.tipo = tipo;
-        this.giorniMancanti = giorniMancanti;
         this.mittente = mittente;
         this.progetto = progetto;
-        this.attivita = attivita;
         
     }
 
-    public Notifica() {}
+    public Notifica() {
+        this.dataInvio = LocalDate.now();
+    }
 
     public Long getId() {
         return id;
@@ -86,22 +78,6 @@ public class Notifica {
         this.urgenza = urgenza;
     }
 
-    public Tipo getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(Tipo tipo) {
-        this.tipo = tipo;
-    }
-
-    public Integer getGiorniMancanti() {
-        return giorniMancanti;
-    }
-
-    public void setGiorniMancanti(Integer giorniMancanti) {
-        this.giorniMancanti = giorniMancanti;
-    }
-
     public Proprietario getMittente() {
         return mittente;
     }
@@ -116,14 +92,6 @@ public class Notifica {
 
     public void setProgetto(Progetto progetto) {
         this.progetto = progetto;
-    }
-
-    public Attivita getAttivita() {
-        return attivita;
-    }
-
-    public void setAttivita(Attivita attivita) {
-        this.attivita = attivita;
     }
     
     public ArrayList<Coltivatore> getDestinatari() {
@@ -142,11 +110,8 @@ public class Notifica {
                 ", nome='" + nome + '\'' +
                 ", descrizione='" + descrizione + '\'' +
                 ", urgenza=" + urgenza +
-                ", tipo=" + tipo +
-                ", giorniMancanti=" + giorniMancanti +
                 ", mittente=" + mittente.getNome() +
                 ", progetto=" + progetto.getNomeProgetto() +
-                ", attivita=" + attivita +
                 ", destinatari=" + destinatari.stream().map(Coltivatore::getNome).toList() +
                 '}';
                 

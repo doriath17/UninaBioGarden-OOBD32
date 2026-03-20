@@ -24,141 +24,173 @@ public class NotificaDAO {
     return instance;
   }
 
-  public void saveNotifica(Notifica notifica) {
+    public void saveNotifica(Notifica notifica) {
+        
+        String sqlNotifica = "INSERT INTO notifica (nome_evento, urgenza, descrizione, tipo, id_progetto, id_attivita) " +
+                             "VALUES (?, ?::urgenza_notifica, ?, ?::tipo_notifica, ?, ?)";
+    
+        String sqlRiceve = "INSERT INTO riceve (id_notifica, id_coltivatore, is_letta) VALUES (?, ?, false)";
+    
+        try (var conn = database.getConnection()) {
+        
+            conn.setAutoCommit(false);
+        
+            try (var stmtN = conn.prepareStatement(sqlNotifica, Statement.RETURN_GENERATED_KEYS);
+                 var stmtR = conn.prepareStatement(sqlRiceve)) {
+                
+                String tipoValue;
+                if (notifica instanceof NotificaAttivita) {
+                    tipoValue = "NOTIFICA_ATTIVITA_IMMINENTE";
+                } else {
+                    tipoValue = "NOTIFICA_PROGETTO";
+                }
+                
+                stmtN.setString(1, notifica.getNome());
+                stmtN.setString(2, notifica.getUrgenza().toString());
+                stmtN.setString(3, notifica.getDescrizione());
+                stmtN.setString(4, tipoValue);
+    
+                stmtN.setLong(5, notifica.getProgetto().getId());
+    
+                // Controlla se si deve caricare anche id_attivita o mettere null
+                if (notifica instanceof NotificaAttivita) {
 
-    String sqlNotifica = "INSERT INTO notifica (nome_evento, urgenza, descrizione, tipo, id_progetto, id_attivita) " +
-        "VALUES (?, ?::urgenza_notifica, ?, ?::tipo_notifica, ?, ?)";
+                    NotificaAttivita notificaAttivita = (NotificaAttivita) notifica;
 
-    String sqlRiceve = "INSERT INTO riceve (id_notifica, id_coltivatore, is_letta) VALUES (?, ?, false)";
+                    if (notificaAttivita.getAttivita() != null) {
+                        stmtN.setLong(6, notificaAttivita.getAttivita().getId());
+                    } else {
+                        stmtN.setNull(6, java.sql.Types.INTEGER);
+                    }
 
-    try (var conn = database.getConnection()) {
-
-      conn.setAutoCommit(false);
-
-      try (var stmtN = conn.prepareStatement(sqlNotifica, Statement.RETURN_GENERATED_KEYS);
-          var stmtR = conn.prepareStatement(sqlRiceve)) {
-
-        // Notifica
-        stmtN.setString(1, notifica.getNome());
-        stmtN.setString(2, notifica.getUrgenza().toString());
-        stmtN.setString(3, notifica.getDescrizione());
-        stmtN.setString(4, notifica.getTipo().toString());
-
-        // if (notifica.getGiorniMancanti() != null) {
-        // stmtN.setInt(5, notifica.getGiorniMancanti());
-        // } else {
-        // stmtN.setNull(5, java.sql.Types.INTEGER);
-        // }
-
-        stmtN.setLong(5, notifica.getProgetto().getId());
-
-        if (notifica.getAttivita() != null) {
-          stmtN.setLong(6, notifica.getAttivita().getId());
-        } else {
-          stmtN.setNull(6, java.sql.Types.INTEGER);
+                } else {
+                    stmtN.setNull(6, java.sql.Types.INTEGER);
+                }
+            
+                stmtN.executeUpdate();
+            
+                // recupero id notifica
+                int generatedId = -1;
+                try (var rs = stmtN.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        generatedId = rs.getInt(1);
+                    }
+                }
+            
+                // riceve
+                if (generatedId != -1 && notifica.getDestinatari() != null) {
+                    for (Coltivatore c : notifica.getDestinatari()) {
+                        stmtR.setInt(1, generatedId);
+                        stmtR.setLong(2, c.getId());
+                        stmtR.executeUpdate();
+                    }
+                }
+            
+                // salva tutto
+                conn.commit();
+                System.out.println("Notifica salvata con successo! ID: " + generatedId);
+            
+            } catch (Exception e) {
+                conn.rollback();
+                throw e;
+            }
+            
+        } catch (Exception e) {
+            System.err.println("Errore fatale: " + e.getMessage());
+            throw new RuntimeException(e);
         }
-
-        stmtN.executeUpdate();
-
-        // recupero id notifica
-        int generatedId = -1;
-        try (var rs = stmtN.getGeneratedKeys()) {
-          if (rs.next()) {
-            generatedId = rs.getInt(1);
-          }
-        }
-
-        // riceve
-        if (generatedId != -1 && notifica.getDestinatari() != null) {
-          // for (Coltivatore c : notifica.getDestinatari()) {
-          // stmtR.setInt(1, generatedId);
-          // stmtR.setLong(2, c.getId());
-          // stmtR.addBatch();
-          // }
-          // stmtR.executeBatch();
-          for (Coltivatore c : notifica.getDestinatari()) {
-            stmtR.setInt(1, generatedId);
-            stmtR.setLong(2, c.getId());
-            stmtR.executeUpdate();
-          }
-        }
-
-        // salva tutto
-        conn.commit();
-        System.out.println("Notifica salvata con successo! ID: " + generatedId);
-
-      } catch (Exception e) {
-        conn.rollback();
-        throw e;
-      }
-    } catch (Exception e) {
-      System.err.println("Errore fatale: " + e.getMessage());
-      throw new RuntimeException(e);
     }
 
-  }
 
-  public List<Notifica> getAllNotificheOfUtente(Utente utente) {
+    public ArrayList<Notifica> getAllNotificheOfUtente(Utente utente) {
 
-    List<Notifica> list = new ArrayList<>();
+        ArrayList<Notifica> list = new ArrayList<>();
+        
+        String sql = """
+                SELECT DISTINCT n.*, p.nome as nome_progetto, a.nome as nome_attivita, u.nome as nome_proprietario, u.id as id_proprietario, a.data_scadenza as data_scadenza_attivita
+                FROM notifica n
+                LEFT JOIN progetto p ON n.id_progetto = p.id
+                LEFT JOIN attivita a ON n.id_attivita = a.id
+                LEFT JOIN utente u ON p.id_proprietario = u.id
+                LEFT JOIN riceve r ON n.id = r.id_notifica
+                WHERE p.id_proprietario = ? OR r.id_coltivatore = ?
+                ORDER BY n.data_invio DESC
+                """;
 
-    String sql = """
-        SELECT n.*, p.nome as nome_progetto, a.nome as nome_attivita, u.nome as nome_proprietario, u.id as id_proprietario
-        FROM notifica n
-        LEFT JOIN progetto p ON n.id_progetto = p.id
-        LEFT JOIN attivita a ON n.id_attivita = a.id
-        LEFT JOIN utente u ON p.id_proprietario = u.id
-        WHERE p.id = ?
-        ORDER BY n.data_invio DESC
-        """;
+        try (var conn = database.getConnection(); 
+             var stmt = conn.prepareStatement(sql)) {
 
-    try (var conn = database.getConnection();
-        var stmt = conn.prepareStatement(sql)) {
+            stmt.setLong(1, utente.getId());
+            stmt.setLong(2, utente.getId());
+            ResultSet rs = stmt.executeQuery();
 
-      stmt.setLong(1, utente.getId());
-      ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
 
-      while (rs.next()) {
+                // per capire che classe instanziare
+                String tipo = rs.getString("tipo");
+                Notifica n;
 
-        Notifica n = new Notifica();
-        n.setId(rs.getLong("id"));
-        n.setNome(rs.getString("nome_evento"));
-        n.setDescrizione(rs.getString("descrizione"));
-        n.setUrgenza(Notifica.Urgenza.valueOf(rs.getString("urgenza")));
-        n.setTipo(Notifica.Tipo.valueOf(rs.getString("tipo")));
-        n.setGiorniMancanti(rs.getInt("giorni_mancanti"));
-        n.setMittente((Proprietario) MainController.getInstance().getUtenteLoggato());
-        n.setDataInvio(rs.getDate("data_invio").toLocalDate());
+                if ("NOTIFICA_ATTIVITA_IMMINENTE".equals(tipo)) {
+                    n = new NotificaAttivita();
+                } else {
+                    n = new Notifica();
+                }
 
-        // Proprietario Proxy
-        Proprietario pr = new Proprietario();
-        pr.setId(rs.getLong("id_proprietario"));
-        pr.setNome(rs.getString("nome_proprietario"));
-        n.setMittente(pr);
+                n.setId(rs.getLong("id"));
+                n.setNome(rs.getString("nome_evento"));
+                n.setDescrizione(rs.getString("descrizione"));
+                n.setUrgenza(Notifica.Urgenza.valueOf(rs.getString("urgenza")));
+                // n.setGiorniMancanti(rs.getInt("giorni_mancanti"));
+                n.setDataInvio(rs.getDate("data_invio").toLocalDate());
+                
+                // proprietario proxy
+                Proprietario pr = new Proprietario();
+                pr.setId(rs.getLong("id_proprietario"));
+                pr.setNome(rs.getString("nome_proprietario"));
+                n.setMittente(pr);
 
-        // Progetto Proxy
-        Progetto p = new Progetto();
-        p.setId(rs.getLong("id_progetto"));
-        p.setNomeProgetto(rs.getString("nome_progetto"));
-        n.setProgetto(p);
+                // progetto proxy
+                Progetto p = new Progetto();
+                p.setId(rs.getLong("id_progetto"));
+                p.setNomeProgetto(rs.getString("nome_progetto")); 
+                n.setProgetto(p);
 
-        // Attivita Proxy
-        long idAtt = rs.getLong("id_attivita");
-        if (!rs.wasNull()) {
-          // Attività anonima
-          Attivita a = new Attivita() {
-          };
-          a.setId(idAtt);
-          a.setNome(rs.getString("nome_attivita"));
-          n.setAttivita(a);
+                // solo per NotificaAttivita
+                if (n instanceof NotificaAttivita) {
+                    
+                    // attivita proxy
+                    long idAtt = rs.getLong("id_attivita");
+                    if (!rs.wasNull()) {
+                        // attività anonima 
+                        Attivita a = new Attivita() {}; 
+                        a.setId(idAtt);
+                        a.setNome(rs.getString("nome_attivita"));
+                        ((NotificaAttivita) n).setAttivita(a);
+
+                        java.sql.Date dataSca = rs.getDate("data_scadenza_attivita");
+                        if (dataSca != null) {
+                            a.setDataScadenza(dataSca.toLocalDate());
+                        }
+
+                        // calcola giorni mancanti
+                        ((NotificaAttivita) n).setAttivita(a);
+
+                    }
+
+                    // giorni mancanti
+                    int giorniMancanti = rs.getInt("giorni_mancanti");
+                    if (!rs.wasNull()) {
+                        ((NotificaAttivita) n).setGiorniMancanti(giorniMancanti);
+                    }
+                    
+                }
+
+                list.add(n);
+            }
+        } catch (Exception e) {
+            System.err.println("Error fetching notifications: " + e.getMessage());
         }
-
-        list.add(n);
-      }
-    } catch (Exception e) {
-      System.err.println("Error fetching notifications: " + e.getMessage());
+        return list;
     }
-    return list;
-  }
-
 }
+

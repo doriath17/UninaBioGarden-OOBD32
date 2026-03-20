@@ -59,9 +59,9 @@ BEGIN
   END IF;
 
   -- Vincolo: riceve_notifica_progetto_multipla / notifica_attivita_imminente_riceve_coltivatore
-  IF v_notifica.tipo = 'NOTIFICA_ATTIVITA_IMMINENTE' THEN 
-    RAISE EXCEPTION 'Non è possibile inserire una notifica di tipo ''NOTIFICA_ATTIVITA_IMMINENTE'' nella tabella riceve';
-  END IF;
+  -- IF v_notifica.tipo = 'NOTIFICA_ATTIVITA_IMMINENTE' THEN 
+    -- RAISE EXCEPTION 'Non è possibile inserire una notifica di tipo ''NOTIFICA_ATTIVITA_IMMINENTE'' nella tabella riceve';
+  -- END IF;
 
   -- Vincolo: riceve_coltivatore_progetto
   IF NOT EXISTS (

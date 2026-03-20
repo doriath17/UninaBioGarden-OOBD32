@@ -19,6 +19,7 @@ import javafx.scene.layout.VBox;
 import uninabiogarden.dao.DatabaseController;
 import uninabiogarden.entities.Coltivatore;
 import uninabiogarden.entities.Notifica;
+import uninabiogarden.entities.NotificaAttivita;
 
 public class ControllerCreaNotificaStep2 {
 
@@ -63,6 +64,8 @@ public class ControllerCreaNotificaStep2 {
 
   private Notifica nuovaNotifica;
 
+  private boolean vengoDaAttivita = false;
+
   @FXML
   private void initialize() {
     clear();
@@ -84,21 +87,63 @@ public class ControllerCreaNotificaStep2 {
 
   }
 
-  public void init(Notifica nuovaNotifica) {
-    this.nuovaNotifica = nuovaNotifica != null ? nuovaNotifica : new Notifica();
+  public void init(Notifica notifica) {
+
+    // if (notifica instanceof NotificaAttivita) {
+    //     this.nuovaNotifica = (NotificaAttivita) notifica;
+    //     this.vengoDaAttivita = true;
+    // } else {
+    //     this.nuovaNotifica = new NotificaAttivita();
+    // }
+
+
+    // per capire se vengo da crea notifica attivita o da crea notifica progetto
+    this.nuovaNotifica = notifica;
+    this.vengoDaAttivita = (notifica instanceof NotificaAttivita);
+
     clear();
     loadColtivatoriDisponibili();
+    aggiornaUIperNotificaAttivita();
+  }
+
+  // aggiorna l'interfaccia in base al tipo di notifica (attività o progetto)
+   
+  private void aggiornaUIperNotificaAttivita() {
+    if (vengoDaAttivita) {
+      
+      yesNoBox.setDisable(true);
+      yesNoBox.setValue("No"); 
+      
+      // errorLabel.setText("Verrà selezionato solo il coltivatore in cima alla lista siccome la notifica imminente");
+
+    } else {
+      
+      yesNoBox.setDisable(false);
+      errorLabel.setText("");
+
+    }
   }
 
   private void loadColtivatoriDisponibili() {
-    List<Coltivatore> coltivatoriDisponibili = MainController.getInstance().getColtivatori();
+    
+    availableSelectionMap.clear();
+    selectedSelectionMap.clear();
+    availableColtivatoriObsList.clear();
+    selectedColtivatoriObsList.clear();
+
+    List<Coltivatore> coltivatoriDisponibili = new ArrayList<>();
+    
+    if (nuovaNotifica != null && nuovaNotifica.getProgetto() != null) {
+        coltivatoriDisponibili = nuovaNotifica.getProgetto().getColtivatori();
+    }
     availableColtivatoriObsList.setAll(coltivatoriDisponibili);
   }
 
   @FXML
   private void selezionaDisponibili(ActionEvent event) {
+
     Utils.<Coltivatore>moveSelectionTo(availableColtivatoriObsList, selectedColtivatoriObsList,
-        availableSelectionMap, selectedSelectionMap);
+      availableSelectionMap, selectedSelectionMap);
   }
 
   @FXML
@@ -117,7 +162,13 @@ public class ControllerCreaNotificaStep2 {
 
   @FXML
   private void indietroAction(ActionEvent event) {
-    UIController.getInstance().openCreaNotificheView(nuovaNotifica, false);
+
+    if (vengoDaAttivita) {
+      UIController.getInstance().openCreaNotificheAttivitaView(nuovaNotifica, false);
+    } else {
+      UIController.getInstance().openCreaNotificheView(nuovaNotifica, false);
+    }
+
   }
 
   @FXML
@@ -128,42 +179,75 @@ public class ControllerCreaNotificaStep2 {
       return;
     }
 
-    String yesNoValue = yesNoBox.getValue();
-    if (yesNoValue == null || yesNoValue.toString().isEmpty()) {
-      errorLabel.setText("Seleziona un'opzione per continuare");
-      return;
-    }
+    
+    if (vengoDaAttivita) {
 
-    if (yesNoValue.toString().equals("Si")) {
-      // mdanda la notifica a tutti i coltivatori del progetto
-      nuovaNotifica.setDestinatari(new ArrayList<>(nuovaNotifica.getProgetto().getColtivatori()));
+      // caso notifica attivita
+      if (selectedColtivatoriObsList.size() > 1) {
+        errorLabel.setText("Puoi selezionare solo UN coltivatore per la notifica attività");
+        return;
+      }
+      if (selectedColtivatoriObsList.isEmpty()) {
+        errorLabel.setText("Seleziona un coltivatore per la notifica attività");
+        return;
+      }
+      
+      nuovaNotifica.setDestinatari(new ArrayList<>(selectedColtivatoriObsList));
+
 
     } else {
 
-      // manda la notifica solo ai coltivatori selezionati
-      ArrayList<Coltivatore> selectedColtivatori = new ArrayList<>(selectedColtivatoriObsList);
-      if (selectedColtivatori.isEmpty()) {
-        errorLabel.setText("Seleziona almeno un destinatario per procedere");
+      // caso notifica generale progetto
+      String yesNoValue = yesNoBox.getValue();
+      if (yesNoValue == null || yesNoValue.toString().isEmpty()) {
+        errorLabel.setText("Seleziona un'opzione per continuare");
         return;
       }
-      nuovaNotifica.setDestinatari(new ArrayList<>(selectedColtivatori));
+
+      if (yesNoValue.toString().equals("Si")) {
+
+        // caso mandare notifica a tutti i coltivatori del progetto
+        List<Coltivatore> coltivatoriProgetto = nuovaNotifica.getProgetto().getColtivatori();
+
+        if (coltivatoriProgetto != null && !coltivatoriProgetto.isEmpty()) {
+          nuovaNotifica.setDestinatari(new ArrayList<>(coltivatoriProgetto));
+
+        } else {
+
+          errorLabel.setText("Nessun coltivatore associato al progetto");
+          return;
+        }
+
+      } else {
+
+        // caso mandare notifica solo a coltivatori selezionati
+        ArrayList<Coltivatore> coltivatoriSelezionati = new ArrayList<>(selectedColtivatoriObsList);
+        if (coltivatoriSelezionati.isEmpty()) {
+          errorLabel.setText("Seleziona almeno un destinatario per procedere");
+          return;
+        }
+        nuovaNotifica.setDestinatari(coltivatoriSelezionati);
+
+      }
     }
 
     // per testing
     System.out.println("Notifica da inviare: " + nuovaNotifica.toString());
 
-    // non mi piace molto questo metodo così specifico
     Utils.mostraDialogConfermaConAzione(
         "Vuoi davvero creare la notifica?",
         nuovaNotifica,
         (lambda) -> {
           // Salva la notifica nel database
           MainController.getInstance().getDatabaseController().getNotificaDao().saveNotifica(nuovaNotifica);
+
+          // DatabaseController.getInstance().getNotificaDao().saveNotifica(nuovaNotifica);
           MainController.getInstance().getNotifiche().add(nuovaNotifica);
           System.out.println("Notifica salvata con successo!");
+
+          UIController.getInstance().openNotificheView();
         });
 
     clear();
-
   }
 }

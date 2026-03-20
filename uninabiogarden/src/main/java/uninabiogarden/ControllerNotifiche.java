@@ -13,6 +13,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.VBox;
 import uninabiogarden.entities.Notifica;
+import uninabiogarden.entities.NotificaAttivita;
 import uninabiogarden.entities.Proprietario;
 
 public class ControllerNotifiche {
@@ -79,29 +80,40 @@ public class ControllerNotifiche {
       return new SimpleStringProperty(a);
     });
 
+    dataInvioNotificaColonna.setCellValueFactory(cellData -> {
+      LocalDate a = cellData.getValue().getDataInvio();
+      return new SimpleObjectProperty<>(a);
+    });
+
     progettoNotificaColonna.setCellValueFactory(cellData -> {
       String a = cellData.getValue().getProgetto().getNomeProgetto();
       return new SimpleStringProperty(a.isEmpty() || (a == null) ? "No Data" : a);
     });
 
-    dataInvioNotificaColonna.setCellValueFactory(cellData -> {
-      LocalDate timestamp = cellData.getValue().getDataInvio();
-      return new SimpleObjectProperty<>(timestamp);
-    });
-
     attivitaNotificaColonna.setCellValueFactory(cellData -> {
-      String a = cellData.getValue().getAttivita() != null ? cellData.getValue().getAttivita().getNome() : "No Data";
-      return new SimpleStringProperty(a);
+        Notifica n = cellData.getValue();
+        String nomeAtt = "No Data";
+        if (n instanceof NotificaAttivita) {
+            NotificaAttivita na = (NotificaAttivita) n;
+            nomeAtt = na.getAttivita().getNome();
+        }
+        return new SimpleStringProperty(nomeAtt);
     });
 
     tipoNotificaColonna.setCellValueFactory(cellData -> {
-      String a = cellData.getValue().getTipo().toString();
-      return new SimpleStringProperty(a);
+        Notifica n = cellData.getValue();
+        String tipo = (n instanceof NotificaAttivita) ? "NOTIFICA_ATTIVITA_IMMINENTE" : "NOTIFICA_PROGETTO";
+        return new SimpleStringProperty(tipo);
     });
 
     giorniMancantiColonna.setCellValueFactory(cellData -> {
-      Integer a = cellData.getValue().getGiorniMancanti();
-      return new SimpleObjectProperty<>(a);
+        Notifica n = cellData.getValue();
+        Integer giorni = null;
+        if (n instanceof NotificaAttivita) {
+            NotificaAttivita na = (NotificaAttivita) n;
+            giorni = na.getGiorniMancanti();
+        }
+        return new SimpleObjectProperty<>(giorni);
     });
 
     mittenteNotificaColonna.setCellValueFactory(cellData -> {
