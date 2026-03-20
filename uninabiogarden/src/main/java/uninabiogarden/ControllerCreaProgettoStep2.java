@@ -99,24 +99,6 @@ public class ControllerCreaProgettoStep2 {
 
   @FXML
   private void deselezionaSelezionati() {
-    // List<Coltivatore> selectedFromSelected = selectedColtivatoriObsList
-    // .stream()
-    // .filter(coltivatore -> selectedSelectionMap.containsKey(coltivatore)
-    // && selectedSelectionMap.get(coltivatore).get())
-    // .collect(Collectors.toList());
-
-    // // Aggiungi i coltivatori selezionati alla tabella di destinazione
-    // availableColtivatoriObsList.addAll(selectedFromSelected);
-
-    // // Rimuovi i coltivatori selezionati dalla tabella di origine
-    // selectedColtivatoriObsList.removeAll(selectedFromSelected);
-
-    // // Reset delle selezioni dopo il trasferimento
-    // selectedFromSelected.forEach(coltivatore -> {
-    // if (selectedSelectionMap.containsKey(coltivatore)) {
-    // selectedSelectionMap.get(coltivatore).set(false);
-    // }
-    // });
     Utils.<Coltivatore>moveSelectionTo(selectedColtivatoriObsList, availableColtivatoriObsList,
         selectedSelectionMap, availableSelectionMap);
   }
